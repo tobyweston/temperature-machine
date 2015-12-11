@@ -1,0 +1,3 @@
+@echo off
+@echo Compiling StartNetAdapterHost...
+javac -classpath ..\..\lib\OneWireAPI.jar;%classpath% -d . .\src\*.java

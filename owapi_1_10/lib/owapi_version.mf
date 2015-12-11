@@ -1,0 +1,7 @@
+Specification-Title: 1-Wire API for Java
+Specification-Version: 1.10
+Specification-Vendor: Dallas Semiconductor Corporation
+Implementation-Title: 1-Wire API for Java
+Implementation-Version: 1.10
+Implementation-Vendor: Dallas Semiconductor Corporation
+Main-Class: com.dalsemi.onewire.OneWireAccessProvider

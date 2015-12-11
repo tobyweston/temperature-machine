@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<cluster name="Weather Station #2">
+  <sensor addr="E200000006283826" type="Thermal">
+    <label>Indoor Temperature</label>
+  </sensor>
+</cluster>

@@ -1,0 +1,3 @@
+@echo off
+@echo Starting initrov33...
+java -classpath ..\..\lib\OneWireAPI.jar;%classpath% initrov33 %1 %2

@@ -1,0 +1,1517 @@
+***************************************************************************
+***************************************************************************
+
+Changes For Version 1.10
+
+***************************************************************************
+***************************************************************************
+
+
+-=========================================================================-
+Package    :  com.dalsemi.onewire.*
+Class      :  *
+Since      :  0.00
+Description:  Removed unnecessary import statements from numerous classes.
+              Updated calls to static methods to use the Classname
+              instead of the instance variable.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.adapter
+Class      :  DSPortAdapter
+Since      :  0.00
+Description:  Removed errant ';' in .equals(Object), which rendered the
+              equals comparison moot.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.adapter
+Class      :  LSerialAdapter, USerialAdapter
+Since      :  0.00
+Description:  The logic for exclusive access was incorrect.  Also fixed
+              a bug which prevented opening and re-opening a port.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.adapter
+Class      :  SerialService
+Since      :  0.00
+Description:  Fixed memory leak in exclusive access.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.file
+Class      :  OWFileDescriptor
+Since      :  0.00
+Description:  Fixed major bug in Path parsing and decoding of the contents
+              of the directory page.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  MemoryBankEEPROM
+Since      :  0.00
+Description:  Modified to support the DS2431.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  MemoryBankNVCRCPW, MemoryBankScratchCRCPW
+Since      :  0.00
+Description:  Modified to support both the DS1977 and the Thermochron8k.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  MemoryBankScratch, MemoryBankScratchEx
+Since      :  0.00
+Description:  PageLength was ignored and assumed to be 32 during the read-
+              back verify of the Write Scratchpad.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  MemoryBankScratchEE
+Since      :  0.00
+Description:  Enhanced to be generalized for other EEPROM devices, e.g. to
+              allow the EEPROM Write time to be configurable.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  MemoryBankScratchSHAEE
+Since      :  0.00
+Description:  The E/S byte, according to the datasheet, must always be the
+              value 0x5F (for a normal copy operation).  The upper bits
+              that are hardcoded to 1's, were really don't cares on some
+              variations of the SHA EE devices.  This fix (using 0x5F)
+              works for all SHA EE device types.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  MemoryBankSHAEE
+Since      :  0.00
+Description:  Fixed minor bug when writing to page 3 of SHA EE device.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  MissionContainer
+Since      :  1.00
+Description:  Added support for getting the sample as a raw integer value.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer1C
+Since      :  1.10
+Description:  Added container for 1-Wire 4K-bit EEPROM, DS28E04.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer21
+Since      :  0.00
+Description:  Worked around a calendar bug when getting a timestamp for a
+              sample.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer29
+Since      :  1.00
+Description:  Fixed max speed bug, previous container reported the max
+              speed was standard speed instead of overdrive.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer2D
+Since      :  1.00
+Description:  Added container for EEPROM memory, DS2431.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer37
+Since      :  1.00
+Description:  VerifyPassword used to throw an exception if the password
+              was incorrect.  Now it returns false.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer3A
+Since      :  1.10
+Description:  Added container for addressable switch, DS2413.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer41
+Since      :  1.00
+Description:  Fixed Humidity Resolutions, incorrectly reported the digital
+              (not analog) resolution.  Updated use of Calendar object to
+              workaround a discrepancy in Visual J#'s implementation.
+              Fixed the starting time offset calculation when rollover
+              occurs.  Fixed temperature compensation formula for the
+              immediate humidity conversions (logged work, just immediate
+              had a problem).
+-=========================================================================-
+Package    :  com.dalsemi.onewire.utils
+Class      :  Convert
+Since      :  1.00
+Description:  Added ConvertException, for handling bad input data.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.utils
+Class      :  Address
+Since      :  0.00
+Description:  Updated isValid function to support the pin-selectable
+              Address scheme of the DS28E04.
+-=========================================================================-
+Package    :  com.dalsemi.onewire
+Class      :  OneWireAccessProvider
+Since      :  0.00
+Description:  Added getVersion method and a default Main to print version.
+-=========================================================================-
+Package    :  com.dalsemi.jib
+Since      :  0.00
+Description:  Removed support for the Java-powered iButton.
+-=========================================================================-
+Package    :  com.dalsemi.container.OneWireContainer16
+Since      :  0.00
+Description:  Removed support for the Java-powered iButton.
+-=========================================================================-
+
+
+
+***************************************************************************
+***************************************************************************
+
+Changes Prior to version 1.10
+
+***************************************************************************
+***************************************************************************
+
+-=========================================================================-
+Package    :  com.dalsemi.onewire.adapter
+Class      :  DSPortAdapter
+Since      :  0.00
+Description:  Implemented .toString() and .equals(Object) methods.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.adapter
+Class      :  USerialAdapter, LSerialAdapter
+Since      :  0.00
+Description:  Modified to use RXTX instead of javax.comm
+-=========================================================================-
+Package    :  com.dalsemi.onewire.adapter
+Class      :  NetAdapter
+Since      :  1.00Beta
+Description:  Fixed sign extension problem with getbyte() method.  Also,
+              changed timeout for Multicast packets from 1 second to 1/2
+              second to speed up discovery.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.adapter
+Class      :  NetAdpaterConstants
+Since      :  1.00Beta
+Description:  Fixed sign extension problem success and failure return
+              codes.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.adapter
+Class      :  NetAdapter
+Since      :  1.00Beta
+Description:  Fixed potential bug where the hosts could be stopped, but
+              leaves the adapter exclusively locked.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.file
+Class      :  OWFile, OWFileDescriptor
+Since      :  1.00Beta
+Description:  Added getStartPage() function, which returns the memory
+              page that a file starts on.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.sha
+Class      :  SHAiButtonUser33
+Since      :  1.00Beta
+Description:  Added more checks to return value of Read Authenticated
+              Page command.  Added support for Refresh Scratchpad
+              command, to correct a partial write to a DS1961S/DS2432.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.sha
+Class      :  SHADebitUnsigned
+Since      :  1.00Beta
+Description:  Implemented error recovery steps in the event of a partial
+              write to a DS1961S/DS2432.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  SAXParser
+Since      :  1.00Beta
+Description:  Changed SAXParser from strictly using MinML to taking the
+              XML library as a parameter, with default set to nanoxml
+              (now included with 1-Wire API).
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  TaggedDevice
+Since      :  1.00Beta
+Description:  Implemented .toString(), .equals(Object), and hashCode().
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  TaggedDevice
+Since      :  1.00Beta
+Description:  Case insensitivity for all tag names and properties.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.jib
+Class      :  CommandAPDU
+Since      :  1.00Alpha
+Description:  Default APDU length changed from 4 to 5, to ensure that LC
+              field is set properly.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.jib
+Class      :  JibComm
+Since      :  1.00Alpha
+Description:  Added support for Smart Power Delivery.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  MemoryBankScratch
+Since      :  1.00Alpha
+Description:  CheckSpeed() function fails to notice that the adapter's
+              speed has been changed.  After the scratchpad memory bank
+              set the speed once, it never checks to see if it got
+              changed by another thread.  As a quick fix, the function
+              was modified to go ahead and verify that the device was
+              at the right speed if the adapter was set for any speed
+              other than the device's max speed.  Future versions may
+              include some sort of AdapterChangeEventListener interface.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  MemoryBankSHAEE
+Since      :  1.00Alpha
+Description:  Fixed bug where updating pages 2 and 3 in the same write
+              caused an exception.  Refactored MemoryBank by moving
+              absolutely addressed functions (like Load First Secret,
+              Compute Next Secret, Read Scratchpad, etc) into new
+              Scratchpad MemoryBank class.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  MemoryBankScratchSHAEE
+Since      :  1.00
+Description:  New Scratchpad MemoryBank for DS1961S/DS2432 with the
+              absolutely addressed functions (like Load First Secret,
+              Compute Next Secret, Read Scratchpad, etc), refactored
+              from the MemoryBankSHAEE class.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  OneWireContainer
+Since      :  0.00
+Description:  Implemented .equals(Object, .toString(), and .hashcode().
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  OneWireContainer10
+Since      :  0.00
+Description:  Fixed numerous points of failure due to byte sign-extension
+              problems
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  OneWireContainer1F
+Since      :  1.00Alpha
+Description:  Added retry loop to all device operations.  This should fix
+              most "Verify on Command Incorrect" errors.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  OneWireContainer20
+Since      :  0.00
+Description:  Simplified some redundant logic. Corrected setPower method,
+              was setting wrong bit
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  OneWireContainer21
+Since      :  1.00Alpha
+Description:  Fixed bug with the setting of the device's valid
+              temperature range.  Default setting for a device with no
+              range code in the address was wrong.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  OneWireContainer30
+Since      :  1.00Beta
+Description:  Added getMemoryBanks function.  Implemented a new memory
+              bank to represent this part, MemoryBankEEPROMblock.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  OneWireContainer33
+Since      :  1.00Alpha
+Description:  Added support for Refresh Scratchpad command.  Fixed bug
+              that occurred when writing to page 3 of the device.
+              Completely refactored MemoryBank support, moved absolute
+              addressed functions into new scratchpad memory bank class.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  Convert
+Since      :  1.00Beta
+Description:  Fixed numerous bugs.  Converting from a byte array to a
+              long or int could've caused an
+              ArrayIndexOutOfBoundsException.  Check for NaN was wrong in
+              the toString(double) and toString(float) methods.  Numerous
+              problems corrected in toString(double) and toString(float).
+              Numerous documentation problems were correct also.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.monitor
+Class      :  AbstractDeviceMonitor, DeviceMonitor, DeviceMonitorEvent,
+              DeviceMonitorEventListener, DeviceMonitorException,
+              NetworkDeviceMonitor
+Since      :  1.00Final
+Description:  Added.  Intended as a replacement for
+              com.dalsemi.onewire.utils monitoring class.  Adds support
+              for more flexible searching options.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  Level
+Since      :  1.00Final
+Description:  Added.  Intended to represent a TaggedDevice that can sense
+              a digital voltage level.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  MemoryBankEEPROM, MemoryBankEEPROMblock, MemoryBankEEPROMstatus
+Since      :  1.00Final
+Description:  Added.  New EEPROM memory banks.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  MemoryBankNVCRCPW, MemoryBankScratchCRCPW
+Since      :  1.00Final
+Description:  Added.  New memory banks for password-protected devices.
+              Namely, the DS1977 and DS1922/DS2422.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  MissionContainer,
+Since      :  1.00Final
+Description:  Added.  New interface for data logging devices.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  PasswordContainer
+Since      :  1.00Final
+Description:  Added.  New interface for password protected devices.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  OneWireContainer41, ,
+Since      :  1.00Final
+Description:  Added.  New OneWireContainer class for DS1922/DS2422.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  OneWireContainer37
+Since      :  1.00Final
+Description:  Added.  New OneWireContainer class for DS1977.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  OneWireContainer29
+Since      :  1.00Final
+Description:  Added.  New OneWireContainer class for DS2408.
+-=========================================================================-
+Package    :  nanoxml.sax.*, org.xml.sax.*
+Class      :  nanoxml library
+Since      :  1.00Final
+Description:  Added.  Intended as XML library for use with the 1-Wire
+              tagging libraries included in the package
+              com.dalsemi.onewire.application.tag.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  MemoryCache, OWFile, OWFileDescriptor, OWFileInputStream,
+              OWFileOutputStream
+Since      :  1.00Alpha
+Description:  Removed.  Functionality replaced by classes in the package
+              com.dalsemi.onewire.application.file.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  OneWireMonitor, OneWireMonitorEvent,
+              OneWireMonitorEventListener
+Since      :  1.00Alpha
+Description:  Removed.  Functionality replaced by classes in the package
+              com.dalsemi.onewire.application.monitor.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.
+Class      :  NetworkDeviceState, NetworkMonitor, NetworkMonitorEvent,
+              NetworkMonitorEventListener
+Since      :  1.00Alpha
+Description:  Removed.  Functionality replaced by classes in the package
+              com.dalsemi.onewire.application.monitor.
+-=========================================================================-
+
+
+
+***************************************************************************
+***************************************************************************
+
+Changes Prior to version 1.00Final
+
+***************************************************************************
+***************************************************************************
+
+-=========================================================================-
+Package    :  com.dalsemi.onewire.adapter
+Class      :  NetAdapter,NetAdapterHost,NetAdapterconstants,
+              MulticastListener
+Since      :  1.00Beta
+Description:  Added support classes for a TCP/IP connection to a
+              remote DSPortAdapter and automatic discovery of
+              host connections that are reachable by multicast.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.adapter
+Class      :  LSerialAdapter
+Since      :  1.00Beta
+Description:  Added support class for DS9097E serial adapter.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  MemoryBankSBM
+Since      :  1.00 Beta
+Description:  New memory bank for use with DS2438 (OneWireContainer26).
+-=========================================================================-
+Package    :  com.dalsemi.onewire.utils
+Class      :  Convert
+Since      :  1.00Beta
+Description:  Added new utility class containing generic conversion
+              functions such as byte[]<->int, byte[]<->long, and
+              celsius<->degrees fahrenheit.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.file
+Class      :  OWFile,OWFileDescriptor,OWFileInputStream,OWFileOutputStream
+Since      :  1.00 Alpha
+Description:  These classes were moved out of the utils package.  The
+              implementation remains in the utils package, but is marked
+              as deprecated.  In the next release, the OWFile* classes
+              in the utils package will be removed.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.file
+Class      :  OWFileNotFoundException, OWSyncFailedException
+Since      :  1.00 Alpha
+Description:  Since a lot of the I/O functionality (including File I/O) is
+              missing from the J2ME CLDC, the OWFile utilities should not
+              be dependent on the Java2 File I/O for functionality.
+              Implemented OWFileNotFoundException and OWSyncFailedException
+              to replace missing classes.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.file
+Class      :  OWFile, OWFileInputStream, OWFileOutputStream
+Since      :  1.00 Alpha
+Description:  Get IO exceptions reading device in multi-threaded application.
+              Problem was a LastPageRead global flag not getting cleared
+              when done with an Exclusive session.
+Solution   :  Added clearLastPageRead() method in MemoryCache class and
+              made a call to it before any IO in the OWFileDescriptor methods.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.adapter
+Class      :  SerialService
+Problem    :  CleanupByThread did not remove a thread's exclusive
+              lock.
+Since      :  0.00
+Description:  If CleanupByThread was called with a thread that had
+              exclusive use of the serial service, the method did
+              not release the lock.
+Solution   :  Added removal of lock if the thread is the current
+              owner of the exclusive lock.
+-=========================================================================-
+Package    :  com.dalsemi.onewire
+Class      :  OneWireAccessProvider
+Problem    :  Doesn't add NetAdapter to the list of supported
+              adapters.
+Since      :  0.00
+Description:  NetAdapter, a recent DSPortAdapter addition, was not
+              included in the enumeration of adapters.
+Solution   :  Added NetAdapter to the enumeration of adapters.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  SerialService
+Problem    :  J2ME CLDC doesn't support Thread.getName().
+Since      :  0.00
+Description:  Debug message ouput uses Thread.getName(), which isn't
+              supported by J2ME CLDC devices.
+Solution   :  Replaced with Thread.toString().
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.sha
+Class      :  SHADebitUnsigned
+Problem    :  EEPROM DS1961S device's memory could become corrupted
+              if communication is interrupted, rendering the debit
+              file useless.
+Since      :  0.00
+Description:  Since the DS1961S/DS2432 is a battery-less EEPROM
+              device, sudden loss of power could cause an EEPROM bit
+              to be half-written (i.e. on the borderline of being a
+              1 or a 0) or the writing of the user's account data
+              could become interrupted.
+Solution   :  Two sectors of 8 bytes each are used to store the
+              account data, while the actual TMEX file length
+              indicates which sector holds the current amount.  If
+              it is determined that there was an error in writing
+              to the devious during a previous transaction, it is
+              now possible to revert to the last known good value.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.sha
+Class      :  SHADebit
+Problem    :  Format of a debit file has changed.
+Since      :  0.00
+Description:  An app note detailing the format of a Digital
+              certificate will be released shortly after this
+              release which details a new layout for the monetary
+              certificate.  This app note is AN151.
+Solution   :  Format of debit file has been changed in SHADebit
+              and the new format is shown in the JavaDocs.  This
+              version of SHADebit will be incompatible with user
+              tokens initialized with previous versions.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer10, OneWireContainer28
+Problem    :  Each temperature device had it's own implementation
+              of toFahrenheit() and toCelsius().
+Since      :  0.00
+Description:  Each of the temperature containers implemented it's
+              own copy of toFahrenheit() and toCelsius(), and they
+              weren't consistent.  Some used floats, others used
+              doubles.
+Solution   :  Deprecated methods in the containers and changed
+              them to call Convert.toFahrenheit(), etc.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer26
+Problem    :  Did not implement standard MemoryBanks with it's memory.
+Since      :  0.00
+Solution   :  Added the implementation of getMemoryBanks()
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer33
+Problem    :  Did not return all memory banks in enumeration.
+Since      :  0.00
+Solution   :  Added the last memory bank to the enumeration of
+              memory banks in the implementation of getMemoryBanks()
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer21
+Problem    :  Error in JavaDocs.
+Since      :  0.00
+Description:  Call to (new Date(System.currentTimeMillis())).getTime()
+              seemed a bit much in usage example.
+Solution   :  Replaced with (System.currentTimeMillis()).
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer21
+Problem    :  Need to distinguish between DS1921H/Z devices and other
+              Thermochron models.
+Since      :  0.00
+Description:  No method exists to differentiate between the models of
+              Thermochrons.  It can be done through parsing a special
+              12-bit field of the part's 1-Wire Net Address.
+Solution   :  Override OneWireContainer's setupContainer() method to
+
+              call setThermochronVariables() method which parses a
+              special 12-bit field of the Thermochron's 1-Wire net
+              Address and sets the following variables:
+
+              1)  partNumber:
+                  DS1921L-F50 = physical range -40 to +85,
+                                operating range -40 to +85.
+                  DS1921L-F51 = physical range -40 to +85,
+                                operating range -10 to +85.
+                  DS1921L-F52 = physical range -40 to +85,
+                                operating range -20 to +85.
+                  DS1921L-F53 = physical range -40 to +85,
+                                operating range -30 to +85.
+
+                  DS1921H     = physical range 15 to 46,
+                                operating range -40 to +85
+                  DS1921Z     = physical range -5 to 26,
+                                operating range -40 to +85
+                  (All temps in degrees Celsius)
+              2)  temperatureRangeLow - low temp. of temp. range
+              3)  temperatureRangeWidth - temp. range width
+              4)  temperaturResolution - temp resolution
+              5)  isDS1921HZ - boolean true if part is DS1921H or Z.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer21
+Problem    :  Method getName() only retrieves "DS1921", not the whole
+              Dallas Semiconductor partName.
+Since      :  1.00 Alpha
+Description:  getName() returns a hard-coded string.
+Solution   :  Have getName() return the variable partNumber (as mentioned
+              above.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer21
+Problem    :  Method getDescription() does not indicate physical or
+              operating temperature ranges.  It also does not indicate the
+              temperature resolution or the histogram bin width.
+Since      :  1.00 Alpha
+Description:  getDescription() returns a hard-coded string instead of
+              a dynamically generated one.
+Solution   :  Have getDescription() return a dynamically generated string
+              made up of the above ranges, resolution, and bin width.
+              Include new methods that get the operating range, the
+              physical range, and resolution and the histogram bin width.
+              The new methods are:
+              getPhysicalRangeLowTemperature()
+              getPhysicalRangeHighTemperature()
+              getOperatingRangeLowTemperature()
+              getOperatingRangeHighTemperature()
+              getTemperatureResolution()
+              getHistogramBinWidth()
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer21
+Problem    :  The encodeTemperature() and decodeTemperature() methods need
+              updating for new DS1921H and DS1921Z Thermochrons.
+Since      :  1.00 Alpha
+Description:  The DS1921H and DS1921Z Thermochrons have different ranges
+              and different temperature resolutions that affect how their
+              temperatures are encoded and decoded.
+Solution   :  Updated the encodeTemperature() and decodeTemperature() to
+              reflect the new parts according to their respective
+              datasheets.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer21
+Problem    :  No clear way to download the Histogram and Logs correctly
+              with the new DS1921H and DS1921Z Thermochron's having
+              different temperature ranges, different histogram bin widths,
+              and different temperature resolutions.  Also, the
+              starting temperature for the first histogram bin width is
+              different (1 bin lower) for the H and Z than for other
+              Thermochrons.
+Since      :  1.00 Alpha
+Description:  The DS1921H and DS1921Z Thermochrons are different in design
+              as described above, making it necessary to create new methods
+              to retrieve the histogram bin width, the temperature
+              resolution, and the different starting temperatures of the
+              first histogram bin before downloading the temperature
+              histogram.
+Solution   :  Created the following new methods:
+              getTemperatureResolution() (also updated the other similar
+                                          methods for the
+                                          TemperatureContainer)
+              getHistogramBinWidth()
+              getHistogramLowTemperature()
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer21
+Problem    :  JavaDocs updates
+Since      :  1.00 Alpha
+Description:  JavaDocs need to reflect the new methods and most
+              importantly, to reflect the change in how to retrieve
+              a Thermochron's mission results.
+Solution   :  Implemented new JavaDocs for the new methods and updated the
+              "dumpMission" tutorial section.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer27
+Problem    :  Implementation of all clock features.
+Since      :  1.00 Alpha
+Description:  OneWireContainer27 inherited all clock features from
+              OneWireContainer24, but was missing the interrupt
+              features.
+Solution   :  Changed OneWireContainter27 to extend OneWireContainer
+              and implement correct clock functionality.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.utils
+Class      :  OWFile, OWFileDescriptor, OWFileInputStream,
+              OWFileOutputStream
+Problem    :  OWFile utilities not J2ME-CLDC-compliant.
+Since      :  1.00 Alpha
+Description:  Since a lot of the I/O functionality (including File I/O) is
+              missing from the J2ME CLDC, the OWFile utilities should not
+              be dependent on the Java2 File I/O for functionality.
+Solution   :  Implemented OWFileNotFoundException and OWSyncFailedException
+              to replace missing classes.  Removed all other dependencies
+              on Java2 I/O.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.utils
+Class      :  OneWireMonitor
+Problem    :  OneWire exceptions can put OneWireMonitor in a bad state.
+Since      :  1.00 Alpha
+Description:  An occasional short on the 1-Wire bus (a non-fatal exception)
+              could put the OneWireMonitor into a bad state.
+Solution   :  Modified the exception handling to check for 1-Wire shorts
+              and only end the loop if there was a more serious exception.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  JibComm
+Problem    :  Possible 'blivet' CRC bug
+Since      :  0.00
+Description:  In the CAPI, a workaround for a Blivet bug
+              exists with a CRCCorrection table.
+Solution   :  Although the CRC blivet has never been seen
+              using the Java API (as far as we know), the workaround
+              was included just incase.
+-=========================================================================-
+
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer16
+Problem    :  Load and select operations sometimes fail,
+              leaving the button unavailable for communication.
+Since      :  0.00
+Description:  The button runs bytecodes for each of these
+              operations, more time may be needed to terminate.
+Solution   :  Added methods 'set/getSelectRunTime' and
+              'set/getLoadRunTime' so that more time can be
+              assigned to complete these operations.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer16
+Problem    :  Error checking incorrect in 'setRunTime'
+Since      :  0.00
+Description:  We were checking the current runTime value to
+              see if it was in error, not the input runTime
+              value.
+Solution   :  Corrected the bug.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer16
+Problem    :  Sometimes when reading response data from the
+              button, the button does not have enough time
+              to run and becomes unavailable.
+Since      :  0.00
+Description:  One longer responses, the button could not
+              finish in time for the interruption.
+Solution   :  Added method 'setReadingRunTime' to allow for
+              increases in the amount of runTime given on
+              reading packets.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  JibComm
+Problem    :  We could have methods useful to the user in
+              this class.
+Since      :  0.00
+Description:  Class is package private.
+Solution   :  Make class public.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  JibComm
+Problem    :  Minimum runtime and runtime multiplier might
+              need to be changed on different set-ups.
+Since      :  0.00
+Description:  Minimum runtime value and runtime multiplier
+              value were 'static final'.
+Solution   :  Changed to static and added methods
+              'setRuntimeMultiplier' and 'setMinimumRuntime'.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  JibComm
+Problem    :  Can't get debug output without me sending a
+              special build out to people.
+Since      :  0.00
+Description:  Class was package private, debug variable
+              was private.
+Solution   :  With class public, make 'doDebugMessages'
+              variable public.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  JibComm
+Problem    :  Sometimes when reading response data from the
+              button, the button does not have enough time
+              to run and becomes unavailable.
+Since      :  0.00
+Description:  One longer responses, the button could not
+              finish in time for the interruption.
+Solution   :  Added min_read_runtime to allow the button
+              to use longer periods of time to read packets
+              from the button if needed.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  JibComm
+Problem    :  Sometimes we are kicked out of overdrive,
+              then can't talk to button.
+Since      :  0.00
+Description:  In our select buffer, we were using an
+              overdrive-select command.
+Solution   :  We can use a normal-select command, and not
+              lose any speed at overdrive and not lose
+              the button when kicked out of overdrive.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  JibComm
+Problem    :  When correcting a POR, sometimes button would
+              not respond afterwards.
+Since      :  0.00
+Description:  Button did not have enough time to correct POR.
+Solution   :  Added an adjustment, so that on retries to
+              correct POR, more time is given, making further
+              failure very unlikely.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  JibComm
+Problem    :  Sometimes, on retries, our input data was
+              horribly altered.
+Since      :  0.00
+Description:  We were recycling the input buffer for output
+              data, without regard to the possibility of
+              retries.
+Solution   :  Put the output data in its own buffer.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  JibComm
+Problem    :  Failure to recieve large amounts of data.
+Since      :  0.00
+Description:  Near the end of recieving large amounts of
+              data (>140 bytes) the button would not send
+              data, causing us to report failure.
+Solution   :  There appears to be a problem in the button
+              where it reports that more data still needs
+              to be read, but 0 bytes are available to read.
+              This can be fixed by giving the button a
+              little more time to read, so it can shuffle
+              its buffers around to make data available.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  MemoryBankSHAEE
+Problem    :  Needed computeNextSecret without writing partial secret.
+Since      :  0.00
+Description:  Current computeNextSecret function required partial
+              secret as a parameter.  Some applications could write
+              partial secret to memory and later execute
+              computeNextSecret.
+Solution   :  Added method: void computeNextSecret(int addr)
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  MemoryBankSHAEE
+Problem    :  Error in CopyScratchpad - uses strong pull-up twice
+              without reset.
+Since      :  1.00B
+Description:  Strong pull-up was used for both calculating the mac and
+              doing the eeprom write with copy scratchpad.  Because of
+              an uncleared bit, an extra "TouchBit" is added to the
+              routine for changing the power level.  As long as a reset
+              is performed before the next strong pull-up, it will work
+              normally, otherwise communication errors occur.
+Solution   :  Removed strong pull-up from mac computation.  Mac
+              computation should still proceed fine without it.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  MemoryBankSHAEE
+Problem    :  Switch to strong pull-up was done improperly.
+Since      :  1.00B
+Description:  Using the CONDITION_AFTER_BYTE flag for setting strong
+              pull-up requires the use of the putByte command to set
+              the level.  Instead of putByte, dataBlock was used with
+              a length of 1 byte, which caused the level to not be
+              set until the next time someone called putByte.
+Solution   :  Changed dataBlock with length of 1 to putByte command.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.utils
+              com.dalsemi.onewire.application.file
+Class      :  OWFile
+Problem    :  Constructor  OWFile(OWFile parent, String child) did not work.
+Since      :  0.01
+Description:  The constructor did not correctly create the new path with
+              the child since the seperator was missing.
+Solution   :  Added the path seperator if it is not provided by the parent.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  ClockContainer
+Problem    :  Error in JavaDocs.
+Since      :  0.00
+Description:  Call to writeDevice(byte[]) had the parameter missing
+              in the sample code.
+Solution   :  Changed "writeDevice()" to "writeDevice(state);".
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer
+Problem    :  doSpeed throws exception when it should fall back.
+Since      :  0.00
+Description:  doSpeed sometimes throws exception if it cannot find
+              the part after switching to overdrive.  It should try
+              to fall back to regular speed before throwing
+              exception.
+Solution   :  Added try-catch around adapter.isPresent() calls and
+              attempt to fallback if there is an error.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer21
+Problem    :  Sample rate of zero on newly missioned Thermochron.
+Since      :  0.00
+Description:  If clock is started, memory is cleared, then mission
+              is setup, the sample rate is set to zero regardless
+              of what is written to the device.
+Solution   :  Clock needs time to start before clearing the memory.
+              In clearMemory(), if the clock is not started it is
+              first started and then a 751ms delay is added before
+              the memory is cleared.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer23
+Problem    :  MemoryBanks returned from getMemoryBanks() indicated
+              power delivery is not necessary.
+Since      :  0.00
+Description:
+Solution   :  Set the boolean flag "powerDelivery" to true before
+              adding the memory bank to the vector.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer0F
+Problem    :  Size of memory bank and number of pages available was
+              incorrect.
+Since      :  0.00
+Description:
+Solution   :  The size of the EPROM memory bank was updated to '4'
+              and the number of pages '32'.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer18
+Problem    :  NullPointerException in setupContainer(adapter,byte[])
+Since      :  0.00
+Description:  Due to crazy chain of constructor calling super-
+              constructor, which then called deferred method
+              setupContainer which accesses a private variable that
+              won't be initialized until super-constructor is
+              finished.
+Solution   :  Checked to see if the private variable,
+              private_address, was initialized before using it.  If
+              uninitialized, go ahead and initialize it.  Removed
+              "declare and initialize" line and initialized it to
+              null.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer18
+Problem    :  Incorrect target address.
+Since      :  0.00
+Description:  In an effort to make super-fast data-page writes, an
+              import step was skipped - reading the scratchpad to
+              retrieve the target address.
+Solution   :  Put back in retrieval of target address as well as a
+              check to make sure that what was read from the
+              scratchpad matches exactly what was written.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  MemoryBankSHAEE
+Problem    :  The method "needsPowerDelivery()" returned false.
+Since      :  0.00
+Description:  The SHA EE iButton (DS1961S) requires power delivery
+              for EEPROM writes.
+Solution   :  Changed needsPowerDelibery() to return true.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  MemoryBankSHAEE
+Problem    :  The method "copyScratchpad()" does not provider power
+              delivery.
+Since      :  0.00
+Description:  The SHA EE iButton (DS1961S) requires power delivery
+              for EEPROM writes.
+Solution   :  Modified the calls for data blocks to provide strong
+              pullup after sending the last byte of the copy
+              scratchpad command.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  MemoryBankSHAEE
+Problem    :  The method "copyScratchpad()" computes the
+              authorization MAC in software and does not allow for
+              use of a hardware authorization coprocessor.
+Since      :  0.00
+Description:  If the secret was not known by the memory bank object,
+              it would not be able to compute the necessary MAC.
+              This is much less secure than having the MAC stored in
+              a hardware coprocessor.
+Solution   :  copyScratchpad was overloaded to allow for the MAC as
+              a paramter:
+              copyScratchpad(int addr, byte[] auth, int authStart)
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  MemoryBankSHAEE
+Problem    :  Inconsistent and confusing method names.
+Since      :  0.00
+Description:  Some of the names of the methods (as well as their
+              paramaters) didn't match the methods of other memory
+              banks.  Also, some methods that took in an "address"
+              paramater would treat that as an absolute address and
+              other methods as a relative address.
+Solution   :  Methods were renamed for a consistent scheme across
+              all memory banks and all address paramaters are
+              treated as relative to the beginning of the memory
+              bank.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  MemoryBankSHAEE,OneWireContainer33
+Problem    :  Used custom SHA computation methods.
+Since      :  0.00
+Description:
+Solution   :  Changed custom ComputeSHA methods to use SHA utility
+              class in com.dalsemi.onewire.utils.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  JibComm
+Problem    :  Read registers before written.
+Since      :  0.00
+Description:  Sometimes micro is read before it can finish writing
+              it's registers.
+Solution   :  Added check to see if micro is done writing, if not
+              the class waits with a minimum amount of time.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  JibComm
+Problem    :  Part sometimes ignores 1-Wire communication.
+Since      :  0.01
+Description:  If an APDU fails, the part is unreachable by 1-Wire
+              communication.
+Solution   :  Do a POR and try again.  POR = return to normal speed,
+              reset, send to overdrive, and select.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.utils
+Class      :  OWFileOutputstream
+Problem    :  Throws exception from constructor if file creation
+              fails, but does not free cached resources.
+Since      :  0.01
+Description:  If the creation of a file fails in
+              OWFileOutputStream's constructor, an exception is
+              thrown causing the object not to be allocated.  Caller
+              module is then not able to free the resources allocated
+              by OWFileOutputStream in it's cache.
+Solution   :  Added try-catch around creation method call.
+              Resources are then freed automatically and exception
+              is re-thrown.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.utils
+Class      :  MemoryCache
+Problem    :  Invalid CRC reported in second or higher memory bank
+              of a filesystem that spans multiple memory banks.
+Since      :  0.01
+Description:  The 'local' page number was being used instead of the
+              filesystem page number for CRC checking.
+Solution   :  Use filesystem page number.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.utils
+Class      :  MemoryCache
+Problem    :  NullPointerException when reading unprogrammed ERPOM
+              pages.
+Since      :  0.01
+Description:  The page length byte was being sign extended when the
+              msbit was set.
+Solution   :  Add off the sign extension.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.adapter
+Class      :  USerialAdpater
+Problem    :  Method putByte does not check the echo of each byte
+              written to the 1-Wire net.
+Since      :  0.00
+Description:  For early early detection of 1-Wire errors, it is
+              important that each byte is checked for the
+              appropriate echo.
+Solution   :  Added check to see if what was written matches exactly
+              what was read.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  SHAiButton
+Description:  Deleted Class: Made obsolete by SHA transaction
+              architecture in
+              com.dalsemi.onewire.application.sha.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  HumidityContainer
+Description:  Added class: Common interface for all Humidity 1-Wire
+              Devices.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer22
+Description:  Added class: 1-Wire container for the DS1822.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer24
+Description:  Added class: 1-Wire container for the DS2415/DS1904.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.container
+Class      :  OneWireContainer27
+Description:  Added class: 1-Wire container for the DS2417.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.utils
+Class      :  IOHelper
+Description:  Added class: Common read/write I/O routines for
+              reading and writing hex values as strings.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.utils
+Class      :  SHA
+Description:  Added class: SHA computation utility class.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.sha
+Class      :  SHAiButtonCopr
+Description:  Added class: Container for DS1963S acting as a
+              coprocessor in SHA transactions.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.sha
+Class      :  SHAiButtonCoprVM
+Description:  Added class: Simulated coprocessor in SHA transactions
+              without hardware DS1963S.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.sha
+Class      :  SHAiButtonUser
+Description:  Added class: Abstract super-class acting as root of
+              all user's in SHA transactions (users = iButtons with account information).
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.sha
+Class      :  SHAiButtonUser18
+Description:  Added class: Container for DS1963S acting as a user
+              token in SHA transactions.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.sha
+Class      :  SHAiButtonUser33
+Description:  Added class: Container for DS1961S acting as a user
+              token in SHA transactions.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.sha
+Class      :  SHATransaction
+Description:  Added class: Abstract super-class of all
+              SHATransaction types.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.sha
+Class      :  SHADebit
+Description:  Added class: SHATransaction that performs user
+              authentication, data verification, account debiting,
+              data signing, and updating of a signed account file
+              stored on a SHAiButtonUser.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.sha
+Class      :  SHADebitUnsigned
+Description:  Added class: SHATransaction that performs user
+              authentication, account debiting, and updating of an
+              unsigned account file stored on a SHAiButtonUser.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.utils
+Class      :  OWFile,OWFileDescriptor,OWFileInputStream,
+              OWFileOutputstream
+Description:  Added support for multi-device files.  This includes
+              major enhancements over previous release of the
+              OWFile I/O API.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.utils
+Class      :  OneWireAccessProvider
+Description:  Added support for runtime installation of user-
+              specified adapter object (setOverrideAdapter).
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  XML
+Description:  This class provides several XML utility functions.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  SAXParser
+Description:  Encapsulates the underlying SAX1 parser implementation.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  TagHandler
+Description:  Parses XML 1-Wire Tagging documents and creates the
+appropriate vectors of TaggedDevices and OWPaths.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  TagParser
+Description:  Instantiates TagHandler and starts XML parsing of a
+given InputStream.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  TaggedDevice
+Description:  Base class for 1-Wire tagged device that is
+a repository for XML parsed data per device.  It is extended
+for each individual type of tagged device.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  TaggedActuator
+Description:  Interface class for all actuators to implement
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  TaggedSensor
+Description:  Interface class for all sensors to implement
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  Contact
+Description:  A TaggedDevice implementing the TaggedSensor interface
+and functioning as a sensor that detects the tagged device's
+presence on the 1-Wire bus.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  D2A
+Description:  A TaggedDevice implementing the TaggedActuator interface
+and functioning as an actuator with 256 selections of potentiometer
+wiper settings.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  Event
+Description:  A TaggedDevice implementing the TaggedSensor interface
+and functioning as a sensor that detects that activity has occurred
+on a 1-Wire switch.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  Humidity
+Description:  A TaggedDevice implementing the TaggedSensor interface
+and functioning as a sensor that detects humidity.
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  Switch
+Description:  A TaggedDevice implementing the TaggedActuator interface
+and functioning as an actuator with 2 selections of switch settings
+(on and off).
+-=========================================================================-
+Package    :  com.dalsemi.onewire.application.tag
+Class      :  Thermal
+Description:  A TaggedDevice implementing the TaggedSensor interface
+and functioning as a sensor that detects temperature.
+-=========================================================================-
+Package    :  All
+Class      :  All
+Problem    :  The links to datasheets in the JavaDocs are wrong.
+Since      :  0.00
+Description:  dalsemi.com has gone away and all datasheets are now
+              located on Maxim's website.
+Solution   :  Update all links to point to new home on Maxim site.
+-=========================================================================-
+
+Global:
+-=============-
+Problem    :  The JAVA docs were not complete.
+Since      :  0.00
+Description:
+Solution   :  Added many more comments, examples and hyper links.
+-=============-
+
+Package: com.dalsemi.onewire
+
+com.dalsemi.onewire.OneWireAccessPrivider (not-TINI)
+-=============-
+Problem    :  "Error" exception generated on Win32 if TMEX native drivers not loaded correctly in enumerateAdapters method.
+Since      :  0.00
+Description:
+Solution   :  Catch "Error" exception
+-=============-
+
+com.dalsemi.onewire.OneWireAccessPrivider
+-=============-
+Problem    :  1-Wire in use exception in getAdapter and getDefaultAdapter methods.
+Since      :  0.00
+Description:  Get an exception indicating the adapter was in use when calling one of these methods.
+Solution   :  Added a blocking call to beginExclusive and then a call to endExclusive in a 'finally' block.
+-=============-
+Problem    :  Could not add user defined adapters.
+Since      :  0.00
+Description:
+Solution   :  Added check in enumerateAdapters method to look in the onewire.properties file for 'onewire.register.adapter0' to 'onewire.register.adapter15' that indicates a fully qualified class file that is an adapter class to be included in the enumeration.
+-=============-
+
+Package: com.dalsemi.onewire.container
+
+com.dalsemi.onewire.container.OneWireConatiner.java,
+OneWireContainer04.java, OneWireContainer04.java,
+OneWireConatiner08.java, OneWireConatiner06.java,
+OneWireConatiner0A.java, OneWireConatiner09.java,
+OneWireConatiner0C.java, OneWireConatiner0A.java,
+OneWireConatiner12.java, OneWireConatiner0B.java,
+OneWireConatiner14.java, OneWireConatiner0C.java,
+OneWireConatiner1A.java, OneWireConatiner0F.java,
+OneWireConatiner20.java, OneWireConatiner12.java,
+OneWireConatiner20.java, OneWireConatiner13.java,
+OneWireConatiner20.java, OneWireConatiner14.java,
+OneWireConatiner20.java, OneWireConatiner18.java,
+OneWireConatiner20.java, OneWireConatiner1A.java,
+OneWireConatiner20.java, OneWireConatiner1D.java,
+OneWireConatiner20.java, OneWireConatiner20.java,
+OneWireConatiner20.java, OneWireConatiner21.java,
+OneWireConatiner20.java, OneWireConatiner23.java,
+ -=============-
+Problem    :  Inconsistant operation of getMemoryBanks method.
+Since      :  0.00
+Description:  getMemoryBanks returns a MemoryBank for the 1-Wire Address for these containers but not the others even though all devices have a 1-Wire Address.
+Solution   :  Removed MemoryBank for the 1-Wire Address in the enumeration returned from getMemoryBanks since this information is redundant with Address methods in OneWireContainer and DSPortAdapter.
+-=============-
+
+com.dalsemi.onewire.container.OneWireContainer04.java
+-=============-
+Problem    :  Throws did not match ClockContainer interface on some method.
+Since      :  0.00
+Description:  The following methods needed to have, 'throws 'OneWireException' add:  getClockAlarm, setClockAlarm, SetClockRunEnable, setClockAlarmEnable.
+-=============-
+
+com.dalsemi.onewire.container.OneWireContainer12.java
+-=============-
+Problem    :  Changing state of one latch would change state of other.
+Since      :  0.00
+Description:
+Solution   :  Added code in setLatchState and readDevice to only change the state of one latch at a time.
+-=============-
+Problem    :  Could not set the conditional search conditions.
+Since      :  0.00
+Description:
+Solution   :  Added method setSearchConditions
+-=============-
+Problem    :  Poor performance.
+Since      :  0.00
+Description:  Speed checking with the adapter method 'doSpeed' was being performed too often.
+Solution   :  Added method setSpeedCheck(boolean) to enable or disable speed checking.
+-=============-
+Problem    :  More static final bytes added for easier use.
+Since      :  0.00
+Description:
+Solution   :  Define constants for easier reading.
+-=============-
+
+com.dalsemi.onewire.container.OneWireContainer16.java
+-=============-
+Problem    :  Missing constructors to be consistent with other OneWireContainers.
+Since      :  0.00
+Description:
+Solution   :  Added constructors.
+-=============-
+Problem    :  Correct expected run time entries.
+Since      :  0.00
+Description:  Needed to check to make sure the run time parameter being passed was from 0 to 15.
+Solution   :  Created a check to look at the limits of the run time parameter.
+-=============-
+
+com.dalsemi.onewire.container.OneWireContainer1F.java
+ -=============-
+Problem    :  Could not take advantage of the smart-on feature to detect if devices on branch without doing a search.
+Since      :  0.01p2
+Description:
+Solution   :  Created the method 'getLastSmartOnDeviceDetect' to return a boolean if devices were found on the branch during a smart-on operation.
+-=============-
+Problem    :  If adapter was left in overdrive and then this container's methods were called a communication exception (OneWireIOException) would be thrown indicating device not present
+Since      :  0.00
+Description:  Speed checking was not implemented.
+Solution   :  Added method setSpeedCheck(boolean) to enable or disable speed checking.
+-=============-
+
+com.dalsemi.onewire.container.OneWireContainer1D.java
+-=============-
+Problem    :  getAlternateName doesn't need to be there because it returns and empty string.
+Since      :  0.00
+Description:  getAlternateName returns an empty string.
+Solution   :  Deleted the method in this container.
+-=============-
+
+com.dalsemi.onewire.container.OneWireContainer21.java
+ -=============-
+Problem    :  getClockAlarm method would hang on the TINI platform.
+Since      :  0.01p2
+Description:  The methods Calendar.roll() and Calendar.add() are not supported on TINI so a loop to calculate alarms would never end.
+Solution   :  Change logic of method to not use unsupported Calendar methods.
+-=============-
+Problem    :  Exceptions listed in throws but never thrown.
+Since      :  0.00
+Description:  getAlarmStatus method throws OneWireIOException and OneWireException, but does not.
+Solution   :  Removed throws statement from the method.
+-=============-
+
+com.dalsemi.onewire.container.OneWireContainer26.java
+-=============-
+Problem    :  Poor performance.
+Since      :  0.01p2
+Description:  Speed checking with the adapter method 'doSpeed' was being performed too often.
+Solution   :  Added method setSpeedCheck(boolean) to enable or disable speed checking.
+-=============-
+
+com.dalsemi.onewire.container.OneWireContainer28.java
+-=============-
+Problem    :  Method doTemperatureConvert would not produce good temperature results.
+Since      :  0.00
+Description:
+Solution   :  Utilized the adapters 'primed' feature with the adapter startPowerDelivery method to make sure the power is delivered immediately after the next communication byte.
+-=============-
+
+com.dalsemi.onewire.container.JibComm.java
+-=============-
+Problem    :  More information for debugging.
+Since      :  0.00
+Description:
+Solution   :  Created if statements using a static Boolean to change if debug was necessary.
+-=============-
+Problem    :  Correct expected run time entries.
+Since      :  0.00
+Description:  Needed to check to make sure the run time parameter being passed was from 0 to 15.
+Solution   :  Created a check to look at the limits of the run
+Time parameter.
+-=============-
+
+com.dalsemi.onewire.container.MemoryBankNV.java
+com.dalsemi.onewire.container.MemoryBankEPROM.java
+-=============-
+Problem    :  Get java.lang.ArrayIndexOutOfBoundsException exception from method 'readPagePacket'
+Since      :  0.01p2
+Description:  If the length read back from the device was being sign extended and the desired OneWireException was not being thrown
+Solution   :  Make sure length byte did not get sign extended
+-=============-
+
+com.dalsemi.onewire.container.MemoryBankNV.java,
+com.dalsemi.onewire.container.MemoryBankNVCRC.java
+-=============-
+Problem    :  CRC16 not correct.
+Since      :  0.00
+Description:  The CRC16 was being computed on the local page number instead of the absolute page number in the device.
+Solution   :  Changed CRC16 calculation to use the device absolute page.
+-=============-
+
+com.dalsemi.onewire.container.MemoryBankAppReg.java,
+com.dalsemi.onewire.container.MemoryBankEPROM.java,
+com.dalsemi.onewire.container.OTPMemoryBank.java
+(and all classes that implement these interfaces)
+-=============-
+Problem    :  The isPageRedirected() method didn't match JAVA standard naming convention.
+Since      :  0.00
+Description:  The method isPageRedirected() was deprecated.
+Solution   :  To deprecate isPageRedirected() and make a new method getRedirectedPage(), also changed comments for the method.
+-=============-
+
+Classes that implement PagedMemoryBank Interface.
+-=============-
+Problem    :  The haveExtraInfo() method didn't match with JAVA naming standard.
+Since      :  0.00
+Description:  The method haveExtraInfo() was deprecated.
+Solution   :  Deprecate haveExtraInfo() and make a new method hasExtraInfo().
+-=============-
+
+com.dalsemi.onewire.container.MemoryBankAppReg.java,
+com.dalsemi.onewire.container.MemoryBankEE.java,
+com.dalsemi.onewire.container.MemoryBankEPROM.java,
+com.dalsemi.onewire.container.MemoryBankNV.java,
+com.dalsemi.onewire.container.MemoryBankScratch.java
+-=============-
+Problem    :  Offset parameter in writePagePacket method ignored.
+Since      :  0.00
+Description:
+Solution   :  Use offset
+-=============-
+
+com.dalsemi.onewire.container.SHAiButton.java
+-=============-
+Problem    :  No, quick way for TINI to create SHA button objects.
+Since      :  0.00
+Description:  In TINI there was a need to only create allocation for the SHA button and initialize parameters later.
+Solution   :  A new constructor was added with no parameters and a setiButton method was created to initialize the parameters.
+-=============-
+
+Package: com.dalsemi.onewire.adapter
+
+com.dalsemi.onewire.adapter.UParameterSettings.java (non-TINI only)
+-=============-
+Problem    :  REGULAR 1-Wire line settings were not optimal
+Since      :  0.01p2
+Description:  REGULAR 1-Wire line settings did not conform to Application Note 132.
+Solution   :  Change REGULAR 1-Wire line settings to Slew rate = 1.37V/us, tlow = 10us, tDSO  = 8us.
+-=============-
+
+com.dalsemi.onewire.adapter.UAdapterState.java (non-TINI only)
+-=============-
+Problem    :  FLEX 1-Wire line settings were not optimal
+Since      :  0.01p2
+Description:  FLEX 1-Wire line settings did not conform to Application Note 132.
+Solution   :  Change FLEX 1-Wire line settings to Slew rate = 0.83V/us, tlow = 12us, tDSO  = 10us.
+-=============-
+
+com.dalsemi.onewire.adapter.SerialService.java (non-TINI only)
+-=============-
+Problem    :  Occasional timeouts waiting for serial communication.
+Since      :  0.01p2
+Description:
+Solution   :  Increased timeout in readComWait method to dynamically change with the number of bytes expected.
+-=============-
+
+com.dalsemi.onewire.adapter.TMEXAdapter.java (non-TINI only)
+-=============-
+Problem    :  Static initializer would through an exception on platforms that did not set the "java.library.path" system property.
+Since      :  0.00
+Description:  There is no condition to check for a null "java.library.path".
+Solution   :  Check to see if "java.library.path" is null and if so assume that the native drivers are available.
+-=============-
+
+Package: com.dalsemi.onewire.utils
+
+com.dalsemi.onewire.utils.OneWireMonitor.java
+-=============-
+Problem    :  killMonitor method returned before Thread death.
+Since      :  0.00
+Description:  Thread would not end before main thread resulting in the application hanging on exit.
+Solution   :  Synchronize setting of the keepRunning flag and then waiting for the thread to die.
+-=============-
+
+com.dalsemi.onewire.utils.Address.java
+-=============-
+Problem    :  Slow manipulation of strings and shifting longs.
+Since      :  0.00
+Description:  There was a faster way to do string addresses and long shifts.
+Solution   :  Changed the address to hex and converted to string after and also changed shifts.
+-=============-
+
+Examples:
+debit.java
+-=============-
+Problem    :
+Since      :  0.00
+Description:  Changed the code to match the change in the SHAiButton file for just allocating space and initializing parameters later.
+Solution   :
+-=============-
+
+ADContainerDemo.java, OWC16Test.java, OWMemUtil.java,
+SetDefault.java
+-=============-
+Problem    :  java.io.DataInputStream.readLine deprecated+
+Since      :  0.00
+Description:  When compiling using DataInputStream to read a line the warning for deprecation appeared.
+Solution   :  Use BufferedReader instead of DataInputStream.
+-=============-
+
+OWDump.java, OWMemUtil.java,
+-=============-
+Problem    :  com.dalsemi.onewire.container.PagedMemoryBank.haveExtraInfo has been deprecated.
+Since      :  0.00
+Description:  When compiling using haveExtraInfo, warning for deprecation appeared.
+Solution   :  Used hasExtraInfo instead of haveExtraInfo.
+-=============-
+

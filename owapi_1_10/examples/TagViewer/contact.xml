@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<sensor addr="490000000212D016" type="Contact">
+     <label>Company Badge #47</label>
+     <max>Making contact</max>
+     <min>No contact</min>
+</sensor>

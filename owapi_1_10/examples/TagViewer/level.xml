@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cluster name="Level Demo">
+     <sensor addr="36000000000F2212" type="Level">
+          <label>Door Light</label>
+          <max>Conducting</max>
+          <min>Non-Conducting</min>
+          <channel>0</channel>
+     </sensor>
+     <sensor addr="BF00000009C94584" type="Contact">
+          <label>Clock</label>
+          <max>Making contact</max>
+          <min>No contact</min>
+     </sensor>
+     <actuator addr="36000000000F2212" type="Switch">
+          <label>Contact Maker</label>
+          <min>Open Circuit</min>
+          <max>Make Contact</max>
+          <channel>0</channel>
+          <init>0</init>
+     </actuator>
+</cluster>

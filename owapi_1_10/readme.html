@@ -1,0 +1,931 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>1-Wire API for Java Version 1.10</TITLE>
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080">
+
+<P>The full kit can be downloaded from here: <A HREF="ftp://ftp.dalsemi.com/pub/auto_id/public/owapi_1.10.tgz">ftp://ftp.dalsemi.com/pub/auto_id/public/owapi_1.10.tgz</A></P>
+<P>&nbsp;</P>
+<P ALIGN="CENTER"><B><FONT SIZE=5>1-Wire<SUP>(R)</SUP> API for Java<SUP>(TM)</SUP></FONT></B></P>
+<P ALIGN="CENTER"><B><FONT SIZE=5>Version 1.10</B></FONT></P>
+
+<P><B><FONT SIZE=4>Contents</B></FONT></P>
+
+<UL>
+   <LI>Introduction</LI>
+   <LI>Installation</LI>
+   <LI>Examples</LI>
+   <LI>1-Wire API Primer</LI>
+   <LI>Documentation</LI>
+   <LI>TINI </LI>
+   <LI>License</LI>
+   <LI>Long Lines </LI>
+   <LI>Changes</LI>
+</UL>
+
+<P><FONT SIZE=4><B><A NAME="Introduction">Introduction</A></B></FONT></P>
+
+<UL>
+
+<P>The 1-Wire API for Java contains classes and interfaces that enable rapid development of 1-Wire applications in the Java language on a variety of platforms.  Current platforms tested are Win32, TINI<SUP>(TM)</SUP>, Linux, and Solaris.  Support for particular 1-Wire device types (including iButtons<SUP>(R)</SUP>) is provided through ‘containers’.  This kit has 28 different ‘container’ types.  All desktop 1-Wire adapters are supported on the Win32 platform through a native driver.  TINI has its own native 1-Wire ports. All other platforms are supported through the DS9097U serial adapter using RXTX Serial Communications API.  The DS9097U serial adapter information can be found on the Dallas Semiconductor web site:</P>
+<P></FONT><A HREF="http://www.maxim-ic.com/DS9097U-009">http://www.maxim-ic.com/DS9097U-009</A></P>
+<FONT>
+<P>ALL Java source code for this kit is provided in the ‘src’ directory. See the ‘License’ section.</P>
+
+<P>More information about using the 1-Wire API for Java can be found in Chapter 4 of the TINI Specification and Developer’s Guide by Don Loomis.  The book is published by Addison-Wesley is available for purchase at most book retailers.  Alternatively, the entire contents of the book is available for a free download in PDF format at the following URL:</P>
+<P></FONT><A HREF="http://www.maxim-ic.com/TINIplatform.cfm">http://www.maxim-ic.com/TINIplatform.cfm</A></P>
+<FONT></UL>
+
+</FONT><B><FONT SIZE=4><P>What's New in 1.10</P>
+</B></FONT><UL>
+
+<P>The following list highlights the most significant additions to the 1-Wire API since the previous release.</P>
+
+<P><B>Added Version Info to OneWireAPI.jar</B></P>
+<UL>
+   <P>To help eliminate confusion about released versions of the 1-Wire API and the "latest" version which is downloadable with OneWireViewer (on its live WebStart page), version info was added to the manifest file for the OneWireAPI.jar.  Further, a default main method is defined in OneWireAccessProvider which will display the version number on the console with the following command:</P>
+   <UL>
+      <P><PRE>java -jar OneWireAPI.jar</PRE></PE>
+   </UL>
+   <P>Current Output:</P>
+   <UL>
+      <P><PRE>1-Wire API for Java (Desktop), v1.10
+Copyright (C) 1999-2006 Dallas Semiconductor Corporation, All Rights Reserved.
+
+Default Adapter: {DS9490}
+   Default Port: USB1
+
+Download latest API and examples from:
+http://www.maxim-ic.com/products/ibutton/software/1wire/1wire_api.cfm</PRE></PE>
+   </UL>
+</UL>
+
+<P><B>New OneWireContainers Added</B></P>
+<UL>
+   <LI>OneWireContainer1C for the DS28E04, 4K-bit EEPROM.</LI>
+   <LI>OneWireContainer2D for the DS2431, 1K-bit protected EEPROM.</LI>
+   <LI>OneWireContainer3A for the DS2413, Single addressable switch.</LI>
+</UL>
+
+<P><B>Removed support for Java-powered iButton</B></P>
+<UL>
+   <P>Support for the Java-powered iButton has been deprecated from the API.  Old releases of the API will still contain the container and other supporting classes, but they will not be included in this release or any future releases.</P>
+</UL>
+
+<P><B>Numerous bug fixes</B></P>
+<UL>
+   <P>See "changes.txt" in the root folder of your 1-Wire API directory for a full list of changes.  Considerable updates were made to the DS1977 (OneWireContainer37 and DS2422/DS1923/DS1922[L/T] (OneWireContainer41).</P>
+</UL>
+
+</UL>
+<P><FONT SIZE=4><B>Older Changes</B></FONT></P>
+<UL>
+<P><B>HygroChron Container</B></P>
+<UL>
+   <P>A new container for supporting the DS1922H HygroChron iButton is now available.  The DS1922H is capable of storing up to 8k of logging data of either Temperature or Humidity, or up to 4k of each.  The DS1922T, DS1922L, and DS2422 are also supported by this new container.</P>
+</UL>
+
+</FONT><B><FONT><P>Robust Device Network Monitor API</P><UL>
+
+</B><P>A new implementation of the device network monitoring API is now in the com.dalsemi.onewire.application.monitor package.  Both the branched and branchless networks are supported.  New API supports running the Device Monitor in a separate thread or single-stepping the search iterations in your main application thread.</P>
+</FONT><FONT SIZE=2></UL>
+
+</FONT><B><FONT><P>8-Channel Addressable Switch Demo</P><UL>
+
+</B><P>A new demo app to demonstrate the specific capabilities of the DS2408, 1-Wire 8-channel Addressable Switch.</P>
+</FONT><FONT SIZE=2></UL>
+
+</FONT><B><FONT><P>RXTX Serial Communications API</P><UL>
+
+</B><P>The serial adapter implementation now uses the RXTX Serial Communications API (see below for installation instructions).  This allows the serial adapter to work on more platforms and makes support easier since it’s an open source app.  The binaries for Win32 are included with the 1-Wire API download and are freely re-distributable under the LGPL license.</P>
+</FONT><FONT SIZE=2></UL>
+
+</FONT><B><FONT><P>NanoXML Library</P><UL>
+
+</B><P>The nanoxml library was added to the standard 1-Wire API jar, for supporting the parsing of XML files representing descriptions of tagged devices, as in the com.dalsemi.onewire.application.tag package.  The 1-Wire Tagging library will still allow for a user specified library, but nanoxml is now the default.</P>
+</FONT><FONT SIZE=2></UL>
+
+</FONT><B><FONT><P>OneWireViewer GUI Application</P><UL>
+
+</B><P>The OneWireViewer (intended as a replacement for the iButtonViewer) was added under the example applications.  It is a graphical application which supports all sensor (temperature, humidity, a/d), clocks, switches, and memory devices (including support for the 1-Wire File system).  It also includes device-specific support for the HygroChron, the Thermochron, the DS1961S/DS2432, and the DS1963S.</P>
+</FONT><FONT SIZE=2></UL>
+
+</FONT><B><FONT><P>Network DSPortAdapter</P><UL>
+
+</B><P>Support classes were added to the package com.dalsemi.onewire.adapter to provide support for accessing a DSPortAdapter over a TCP/IP network.  The class NetAdapterHost contains the server-side, for hosting the actual hardware.  The NetAdapter (a subclass of DSPortAdapter) is then used to connect to the NetAdapterHost.  If multicasting is enabled (see JavaDocs for NetAdapter), the getPortNames() method will return an enumeration of all NetAdapterHosts found on your LAN (or whatever is reachable by multicast from your LAN).  A lists of hosts can also be added to the onewire.properties file (see JavaDocs for NetAdapter).</P>
+</UL>
+
+<B><P>Thermochron Container</P><UL>
+
+</B><P>The 1-Wire Container for the Thermochron device has been updated to distinguish between different models of Thermochron devices.  These include the DS1921H and the DS1921Z.</P>
+</FONT><FONT SIZE=2></UL>
+
+</FONT><B><FONT><P>SHA Transaction API</P><UL>
+
+</B><P>The package com.dalsemi.onewire.application.sha was added to provide better support classes for SHA iButtons and SHA transactions in general.  The classes in this package implement an entirely new architecture for SHA applications.  Besides decoupling the protocol for SHA transactions from the user token's support classes, the new architecture greatly simplifies the process of adding new user tokens as well as new types of transactions.  Two sample transactions included with the package are a "money" debit application with both signed and unsigned account data.  In addition, the SHA Transaction API supports both the DS1961S/DS2432 (SHA EEPROM) and the DS1963S (SHA NVRAM) devices as user tokens.  The use of a hardware coprocessor (DS1963S) is now optional and can be replaced by a software-simulated coprocessor.</P>
+</UL>
+
+<B><P>1-Wire XML Tagging and demo</P><UL>
+
+</B><P>The package com.dalsemi.onewire.application.tag was added for the 1-Wire XML Tagging support classes.  1-Wire Tagging allows for the grouping, sensing, and automatic association of 1-Wire devices.  Using XML, devices can be grouped together into clusters and can be dealt with by applications based on their purpose, not just their device type.  A GUI demo application, TagViewer, is included to demonstrate the dynamic loading and configuring of XML tagged 1-Wire devices.  Another GUI demo application, TagCreator, is also included to create the tags and save them onto a 1-Wire device’s file structure.  See the documentation included with the demo applications for details on the XML 1-Wire tagging format.</P>
+</UL>
+
+<B><P>1-Wire File Structure – Multi-device Support</P><UL>
+
+</B><P>The 1-Wire File Structure classes (com.dalsemi.onewire.utils.OWFile*) now support file structures that span multiple 1-Wire devices. See Application Note 114 for the 1-Wire File Structure details:<BR>
+</FONT><A HREF="http://www.dalsemi.com/datasheets/pdfs/app114.pdf"><U><FONT COLOR="#0000ff">http://pdfserv.maxim-ic.com/arpdf/AppNotes/app114.pdf</U></FONT></A></P>
+<FONT></UL>
+
+<B><P>Hygro iButton, HumidityContainer, and demo</P><UL>
+
+</B><P>A HumidityContainer type was added to support the DS1910 Hygro iButton.  A demo application was added to demonstrate its use.</P>
+</UL>
+
+<B><P>New OneWireContainers Added</P><UL>
+
+</B><LI>OneWireContainer41 for the DS1922/DS2422, 1-Wire Temperature and Humidity Logger.</LI>
+<LI>OneWireContainer37 for the DS1977, 1-Wire 64kbytes EEPROM.</LI>
+<LI>OneWireContainer27 for the DS2417, 1-Wire Time Chip with Interrupt.</LI>
+</UL>
+</UL>
+
+</FONT><B><FONT SIZE=4><P>Installation</P>
+</B></FONT><UL>
+
+<P>Uncompress the kit file into a directory on your development system.  The Kit is currently ~5mB.  The development system must be able to run the javac compiler.  See your JDK (or equivalent) for minimum system requirements.  For every platform except TINI, put the OneWireAPI.jar file found in the ‘lib’ directory of this kit in your classpath or in the ‘ext’ directory (for JDK 1.2 and later).  If you have a previous version of this file, make sure it is replaced or removed.</P>
+
+<P><B>TINI</B></P>
+<UL>
+   <P>This kit supports firmware version 1.02h of the TINI OS.  The application and interface layer are compiled together to produce a ‘tini’ file.  Installation of the application then consists of FTP-ing the file to the TINI system and running it.  See the ‘TINI’ section of this README for details on creating 1-Wire applications on the TINI platform.</P>
+</UL>
+
+<P><B>WIN32</B></P>
+<UL>
+   <P>There are two ways to read the 1-Wire network under Win32 (Win95,98,NT,2K): RXTX 2.1 Serial Communications API with the DS9097U or the native 1-Wire drivers.</P>
+   <P><B>Native (Recommended Method)</B></P>
+   <UL>
+      <P>The native drivers for Win32 are the TMEX Runtime Environment 32-bit drivers.  Install the standard drivers from here:<BR>
+      <A HREF="http://www.maxim-ic.com/products/ibutton/software/tmex/index.cfm">http://www.maxim-ic.com/products/ibutton/software/tmex/index.cfm</A></P>
+      <P>The latest version 3.21X of the 1-Wire native drivers automatically copies the JNI connection layer to Java ‘ibtmjava.dll’ into &lt;windows&gt;\system (or &lt;windows&gt;\system32).</P>
+      <P>By default the 1-Wire port will be the one selected during the installation of the TMEX Runtime Environment and changed with the ‘Default 1-Wire Net’ application.</P>
+   </UL>
+   <P><B>RXTX Serial Communications API/DS9097U</B></P>
+   <UL>
+      <P>Install the RXTX Serial Communications API.  RXTX is available for a number of platforms or you can build from the source for your specific platform.  The latest builds of RXTX 2.1 require Java 1.4.1 or newer to function properly on win32 platforms.  More information about RXTX can be found here:</P>
+      <P><A HREF="http://www.rxtx.org/">http://www.rxtx.org/</A></P>
+      <P>A build of the RXTX 2.1 Serial Communications API for Win32 is included with the 1-Wire API.  After extracting the 1-Wire API to the folder of your choice, look at the subfolder labeled &quot;rxtx\Windows\i368-mingw32.&quot;  In this subfolder you will find &quot;rxtxSerial.dll&quot;.  In the root folder, "rxtx", you will find &quot;rxtxComm.jar&quot;.  The .dll file should be copied into the bin path that you run java.exe from.  The .jar file should be added to your classpath.</P>
+      <P>Note that this is a different serial communications API than what was recommended in previous versions of the 1-Wire API.  Previously, the Sun javax.comm API was used, and the two are not compatible.  Sun’s javax.comm uses classes in the javax.comm.* namespace while RXTX 2.1 uses classes in the gnu.io.* namespace.  So, if you have a previous installation of the 1-Wire API which uses javax.comm, you will still need to install RXTX 2.1.</P>
+      <P>The RXTX 2.1 binaries included with this release are distributed under the terms of LGPL license.  Please see &quot;rxtxLicense.txt&quot; in the &quot;rxtx&quot; subfolder for more information.</P>
+      <P>The DS9097U adapter class in this kit should work with any platform that has the RXTX Serial Communications API, however only Win32 and Linux were tested.</P>
+   <P><B>Note:</B> The Native Drivers are the recommended means of communicating with 1-Wire adapters on Win32 platforms, so the RXTX support is not fully enabled.  When using the OneWireViewer (or other 1-Wire apps) to query the list of available adapters, the RXTX driver will not be shown as an option.  To access the RXTX driver, simply provide the adapter name "DS9097U" (not "{DS9097U}").  From the command-line, you can add the following switch:</P>
+   <UL><P>-Donewire.adapter.default=DS9097U -Donewire.port.default=COM1</P></UL>
+   </UL>
+</UL>
+
+<P><B>Linux and other Unixes</B></P>
+<UL>
+   <P>This build of the 1-Wire API includes pre-built binaries for a variety of different Unixes (Linux 32/x64/ia64, sparc32/64, Mac OS X), however it is recommended that you build your own binary for your specific platform if possible.  This ensures that you've linked against the appropriate libraries for your system and you've got the best optimizations possible on your platform.  More information about RXTX can be found here:</P>
+   <P><A HREF="http://www.rxtx.org/">http://www.rxtx.org/</A></P>
+   <P>This release of the 1-Wire API was tested against version 2.1-7r2 of rxtx, which can be downloaded from here:</P>
+   <P><A HREF="ftp://ftp.qbang.org/pub/rxtx/rxtx-2.1-7r2.zip">ftp://ftp.qbang.org/pub/rxtx/rxtx-2.1-7r2.zip</A></P>
+   <P>After downloading the file, follow these steps to build and install:</P>
+   <UL>
+      <P>unzip rxtx-2.1-7r2.zip<BR/>
+      cd rxtx-2.1-7r2<BR/>
+      ./configure &amp;&amp; make &amp;&amp; sudo make install<BR/></P>
+   </UL>
+   <P>If all goes well, you will have a librxtxSerial.so link in your &lt;jre&gt;/lib/i386 folder and a RXTXcomm.jar in your &lt;jre&gt;/lib/ext folder.  If all doesn’t go well, the 1-Wire discussion forum or the RXTX mailing list might be able to help.</P>
+   <P>Note that this is a different serial communications API than what was recommended in previous versions of the 1-Wire API.  Previously, the Sun javax.comm API was used, and the two are not compatible.  Sun’s javax.comm uses classes in the javax.comm.* namespace while RXTX 2.1 uses classes in the gnu.io.* namespace.  So, if you have a previous installation of the 1-Wire API which uses javax.comm, you will still need to install RXTX 2.1.</P>
+   <P>RXTX 2.1 is distributed under the terms of LGPL license.  Please see &quot;rxtxLicense.txt&quot; in the &quot;rxtx&quot; subfolder for more information.</P>
+   <P>The DS9097U adapter class in this kit should work with any platform that has the RXTX Serial Communications API, however only Win32 and Linux were tested.</P>
+   <P>Note: for better serial performance (but more CPU utilization) use the ‘setserial’ utility to set the latency of the port to low.</P>
+   <P>Here are the command we used in Linux:</P>
+   <UL>
+      <P>setserial /dev/ttyS0 autoconfig<BR/>
+      setserial /dev/ttyS0 uart 16450<BR/>
+      setserial /dev/ttyS0 uart 16550<BR/>
+      setserial /dev/ttyS0 low_latency<BR/></P>
+   </UL>
+   <P>To return your port to it's default state:</P>
+   <UL>
+      <P>setserial /dev/ttyS0 autoconfig</P>
+   </UL>
+</UL>
+</UL>
+
+<B><FONT SIZE=4><P>Examples</P>
+</B></FONT><FONT><UL>
+
+<P>The following is a list of the provided examples in the /examples directory of this kit and a brief explanation.  A more detailed explanation will be found in the individual directories under ‘examples’ in this kit.  Each example has the following support files and directories:</P>
+</UL>
+
+
+<UL>
+<B><LI>EXAMPLE_NAME.class</B> – compiled example</LI>
+<B><LI>readme.txt</B> – detailed information on the example</LI>
+<B><LI>src</B> – sub-directory containing the example source</LI>
+<B><LI>tini</B> – sub-directory containing a TINI platform 1.02 or later build of the example</LI>
+<B><LI>build.xml</B> – ant build file for the desktop (‘ant build’) or TINI (‘ant buildTINI’) or running the desktop binary (‘ant run’).</LI>
+<B><LI>run.bat</B> – batch file to run the example using a fixed classpath pointing to the OneWireAPI.jar file in the /lib directory. </LI>
+<B><LI>build.bat</B> – batch file to rebuild the example using a fixed classpath pointing to the OneWireAPI.jar file in the /lib directory.</LI>
+<B><LI>tini_build.bat</B> – batch file to rebuild the example for the TINI platform.  Note the environment TINI_HOME must be set BEFORE running this batch file.</LI></UL>
+
+</FONT>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=2 BORDERCOLOR="#000000" CELLPADDING=7 WIDTH=636>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>ADContainerDemo </B></I></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Find the first 1-Wire device that implement the ADContainer interface (A/D).  It has a simple text/menu that allows most of the A/D features to be explored.</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><P>DemoSHAEE </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Utility to exercise the DS1961S/DS2432 EEPROM 1-Wire device with SHA engine.</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>FindiButtons-Console</I> </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Find all 1-Wire devices (and iButtons) on all available 1-Wire adapters.  Note that this application is almost identical to the example of the same name in previous 1-Wire kits.</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>Humidity</B></I></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Find and read all 1-Wire devices that implement the HumidityContainer interface and display the current humidity.</TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>ListOW</I> </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Minimal 1-Wire application to list the devices found on the default 1-Wire Network.</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>OneWireViewer</B></I></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>GUI application (similar to iButtonViewer) which supports all parts supported by the 1-Wire API and exercises most of the features of each part.</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>OWC16Test</I> </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Java iButton demo. It has a simple text/menu driven interface that allows applets to be loaded and tested. </P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>OWDump</I> </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Dump the memory contents of all 1-Wire devices (and iButtons) that contain Memory Banks (see 1-Wire Container Documentation for a description of Memory Banks) on the default 1-Wire Network.</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>OWFish</I> </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>1-Wire File System Shell.  Read, write, format and display the file system on a 1-Wire memory device.  See the com.dalsemi.onewire.utils.OWFile* classes.</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>OWMemUtil</I> </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Text/menu driven utility to read and write the memory of virtually all 1-Wire devices and iButtons (see 1-Wire Container Documentation for a description of Memory Banks).</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>OWNetWatch</I> </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Monitor the arrival and departure of all 1-Wire devices on a complex network utilizing the DS2409 Coupler to create branches.  Also starts a thread to read the temperature of any DS1920/DS1820 devices found on the network.</P>
+<P>  </FONT></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>OWWatch</I> </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<FONT><P>Monitor the arrival and departure of all 1-Wire devices on a simple 1-Wire Network.  This application does not implement sub-branches but has been optimized and is very fast. </P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>ReadClock</I> </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Find and read all 1-Wire devices that implement the ClockContainer interface.</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>ReadDigPot</I> </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Find and read all 1-Wire devices that implement the PotentiometerContainer interface.</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>ReadSwitch</I>  </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Find and read all 1-Wire devices that implement the SwitchContainer interface.</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>ReadTemp</I> </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Find and read all 1-Wire devices that implement the TemperatureContainer interface.</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>SetDefault</I> </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Set the default 1-Wire Network by selecting the adapter/port combination.  This will write a ‘onewire.properties’ file in a platform specific location. </P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>RemoteAuth</B></I></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>DS1963S/DS1961S (SHA iButton) demo showing how to authenticate a user token over a network.</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>SHADebitDemo</I> </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>DS1963S/DS1961S (SHA iButton) demo that consists of three applications.  Two applications to set up a ‘co-processor’ and ‘roving’ device and then a ‘debit’ application to demo a secure monetary transaction.</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>StartNetAdapterHost</B></I></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>A simple ‘launcher’ for the host component of the new network DSPortAdapter.</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>SwitchDemo</I> </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Get the status and set the latches on any 1-Wire switch.</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>TagViewer</B></I></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Java Swing application that dynamically displays and reads XML tagged 1-Wire sensors, actuators, and branches</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>TagCreator</B></I></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Java Swing application creates XML 1-Wire tags for sensors, actuators, and branches</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>Temperature-ContainerDemo</I> </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>Text/menu driven application to read any 1-Wire device that implements the TemperatureContainer interface.</P></TD>
+</TR>
+<TR><TD WIDTH="25%" VALIGN="TOP">
+<B><I><P>Thermochron</I> </B></TD>
+<TD WIDTH="75%" VALIGN="TOP">
+<P>DS1921 temperature gathering demo consisting of two applications.  One application ‘missions’ a DS1921 to collect data and the other ‘dumps’ the mission data.</TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<B><FONT SIZE=4>
+<P>1-Wire API Primer</P>
+</B></FONT><FONT><UL>
+
+<P>Communication with the 1-Wire Network is through an ‘adapter’ (com.dalsemi.onewire.adapter.DSPortAdapter class).  The static class, ‘com.dalsemi.onewire.OneWireAccessProvider’ is used to get an adapter class instance.  All of the adapters can be enumerated or a particular or the default adapter can be retrieved (enumerateAllAdapters(), getAdapter(), and getDefaultAdapter()).  Each adapter may support multiple ‘ports’ so a 1-Wire Network consists of an adapter/port combination.  Here is a brief list of the operations needed to access and use the 1-Wire network</P>
+<UL>
+
+<P>1. Get an adapter instance<BR>
+2. Get exclusive use of the 1-Wire network<BR>
+3. Find a 1-Wire device <BR>
+4. Perform operations through the device’s container<BR>
+5. End exclusive use of the 1-wire network<BR>
+6. Free the port when ending application</P>
+</UL>
+
+<P>Note that ‘1.’ and ‘6.’ are performed only once at the beginning and end of the application.  ‘2.’ through ‘5.’ comprise the bulk of the 1-Wire operations and are performed multiple times during the execution of an application.</P>
+
+<B><P>Default 1-Wire Network</P>
+</B><UL>
+
+<P>The default 1-Wire Network is specified with two properties:</P>
+<UL>
+<UL>
+
+<P>onewire.adapter.default – the adapter name, for example DS9097U<BR>
+onewire.port.default – the port name, for example COM1</P>
+</UL>
+</UL>
+
+<P>The values for properties are retrieved in the following search order:</P>
+<UL>
+<UL>
+
+<P>1) System.properties (use –D option on java command line)<BR>
+2) onewire.properties file in current directory<BR>
+3) onewire.properties file &lt;javahome&gt;/lib/ (Desktop) or /etc/ (TINI)</P>
+</UL>
+</UL>
+
+<P>If these properties cannot be found then a platform dependent &quot;Smart default&quot; is used.  For Win32 native it is the TMEX default 1-Wire Net, for TINI it is TINIExternalAdapter/serial1, and for all other platforms it is DS9097U/(first serial communications port).</P>
+
+<P>See the example application ‘SetDefault’ to set the default 1-Wire Network adapter/port.</P>
+
+<P>To add other adapters to the list of available 1-Wire adapters, you’ll need to register the adapter class with the following property:</P>
+
+<P>onewire.register.adapterX – the class name of the adapter</P>
+
+<P>In the above property, X is any number from 0 to 15.  For example, to add support for the DS9097E adapter, you would use the following property:</P>
+<P>&#9;</P>
+<P>onewire.register.adapter0=com.dalsemi.onewire.adapter.LSerialAdapter</P>
+</UL>
+
+<B><P>Access to 1-Wire Network</P>
+</B><UL>
+
+<P>To allow for multi-thread access to the 1-Wire network, a pair of methods are provided in the adapter class to give exclusive access.  They are ‘beginExclusive()’ and ‘endExclusive()’.  It is recommended that this pair wrap any access to the 1-Wire network.  These methods do not maintain a stack of any sort, so it is innappropriate to nest calls.  All successive calls to ‘beginExclusive()’ will succeed if made by the same thread and the thread will still maintain exclusive access after each call.  All successive calls to ‘endExclusive()’ will be pointless after the first since the thread will have already given up exclusive access.</P>
+</UL>
+
+<B><P>Finding 1-Wire devices (and iButtons)</P>
+</B><UL>
+
+<P>Each 1-Wire device type is identified with a 1 byte ‘family code’. This family code is used to provide the appropriate container and can also be used to limit the search of the 1-Wire Network to one or more device types.  For example the following code fragment will search for devices with 0x10 family code. Note that ‘adapter’ is a working instance of DSPortAdapter.</P>
+<UL>
+<UL>
+<PRE>// clear any previous search restrictions
+adapter.setSearchAllDevices();
+adapter.targetAllFamilies();
+adapter.setSpeed(adapter.SPEED_REGULAR);
+
+// target 0x10 family devices
+adapter.targetFamily(0x10);
+
+// enumerate through all the 1-Wire devices found
+for(Enumeration owd_enum = adapter.getAllDeviceContainers();
+      owd_enum.hasMoreElements(); )
+{
+  OneWireContainer owd = (OneWireContainer)owd_enum.nextElement();
+  // do something with the container
+}</PRE>
+</UL>
+</UL>
+
+<P>Note that there are other search methods (findFirstDevice() and findNextDevice()) that do not automatically create a container and may be quicker if speed is essential.  Also see these other methods for search options: getAddress(), getDeviceContainer(), excludeFamily(),  setSearchOnlyAlarmDevices(), and  setNoResetSearch().</P>
+</UL>
+
+<B><P>1-Wire Containers</P>
+</B><UL>
+
+<P>As described in the ‘Finding 1-Wire Devices’ section, each type of 1-Wire device has a ‘family code’ that indicates its functionality. The adapter uses this family code to provide a ‘container’ to interface to it.  The container (com.dalsemi.onewire.container.OneWireContainer) is then used by the application to manipulate the device.  Each container class has the following format OneWireContainerXX where XX is the ‘family code’.  For example, the DS1920 has a family code of 0x10 so the container to use it is OneWireContainer10.  The adapter will automatically provide the correct container.  If the family code is unknown then the adapter will provide the super-class generic container.</P>
+<P>Here is a list of the containers provided in this kit.</P>
+<P> </P></UL>
+</UL>
+</FONT>
+<P ALIGN="CENTER"><CENTER><TABLE BORDER CELLSPACING=2 BORDERCOLOR="#000000" CELLPADDING=7 WIDTH=636>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<B><P>Device Name</B></TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<B><P>Family</P>
+</B></FONT></TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<B><FONT><P>Description</P><FONT SIZE=2>
+<P>&nbsp;</B></FONT></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<B><P>Interfaces</B></TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<B><P>MemoryBanks</B></TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1990A</P>
+<P>DS2401</FONT></TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>01</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<FONT><P>1-Wire Address only</P><FONT SIZE=2>
+<P>&nbsp;</FONT></TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1991</P>
+<P>DS1425 </FONT></TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>02</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<FONT><P>Secure memory device</P>
+<P> </FONT></TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<FONT><P>DS1994</P>
+<P>DS2404 </FONT></TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>04</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<FONT><P>4K NVRAM memory and clock, timer, alarms</P></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<P>ClockContainer </TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>MemoryBank PagedMemoryBank</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS2405        </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>05</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>Single addressable switch</P></TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1993        </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>06</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>4K NVRAM memory</TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>MemoryBank PagedMemoryBank</P></TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1992        </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>08</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>1K NVRAM memory</TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>MemoryBank PagedMemoryBank</P></TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1982</P>
+<P>DS2502 </FONT></TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>09</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>1K EPROM memory</TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<FONT><P>MemoryBank PagedMemoryBankOTPMemoryBank</P></TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1995        </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>0A</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>16K NVRAM memory</P></TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>MemoryBank PagedMemoryBank</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1985</P>
+<P>DS2505 </FONT></TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>0B</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>16K EPROM memory</TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<FONT><P>MemoryBank PagedMemoryBank OTPMemoryBank</P></TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1996        </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>0C</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>64K NVRAM memory</P></TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>MemoryBank PagedMemoryBank</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1986</P>
+<P>DS2506 </FONT></TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>0F</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>64K EPROM memory</TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<FONT><P>MemoryBank PagedMemoryBankOTPMMemoryBank</P></TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<FONT><P>DS1920</P>
+<P>DS1820</P>
+<P>DS18S20 </FONT></TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>10</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<FONT><P>Temperature and alarm trips</P>
+
+<P>&nbsp;</FONT></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<P>Temperature-Container</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS2406</P>
+<P>DS2407 </FONT></TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>12</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<FONT><P>1K EPROM memory, dual switch</P></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<P>SwitchContainer </TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>MemoryBank PagedMemoryBankOTPMemoryBank</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1983</P>
+<P>DS2503 </FONT></TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>13</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>4K EPROM memory</TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<FONT><P>MemoryBank PagedMemoryBank OTPMMemoryBank</P></TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1971        </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>14</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>256bit EEPROM memory and OTP register</TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>MemoryBank PagedMemoryBankOTPMMemoryBank</P></TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1963S       </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>18</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>4K NVRAM memory and SHA-1 engine</TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<FONT><P>MemoryBank PagedMemoryBank</P>
+
+<P>&nbsp;</FONT></TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1963L       </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>1A</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>4K NVRAM memory with write cycle counters</P></TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>MemoryBank PagedMemoryBank</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS2423        </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>1D</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>4K NVRAM memory with external counters</P></TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>MemoryBank PagedMemoryBank</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS2409        </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>1F</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>dual switch, coupler </P></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<P>SwitchContainer</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS2450        </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>20</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>quad A/D</TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<P>ADContainer </TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>MemoryBank PagedMemoryBank</P></TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1921        </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>21</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>Thermochron temperature logger</P></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<P>Temperature-Container ClockContainer </TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>MemoryBank PagedMemoryBank</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1822        </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>22</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>Econo temperature</P></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<P>Temperature-Container</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1973        </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>23</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>4K EEPROM memory</P></TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>MemoryBank PagedMemoryBank</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1904</P>
+<P>DS2415</P></TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>24</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>Real-time-clock</P></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<P>ClockContainer</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS2438        </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>26</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>Temperature, A/D</TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<P>ClockContainer ADContainer</P>
+<P>Temperature-Container</P>
+<P>Humidity-Container</P></TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS2417        </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>27</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>Real-time-clock with interrupt</P></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<P>ClockContainer</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS18B20       </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>28</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>Adjustable resolution temperature</P></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<P>Temperature-Container</TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS2890        </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>2C</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>single channel digital pot</TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<P>Potentiometer-Container</P></TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P> </TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS2760        </TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>30</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>Temperature, current, A/D</TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<P>ADContainer Temperature-Container</P></TD>
+<TD WIDTH="26%" VALIGN="TOP">&nbsp;</TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1961S</P>
+<P>DS2432        </FONT></TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>33</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<FONT><P>1K EEPROM memory with SHA-1 engine<BR></TD>
+<TD WIDTH="25%" VALIGN="TOP">&nbsp;</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>MemoryBank</P>
+<P>PagedMemoryBank</FONT></TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<P>DS1977</TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>39</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<FONT><P>64K EEPROM memory with password correction<BR></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<P>Password-Container</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<P>MemoryBank</P>
+<P>PagedMemoryBank</FONT></TD>
+</TR>
+<TR><TD WIDTH="16%" VALIGN="TOP">
+<FONT><P>DS1922<BR>
+DS2422       </FONT></TD>
+<TD WIDTH="6%" VALIGN="TOP">
+<P>41</TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<FONT><P>8k Temperature and Humidity logger with RTC</P>
+<P>and Password Protection</FONT></TD>
+<TD WIDTH="25%" VALIGN="TOP">
+<FONT><P>ClockContainer ADContainer</P>
+<P>Temperature-Container</P>
+<P>Humidity-Container</P>
+<P>Mission-Container</P>
+<P>Password-Container<BR></TD>
+<TD WIDTH="26%" VALIGN="TOP">
+<FONT><P>MemoryBank</P>
+<P>PagedMemoryBank</FONT></TD>
+</TR>
+</TABLE>
+</CENTER></P>
+
+<FONT>
+<P>&nbsp;</P><UL>
+<UL>
+
+<B><P>Types of Containers</P>
+</B><UL>
+
+<B><P>Memory </P>
+</B><UL>
+
+<P>The base class of all containers ‘OneWireContainer’ has a method called ‘getMemoryBanks()’ that returns an enumeration of memory bank instances.  A memory bank is a section of memory on a 1-Wire device that has specific properties.  For example the 1-Wire Network Address of a device is a read-only bank of 8 bytes.  This technique is used to get a handle on the diverse types of memory that comprise 1-Wire devices. There are three interfaces that the memory bank may implement.  These interfaces are hierarchical:</P>
+
+<B><P>MemoryBank</B> – basic read/write (getSize(), read(), write()..)<BR>
+<B>PagedMemoryBank</B> (extends MemoryBank) – paged read/write with packets (getNumberPages(), readPage(), writePagePacket()..)<BR>
+<B>OTPMemoryBank</B> (extents PagedMemoryBank) – One-Time-Programmable, usually EPROM (canRedirectPage(), lockPage())</P>
+
+<P>See the examples ‘OWDump’ and ‘OWMemUtil’ for applications that utilize memory banks.</P>
+
+<P>Any 1-Wire devices that contain memory can also use the 1-Wire File system.  The following classes in the com.dalsemi.onewire.utils package can be used just like the Java equivalient:</P>
+
+<B><P>OWFile</B> – Like java.io.File<BR>
+<B>OWFileInputStream</B> – Like java.io.FileInputStream<BR>
+<B>OWFileOutputSTream</B> – Like java.io.FileInputStream<BR>
+<B>OWFileDescriptor</B> – Like java.io.FileDescriptor</P>
+<B>
+</B><P>See the example ‘OWFish’ to demonstrate using the 1-Wire file system.  The specification for the 1-Wire file system can be found in Application Note 114:<BR>
+</FONT><A HREF="http://www.dalsemi.com/datasheets/pdfs/app114.pdf"><U><FONT COLOR="#0000ff">http://pdfserv.maxim-ic.com/arpdf/AppNotes/app114.pdf</U></FONT></A></P>
+<FONT>
+      </UL>
+
+      <B><P>Sensor </P></B>
+      <UL>
+         <P>A 1-Wire Sensor is a device that can make a reading or change the state of something physical (such as a DS2406 switch).  Typically the operations of 1-Wire Sensors is memory mapped so writing to a particular location causes the state to change.  To accommodate this type of architecture and reduce the number of 1-Wire operations that need to take place, a ‘read-modify-write’ technique is used.  Each Sensor interface is derived from a super-interface (com.dalsemi.onewire.container.OneWireSensor) that contain just two methods: readDevice(), writeDevice().  The read returns a byte array and the write takes a byte array.  The byte array is the state of the device.  The interfaces that extend this interface have ‘get’ and ‘set’ methods that manipulate the byte array.  So a OneWireSensor operation is:</P>
+         <UL>
+            <UL>
+
+               <P>1. readDevice()<BR>
+               2. ‘get’ and ‘set’ methods<BR>
+               3. writeDevice()</P>
+            </UL>
+         </UL>
+
+         <P>The following is a list of the interfaces and a brief description.  Note that the container list above indicates the interfaces used.</P>
+         <UL>
+            <UL>
+               <B><P>ADContainer</B>  - A/D sensor<BR>
+               <B>ClockContainer</B> – clock <BR>
+               <B>SwitchContainer</B> – switch<BR>
+               <B>TemperatureContainer</B> – temperature reading sensor<BR>
+               <B>PotentiometerContainer</B> - digital potentiometer device<BR>
+               <B>HumidityContainer</B> – humidity reading sensor <BR>
+               </P>
+            </UL>
+         </UL>
+      </UL>
+   </UL>
+</UL>
+
+   <B><P>Overdrive Speed with 1-Wire Containers</P></B>
+   <UL>
+      <P>Most 1-Wire devices support Overdrive speed, a 1-Wire Net communication speed that supports up to 142 k-bits/second of 1-Wire data.  The method getMaxSpeed(), defined in OneWireContainer, will tell you if you're device can support Overdrive speed.</P>
+
+      <P>Communicating with a device in Overdrive speed just requires that you call the setSpeed(int,boolean), defined in OneWireContainer.  The boolean value indicates whether or not it is okay for the device to fall back to a slower speed if communication fails.  The DSPortAdapter object also has a setSpeed(int) method, but it is not advisable to call this one directly.  Instead, allowing the container itself to be the only entity who manipulates the DSPortAdapter's state, you can be assured that the two will not be out of sync.</P>
+
+      <P>Also, if you're in a situation where you have devices on the 1-Wire Net who support Overdrive and devices that don't, it's important to remember that regular speed communication will cause devices in Overdrive mode to revert to regular speed. This change of 1-Wire speed could potentially cause I/O errors on the devices that were in Overdrive the first time they are accesses after the speed change. The opposite situation (Overdrive communication on the same network with devices in regular speed) is harmless.  Calling the OneWireContainer’s doSpeed() method will force a re-negotiation of the 1-Wire speed.  However this can be a slow procedure on some platforms so it should not be called indiscriminately.  The OneWireContainer’s implementation specific methods (clock methods, temperature methods, memory methods ...) will automatically call doSpeed() at appropriate times.  </P>
+   </UL>
+</UL>
+
+<B><FONT SIZE=4><P>Documentation</P></B></FONT>
+<UL>
+   <P>See the ‘docs’ directory for a complete javadoc of the com.dalsemi.onewire package.  The examples are not javadoc’ed but individual example directories may contain documentation.</P>
+   <P>All of the Java source in this kit is provided so if the documentation is not clear or is non-existent, look in the source.</P>
+
+   <P>Dallas Semiconductor’s 1-Wire device data sheets can be found by part number here: <A HREF="http://dbserv.maxim-ic.com/1-Wire.cfm">http://dbserv.maxim-ic.com/1-Wire.cfm</A></P>
+</UL>
+
+<B><FONT SIZE=4><P>TINI</P></B></FONT>
+<UL>
+   <P>TINI is a micro-controller with a Java Virtual Machine. See this page for more information. <A HREF="http://www.maxim-ic.com/TINIplatform.cfm">http://www.maxim-ic.com/TINIplatform.cfm</A></P>
+<P>Since its memory resources are limited, only the containers and necessary classes needed for the application are transferred to TINI.  The utility ‘BuildDependency’ is included in the version <A HREF="http://files.dalsemi.com/pub/tini/">1.02h TINI kit</A> to build only the necessary files.  The dependency jar used for building 1-Wire applications is provided in /lib/owapi_dependencies_TINI.jar.  The source to this jar is in /src/owapi_dependencies_TINI_src.jar.  The file that lists the dependencies is in /lib/owapi_dep.txt. See the README’s in the example directories and the batch file ‘tini_build.bat’ for further build information.  Detailed documentation on the ‘BuildDependency’ utility can be found in the <A HREF="http://files.dalsemi.com/pub/tini/">TINI distribution</A>.</P>
+   <P>The documentation of the 1-Wire API is the same on the Desktop or TINI.</P>
+</UL>
+
+<B><FONT SIZE=4><P>License</P></B></FONT><UL>
+
+<P>Dallas Semiconductor has selected the least restrictive license it could find to apply to the Java source code in this kit.  It is based almost word for word on the Xfree86 license (</FONT><A HREF="http://www.xfree86.org/4.0/LICENSE1.html">http://www.xfree86.org/4.0/LICENSE1.html</A><FONT>). It basically says you can do anything you want with this code.  If you distribute the source then just leave the license blurb at the top of the source files.  That’s it.  See the license in the ‘COPYRIGHT’ file and at the top of all of the source files.</P>
+</UL>
+
+<B><FONT SIZE=4><P>Long Lines</P></B></FONT><FONT><UL>
+
+<P>The DS9097U (based on the DS2480B) serial adapter is an excellent 1-Wire master for short and long lines.  The DS2480B inside the adapter has line characteristic settings that can be changed through Java by selecting SPEED_REGULAR and SPEED_FLEX 1-Wire speed.  The SPEED_FLEX mode selects line settings that work better for long 1-Wire lines.  The settings are:</P>
+
+<UL>
+<P>SPEED_REGULAR – Slew rate = 1.37V/us, tlow = 10us, tDSO  = 8us<BR>
+SPEED_FLEX – Slew rate = 0.83V/us, tlow = 12us, tDSO  = 10us</P>
+</UL>
+
+<P>These settings were selected by taking the recommendations for a 200 meter and 300 meter 1-Wire cable in Application Note 148:<BR>
+</FONT><A HREF="http://www.dalsemi.com/datasheets/pdfs/app132.pdf"><U><FONT COLOR="#0000ff">http://pdfserv.maxim-ic.com/arpdf/AppNotes/app148.pdf</U></FONT></A></P>
+
+<P>The datasheet for the DS2480B can be found here:<BR><A HREF="http://www.dalsemi.com/datasheets/pdfs/2480b.pdf"><U><FONT COLOR="#0000ff">http://pdfserv.maxim-ic.com/arpdf/DS2480B.pdf</U></FONT></A></P>
+</UL></BODY>
+</HTML>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<cluster name="Evaporative Cooler">
+  <sensor addr="E200000006283826" type="Humidity">
+    <label>Indoor Humidity</label>
+  </sensor>
+</cluster>

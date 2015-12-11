@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<cluster name="Colored Lights Demo">
+     <actuator addr="BB0000000062602C" type="D2A">
+          <label>Red Light</label>
+          <channel>0</channel>
+          <scale>Intensity</scale>
+     </actuator>
+     <actuator addr="00000000005AE52C" type="D2A">
+          <label>White Light</label>
+          <channel>0</channel>
+          <scale>Intensity</scale>
+     </actuator>
+     <actuator addr="B2000000005AE32C" type="D2A">
+          <label>Green Light</label>
+          <channel>0</channel>
+          <scale>Intensity</scale>
+     </actuator>
+     <actuator addr="410000000061532C" type="D2A">
+          <label>Blue Light</label>
+          <channel>0</channel>
+          <scale>Intensity</scale>
+     </actuator>
+</cluster>

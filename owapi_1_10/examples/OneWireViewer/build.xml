@@ -1,0 +1,72 @@
+<project name="OneWireViewer" default="build">
+   <property environment="env"/>
+
+   <target name="setOWAPIProperties_build" if="OWAPI_build">
+      <property name="OWAPI" value="${OWAPI_build}/OneWireAPI.jar"/>
+   </target>
+
+   <target name="setOWAPIProperties_env" unless="OWAPI" if="env.OWAPI_HOME" depends="setOWAPIProperties_build">
+      <property name="OWAPI" value="${env.OWAPI_HOME}/lib/OneWireAPI.jar"/>
+   </target>
+
+   <target name="setOWAPIProperties" unless="OWAPI" depends="setOWAPIProperties_env">
+      <property name="OWAPI" value="../../lib/OneWireAPI.jar"/>
+   </target>
+
+   <target
+      name="build"
+      depends="setOWAPIProperties">
+      <javac
+             classpath="${OWAPI}"
+             srcdir="src/"
+             destdir=".">
+      </javac>
+      <ant target="buildJar"/>
+   </target>
+
+   <target
+      if="KeystorePath"
+      name="buildJar">
+      <jar
+           destfile="OneWireViewer.jar"
+           basedir="." includes="*.class,images/*"/>
+      <signjar
+               jar="OneWireViewer.jar"
+               keystore="${KeystorePath}" alias="${KeystoreAlias}"
+               storepass="${KeystorePass}"/>
+      <jar
+           destfile="OneWireViewersrc.jar"
+           basedir="." includes="src/*.java,images/*"/>
+      <signjar
+               jar="OneWireViewersrc.jar"
+               keystore="${KeystorePath}" alias="${KeystoreAlias}"
+               storepass="${KeystorePass}"/>
+      <delete>
+         <fileset dir="." defaultexcludes="yes">
+            <include name="*.class"/>
+         </fileset>
+      </delete>
+   </target>
+
+   <target name="run" depends="build">
+      <java fork="yes"
+            classpath="${OWAPI};."
+            classname="${ant.project.name}"/>
+   </target>
+
+   <target name="runJar" depends="setOWAPIProperties">
+      <java fork="yes"
+            classpath="${OWAPI};OneWireViewer.jar"
+            classname="${ant.project.name}"/>
+   </target>
+
+   <target
+      name="buildTINI">
+      <!-- no-op //-->
+      <delete dir="tini"/>
+   </target>
+
+   <target name="clean">
+      <delete file="*.class"/>
+   </target>
+</project>

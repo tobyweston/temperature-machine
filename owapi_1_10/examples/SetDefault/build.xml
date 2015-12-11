@@ -1,0 +1,81 @@
+<!--
+    Change the project name and TINIDependencies property for each build.
+    This allows this build.xml to be copied between projects easily.  If
+    the project does not need a TINI build, then don't define the
+    TINIDependencies attribute
+//-->
+<project name="SetDefault" default="build">
+   <property environment="env"/>
+
+   <!-- use this property to set the -add option for dependencies //-->
+   <property name="TINIDependencies" value=""/>
+
+   <target name="setOWAPIProperties_build" if="OWAPI_build">
+      <property name="OWAPI" value="${OWAPI_build}/OneWireAPI.jar"/>
+      <property name="TINI_OWAPI" value="${OWAPI_build}/owapi_dependencies_TINI.jar"/>
+      <property name="TINI_DEP" value="${OWAPI_build}/owapi_dep.txt"/>
+   </target>
+
+   <target name="setOWAPIProperties_env" unless="OWAPI" if="env.OWAPI_HOME" depends="setOWAPIProperties_build">
+      <property name="OWAPI" value="${env.OWAPI_HOME}/lib/OneWireAPI.jar"/>
+      <property name="TINI_OWAPI" value="${env.OWAPI_HOME}/lib/owapi_dependencies_TINI.jar"/>
+      <property name="TINI_DEP" value="${env.OWAPI_HOME}/lib/owapi_dep.txt"/>
+   </target>
+
+   <target name="setOWAPIProperties" unless="OWAPI" depends="setOWAPIProperties_env">
+      <property name="OWAPI" value="../../lib/OneWireAPI.jar"/>
+      <property name="TINI_OWAPI" value="../../lib/owapi_dependencies_TINI.jar"/>
+      <property name="TINI_DEP" value="../../lib/owapi_dep.txt"/>
+   </target>
+
+   <target
+      name="build"
+      depends="setOWAPIProperties">
+      <javac
+             classpath=".;${OWAPI}"
+             srcdir="src/"
+             destdir=".">
+      </javac>
+   </target>
+
+   <target name="run" depends="build">
+      <java fork="yes"
+            classpath=".;${OWAPI}"
+            classname="${ant.project.name}"/>
+   </target>
+
+
+   <target name="setTINIProperties" unless="TINI" depends="setOWAPIProperties">
+      <property name="TINI" value="${env.TINI_HOME}/bin/tini.jar"/>
+      <property name="TINIDB" value="${env.TINI_HOME}/bin/tini.db"/>
+      <property name="TINIClasses" value="${env.TINI_HOME}/bin/tiniclasses.jar"/>
+   </target>
+
+   <target name="buildTINI" if="TINIDependencies" depends="setTINIProperties">
+      <mkdir dir="tini"/>
+      <javac
+             bootclasspath="${TINIClasses}"
+             target="1.1"
+             classpath="${TINI_OWAPI}"
+             srcdir="src/"
+             destdir="tini/"/>
+      <java
+            fork="true"
+            failonerror="true"
+            classpath="${TINI}"
+            classname="BuildDependency">
+            <arg line="-p ${TINI_OWAPI}"/>
+            <arg line="-f tini"/>
+            <arg line="-x ${TINI_DEP}"/>
+            <arg line="-o tini/${ant.project.name}.tini"/>
+            <!--<arg line="-add ${TINIDependencies}"/>//-->
+            <arg line="-d ${TINIDB}"/>
+            <arg line="-m ${ant.project.name}"/>
+       </java>
+   </target>
+
+   <target name="clean">
+      <delete dir="tini"/>
+      <delete file="*.class"/>
+   </target>
+</project>

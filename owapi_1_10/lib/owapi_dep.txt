@@ -1,0 +1,94 @@
+#
+# Note that comments can now be added to this file.  Just start the line with a '#'
+#
+
+#
+# Dependencies for 1-Wire applications.
+#
+ADAPTER_ROOT      =com.dalsemi.onewire.adapter
+CONT_ROOT         =com.dalsemi.onewire.container
+UTILS_ROOT        =com.dalsemi.onewire.utils
+APP_ROOT          =com.dalsemi.onewire.application
+FILE_ROOT         =com.dalsemi.onewire.application.file
+MONITOR_ROOT      =com.dalsemi.onewire.application.monitor
+SHA_ROOT          =com.dalsemi.onewire.application.sha
+TAG_ROOT          =com.dalsemi.onewire.application.tag
+Convert           =%UTILS_ROOT%.Convert;%UTILS_ROOT%.Convert$ConvertException
+Debug             =com.dalsemi.onewire.debug.Debug;
+OneWireContainer01=%CONT_ROOT%.OneWireContainer01
+OneWireContainer02=%CONT_ROOT%.OneWireContainer02
+OneWireContainer04=%CONT_ROOT%.OneWireContainer04;%UTILS_ROOT%.Bit;%CONT_ROOT%.ClockContainer;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankNV;%CONT_ROOT%.MemoryBankScratch;%CONT_ROOT%.OneWireSensor;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.ScratchPad;%Convert%
+OneWireContainer05=%CONT_ROOT%.OneWireContainer05;%CONT_ROOT%.OneWireSensor;%CONT_ROOT%.SwitchContainer
+OneWireContainer06=%CONT_ROOT%.OneWireContainer06;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankNV;%CONT_ROOT%.MemoryBankScratch;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.ScratchPad
+OneWireContainer08=%CONT_ROOT%.OneWireContainer08;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankNV;%CONT_ROOT%.MemoryBankScratch;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.ScratchPad
+OneWireContainer09=%CONT_ROOT%.OneWireContainer09;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankEPROM;%CONT_ROOT%.MemoryBankScratch;%CONT_ROOT%.OTPMemoryBank;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.ScratchPad
+OneWireContainer0A=%CONT_ROOT%.OneWireContainer0A;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankNV;%CONT_ROOT%.MemoryBankScratch;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.ScratchPad
+OneWireContainer0B=%CONT_ROOT%.OneWireContainer0B;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankEPROM;%CONT_ROOT%.OTPMemoryBank;%CONT_ROOT%.PagedMemoryBank
+OneWireContainer0C=%CONT_ROOT%.OneWireContainer0C;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankNV;%CONT_ROOT%.MemoryBankScratch;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.ScratchPad
+OneWireContainer0F=%CONT_ROOT%.OneWireContainer0F;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankEPROM;%CONT_ROOT%.OTPMemoryBank;%CONT_ROOT%.PagedMemoryBank
+OneWireContainer10=%CONT_ROOT%.OneWireContainer10;%CONT_ROOT%.OneWireSensor;%CONT_ROOT%.TemperatureContainer;%Convert%
+OneWireContainer12=%CONT_ROOT%.OneWireContainer12;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankEPROM;%CONT_ROOT%.OTPMemoryBank;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.OneWireSensor;%CONT_ROOT%.SwitchContainer
+OneWireContainer13=%CONT_ROOT%.OneWireContainer13;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankEPROM;%CONT_ROOT%.OTPMemoryBank;%CONT_ROOT%.PagedMemoryBank
+OneWireContainer14=%CONT_ROOT%.OneWireContainer14;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankAppReg;%CONT_ROOT%.MemoryBankEE;%CONT_ROOT%.OTPMemoryBank;%CONT_ROOT%.PagedMemoryBank
+OneWireContainer16=%CONT_ROOT%.OneWireContainer16;%CONT_ROOT%.CommandAPDU;%CONT_ROOT%.JibComm$BlockDataFragmenter;%CONT_ROOT%.JibComm;%CONT_ROOT%.ResponseAPDU
+OneWireContainer18=%CONT_ROOT%.OneWireContainer18;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankNV;%CONT_ROOT%.MemoryBankNVCRC;%CONT_ROOT%.MemoryBankScratch;%CONT_ROOT%.MemoryBankScratchCRC;%CONT_ROOT%.MemoryBankScratchEx;%CONT_ROOT%.MemoryBankScratchSHA;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.ScratchPad
+OneWireContainer1A=%CONT_ROOT%.OneWireContainer1A;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankNV;%CONT_ROOT%.MemoryBankNVCRC;%CONT_ROOT%.MemoryBankScratch;%CONT_ROOT%.MemoryBankScratchEx;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.ScratchPad
+OneWireContainer1D=%CONT_ROOT%.OneWireContainer1D;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankNV;%CONT_ROOT%.MemoryBankNVCRC;%CONT_ROOT%.MemoryBankScratch;%CONT_ROOT%.MemoryBankScratchEx;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.ScratchPad
+OneWireContainer1F=%CONT_ROOT%.OneWireContainer1F;%UTILS_ROOT%.Bit;%CONT_ROOT%.OneWireSensor;%CONT_ROOT%.SwitchContainer
+OneWireContainer20=%CONT_ROOT%.OneWireContainer20;%UTILS_ROOT%.Bit;%CONT_ROOT%.ADContainer;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankAD;%CONT_ROOT%.OneWireSensor;%CONT_ROOT%.PagedMemoryBank;%Convert%
+OneWireContainer21=%CONT_ROOT%.OneWireContainer21;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankNV;%CONT_ROOT%.MemoryBankNVCRC;%CONT_ROOT%.MemoryBankScratch;%CONT_ROOT%.MemoryBankScratchCRC;%CONT_ROOT%.MemoryBankScratchEx;%CONT_ROOT%.ClockContainer;%CONT_ROOT%.OneWireSensor;%CONT_ROOT%.TemperatureContainer;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.ScratchPad;%Convert%
+OneWireContainer22=%CONT_ROOT%.OneWireContainer22;%CONT_ROOT%.OneWireContainer28;%CONT_ROOT%.OneWireSensor;%CONT_ROOT%.TemperatureContainer
+OneWireContainer23=%CONT_ROOT%.OneWireContainer23;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankNV;%CONT_ROOT%.MemoryBankScratch;%CONT_ROOT%.MemoryBankScratchEE;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.ScratchPad
+OneWireContainer24=%CONT_ROOT%.OneWireContainer24;%CONT_ROOT%.ClockContainer;%UTILS_ROOT%.Bit;%CONT_ROOT%.OneWireSensor;%Convert%
+OneWireContainer26=%CONT_ROOT%.OneWireContainer26;%CONT_ROOT%.ADContainer;%CONT_ROOT%.ClockContainer;%CONT_ROOT%.OneWireSensor;%CONT_ROOT%.TemperatureContainer;%CONT_ROOT%.HumidityContainer;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.MemoryBankSBM
+OneWireContainer27=%CONT_ROOT%.OneWireContainer27;%OneWireContainer24%
+OneWireContainer28=%CONT_ROOT%.OneWireContainer28;%CONT_ROOT%.OneWireSensor;%CONT_ROOT%.TemperatureContainer;%Convert%
+OneWireContainer29=%CONT_ROOT%.OneWireContainer29;%UTILS_ROOT%.Bit;%CONT_ROOT%.OneWireSensor;%CONT_ROOT%.SwitchContainer;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.MemoryBankEEPROMstatus;%Convert%
+OneWireContainer2C=%CONT_ROOT%.OneWireContainer2C;%CONT_ROOT%.OneWireSensor;%CONT_ROOT%.PotentiometerContainer
+OneWireContainer30=%CONT_ROOT%.OneWireContainer30;%CONT_ROOT%.ADContainer;%CONT_ROOT%.OneWireSensor;%CONT_ROOT%.TemperatureContainer;%CONT_ROOT%.MemoryBankEEPROMblock;%CONT_ROOT%.OTPMemoryBank;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.PagedMemoryBank
+OneWireContainer33=%CONT_ROOT%.OneWireContainer33;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.OTPMemoryBank;%CONT_ROOT%.ScratchPad;%CONT_ROOT%.MemoryBankScratch;%CONT_ROOT%.MemoryBankScratchEx;%CONT_ROOT%.MemoryBankScratchSHAEE;%CONT_ROOT%.MemoryBankSHAEE;%UTILS_ROOT%.SHA
+OneWireContainer37=%CONT_ROOT%.OneWireContainer37;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.MemoryBankNVCRC;%CONT_ROOT%.MemoryBankNV;%CONT_ROOT%.MemoryBankNVCRCPW;%CONT_ROOT%.ScratchPad;%CONT_ROOT%.MemoryBankScratch;%CONT_ROOT%.MemoryBankScratchEx;%CONT_ROOT%.MemoryBankScratchCRCPW;%CONT_ROOT%.PasswordContainer
+OneWireContainer41=%CONT_ROOT%.OneWireContainer41;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.MemoryBankNVCRC;%CONT_ROOT%.MemoryBankNV;%CONT_ROOT%.MemoryBankNVCRCPW;%CONT_ROOT%.ScratchPad;%CONT_ROOT%.MemoryBankScratch;%CONT_ROOT%.MemoryBankScratchEx;%CONT_ROOT%.MemoryBankScratchCRCPW;%CONT_ROOT%.PasswordContainer;%CONT_ROOT%.OneWireSensor;%CONT_ROOT%.TemperatureContainer;%CONT_ROOT%.ClockContainer;%CONT_ROOT%.ADContainer;%CONT_ROOT%.MissionContainer;%CONT_ROOT%.HumidityContainer;%Convert%;%Debug%
+OneWireMonitor    =%MONITOR_ROOT%.AbstractDeviceMonitor;%MONITOR_ROOT%.DeviceMonitor;%MONITOR_ROOT%.DeviceMonitorEvent;%MONITOR_ROOT%.DeviceMonitorEventListener;%MONITOR_ROOT%.DeviceMonitorException;%UTILS_ROOT%.OWPath;%UTILS_ROOT%.OWPathElement;%Switches%
+NetworkMonitor    =%MONITOR_ROOT%.AbstractDeviceMonitor;%MONITOR_ROOT%.NetworkDeviceMonitor;%MONITOR_ROOT%.DeviceMonitorEvent;%MONITOR_ROOT%.DeviceMonitorEventListener;%MONITOR_ROOT%.DeviceMonitorException;%UTILS_ROOT%.OWPath;%UTILS_ROOT%.OWPathElement;%Switches%
+Thermometers      =%OneWireContainer10%;%OneWireContainer21%;%OneWireContainer26%;%OneWireContainer28%;%OneWireContainer30%;%OneWireContainer22%
+Clocks            =%OneWireContainer04%;%OneWireContainer21%;%OneWireContainer26%;%OneWireContainer24%;%OneWireContainer27%
+Switches          =%OneWireContainer05%;%OneWireContainer12%;%OneWireContainer1F%;%OneWireContainer29%
+Potentiometers    =%OneWireContainer2C%
+ADCs              =%OneWireContainer20%;%OneWireContainer26%;%OneWireContainer30%
+AllMemoryDevices  =%OneWireContainer04%;%OneWireContainer06%;%OneWireContainer08%;%OneWireContainer09%;%OneWireContainer0A%;%OneWireContainer0B%;%OneWireContainer0C%;%OneWireContainer0F%;%OneWireContainer12%;%OneWireContainer13%;%OneWireContainer14%;%OneWireContainer18%;%OneWireContainer1A%;%OneWireContainer1D%;%OneWireContainer20%;%OneWireContainer21%;%OneWireContainer23%;%OneWireContainer29%;%OneWireContainer30%;%OneWireContainer37%
+SHADebit          =%OneWireContainer18%;%SHA_ROOT%.SHAiButtonUser;%SHA_ROOT%.SHAiButtonUser18;%OneWireContainer33%;%SHA_ROOT%.SHAiButtonUser;%SHA_ROOT%.SHAiButtonUser33;%SHA_ROOT%.SHATransaction;%SHA_ROOT%.SHADebit;%SHA_ROOT%.SHADebitUnsigned;%SHA_ROOT%.SHAiButtonCopr;%SHA_ROOT%.SHAiButtonCoprVM;%UTILS_ROOT%.SHA;%UTILS_ROOT%.IOHelper;%OWFile%;%Convert%
+Humidity          =%OneWireContainer26%;%OneWireContainer41%
+NetAdapterHost    =%ADAPTER_ROOT%.NetAdapterConstants;%ADAPTER_ROOT%.NetAdapterConstants$Connection;%ADAPTER_ROOT%.NetAdapterHost;%ADAPTER_ROOT%.NetAdapterHost$SocketHandler;%ADAPTER_ROOT%.MulticastListener;%Convert%
+NetAdapter        =%ADAPTER_ROOT%.NetAdapterConstants;%ADAPTER_ROOT%.NetAdapterConstants$Connection;%ADAPTER_ROOT%.NetAdapter;%Convert%
+OWFile            =%FILE_ROOT%.OWFile;%FILE_ROOT%.OWFileDescriptor;%FILE_ROOT%.OWFileInputStream;%FILE_ROOT%.OWFileOutputStream;%FILE_ROOT%.OWFileNotFoundException;%FILE_ROOT%.OWSyncFailedException;%FILE_ROOT%.MemoryCache;%CONT_ROOT%.MemoryBank;%CONT_ROOT%.PagedMemoryBank;%CONT_ROOT%.OTPMemoryBank;%UTILS_ROOT%.Bit;%Convert%
+
+#
+# Dependencies added for the big TINI switch to use modules.
+#
+PROTOCOL          =com.dalsemi.protocol
+PPPBASE           =com.dalsemi.tininet.ppp
+PROTOCOL_BASE     =%PROTOCOL%.BasicClient;%PROTOCOL%.DefaultFileNameMap;%PROTOCOL%.HeaderManager;
+COMM              =com.dalsemi.comm
+SYSTEM            =com.dalsemi.system
+TININET_HTTP      =com.dalsemi.tininet.http
+FILE              =%PROTOCOL_BASE%;%PROTOCOL%.URLDecoder;%PROTOCOL%.file.Connection;%PROTOCOL%.file.Handler;
+HTTP              =%PROTOCOL%.http.Connection;%PROTOCOL%.http.Handler;%PROTOCOL_BASE%;%PROTOCOL%.http.HTTPClient;%PROTOCOL%.http.HTTPOutputStream
+FTP               =%HTTP%;%PROTOCOL%.URLDecoder;%PROTOCOL%.ftp.FTPClient;%PROTOCOL%.ftp.Connection;%PROTOCOL%.ftp.Handler;%PROTOCOL_BASE%
+MAILTO            =%PROTOCOL%.mailto.MailToPrintStream;%PROTOCOL%.mailto.Connection;%PROTOCOL%.mailto.Handler;%PROTOCOL%.URLDecoder;%PROTOCOL_BASE%
+HTTPSERVER        =%TININET_HTTP%.HTTPServer;%TININET_HTTP%.HTTPServerException;%TININET_HTTP%.HTTPWorker;%TININET_HTTP%.PostElement;%TININET_HTTP%.PostScript;
+FTPCLIENT         =%PROTOCOL%.ftp.FTPClient;%PROTOCOL%.BasicClient;%PROTOCOL%.URLDecoder;
+I2C               =%SYSTEM%.I2CPort;(mod_i2c.tlib);
+I2C400            =%SYSTEM%.I2CPort;(mod_i2c_400.tlib);
+I2CAll            =%SYSTEM%.I2CPort;(mod_i2c.tlib);(mod_i2c_400.tlib);
+CAN               =%COMM%.CanBus;%COMM%.CanBusException;%COMM%.CanFrame;(mod_can.tlib);
+CAN400            =%COMM%.CanBus;%COMM%.CanBusException;%COMM%.CanFrame;(mod_can_400.tlib);
+CANAll            =%COMM%.CanBus;%COMM%.CanBusException;%COMM%.CanFrame;(mod_can.tlib);(mod_can_400.tlib);
+SPI               =%COMM%.SPI;(mod_spi.tlib);
+SPI400            =%COMM%.SPI;(mod_spi_400.tlib);
+SPIAll            =%COMM%.SPI;(mod_spi.tlib);(mod_spi_400.tlib);
+PPP               =%PPPBASE%.Chap;%PPPBASE%.Ipcp;%PPPBASE%.Lcp;%PPPBASE%.MD5;%PPPBASE%.Option;%PPPBASE%.Pap;%PPPBASE%.PPP;%PPPBASE%.PPPEvent;%PPPBASE%.PPPEventListener;%PPPBASE%.Protocol;%PPPBASE%.ProtocolEvent;%PPPBASE%.Timer;%PPPBASE%.TimerEventListener;%PPPBASE%.Timer$TimerClient;%PPPBASE%.Queue;%PPPBASE%.QueueEventListener;(mod_ppp.tlib)
+PPP400            =%PPPBASE%.Chap;%PPPBASE%.Ipcp;%PPPBASE%.Lcp;%PPPBASE%.MD5;%PPPBASE%.Option;%PPPBASE%.Pap;%PPPBASE%.PPP;%PPPBASE%.PPPEvent;%PPPBASE%.PPPEventListener;%PPPBASE%.Protocol;%PPPBASE%.ProtocolEvent;%PPPBASE%.Timer;%PPPBASE%.TimerEventListener;%PPPBASE%.Timer$TimerClient;%PPPBASE%.Queue;%PPPBASE%.QueueEventListener;(mod_ppp_400.tlib)
+PPPAll            =%PPPBASE%.Chap;%PPPBASE%.Ipcp;%PPPBASE%.Lcp;%PPPBASE%.MD5;%PPPBASE%.Option;%PPPBASE%.Pap;%PPPBASE%.PPP;%PPPBASE%.PPPEvent;%PPPBASE%.PPPEventListener;%PPPBASE%.Protocol;%PPPBASE%.ProtocolEvent;%PPPBASE%.Timer;%PPPBASE%.TimerEventListener;%PPPBASE%.Timer$TimerClient;%PPPBASE%.Queue;%PPPBASE%.QueueEventListener;(mod_ppp.tlib);(mod_ppp_400.tlib);
+
+NOTHING           =
