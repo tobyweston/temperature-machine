@@ -8,8 +8,8 @@ The `w1-therm` module will output the sensor readings (the contents of the 1-Wir
 
 On the sensor itself, the measurements are stored in an area of memory called the "scratchpad". It's addressed using the following byte table.
 
-        | Description
---- | --- | ---
+Position | Description
+--- | ---
 Byte 0 | Temperature (least significant byte)
 Byte 1 | Temperature (most significant byte))
 Byte 2 | Th register on user byte 1
