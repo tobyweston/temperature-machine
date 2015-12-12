@@ -15,8 +15,8 @@ class TemperatureReader(filename: String) {
 
   def read = {
     for {
-      file <- fromTryCatchNonFatal(Source.fromFile(filename)).leftMap(FileError)
-      data <- file.getLines().toList.headOption.toRightDisjunction(UnexpectedError("Problem reading file, is it empty?"))
+      file        <- fromTryCatchNonFatal(Source.fromFile(filename)).leftMap(FileError)
+      data        <- file.getLines().toList.headOption.toRightDisjunction(UnexpectedError("Problem reading file, is it empty?"))
       temperature <- Parser.parse(data)
     } yield temperature
   }
