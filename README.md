@@ -3,17 +3,17 @@
 
 The `w1-therm` module will output the sensor readings (the contents of the 1-Wire "scratchpad") to a file. For example,
 
-    a3 01 4b 46 7f ff 0e 10 d8 : crc=d8 YES
-    a3 01 4b 46 7f ff 0e 10 d8 t=32768
+    4b 01 4b 46 7f ff 05 10 d8 : crc=d8 YES
+    4b 01 4b 46 7f ff 05 10 d8 t=20687
 
 On the sensor itself, the measurements are stored in an area of memory called the "scratchpad". It's addressed using the following byte table.
 
 Position | Description
 --- | ---
 Byte 0 | Temperature (least significant byte)
-Byte 1 | Temperature (most significant byte))
-Byte 2 | Th register on user byte 1
-Byte 3 | Tl register on user byte 1
+Byte 1 | Temperature (most significant byte)
+Byte 2 | TH register on user byte 1 (alarm high)
+Byte 3 | TL register on user byte 2 (alarm low)
 Byte 4 | Configuration register
 Byte 5 | Reserved
 Byte 6 | Reserved
@@ -21,14 +21,18 @@ Byte 7 | Reserved
 Byte 8 | CRC (e.g. `d8` in the example above)
 
 
-The file format has some additional information as it pulls out the result of the CRC check (`YES`/`NO`) and does the temperature calculation for you. If you're interested, you can calculate the temperature from the bytes yourself using the following formula (where `data` is the array of bytes from the above and `0.0625` is a conversion coefficient between the sensor internal values and physical temperature).
+The file format has some additional information as it pulls out the result of the CRC check (`YES`/`NO`) and does the temperature calculation for you. If you're interested, you can calculate the temperature from the bytes yourself by rearranging the first two bytes with least significant at the front;
 
-    ((data[1] << 8) + data[0]) *0.0625
+    01 4b
 
-or
+then treating it as a single hex value, divide by `16`.
+
+    scala> 0x014b / 16.0
+    res: Double = 20.6875
 
 
+### References
 
-https://tushev.org/images/electronics/arduino/ds18x20/scratchpad.PNG
-https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf
-https://tushev.org/articles/arduino/10
+[Interesting discussion](https://www.raspberrypi.org/forums/viewtopic.php?f=37&t=91982)
+[DS18B20 Datasheet](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf)
+
