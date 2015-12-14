@@ -4,6 +4,8 @@ import java.util.concurrent.Executors._
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger
 
+import bad.robot.temperature.rrd.RrdFile
+
 import scala.concurrent.duration.Duration
 
 object Main extends App {
@@ -13,6 +15,9 @@ object Main extends App {
     def newThread(runnable: Runnable): Thread = new Thread(runnable, "temperature-reading-thread-" + threadCount.incrementAndGet())
   })
 
-  Scheduler(Duration(5, "seconds"), threadPool).start(TemperatureProbe())
+  val frequency = Duration(5, "seconds")
+  val rrdFile = RrdFile(frequency)
+  rrdFile.create()
+  Scheduler(frequency, threadPool).start(TemperatureProbe.rrdProbe())
 
 }

@@ -1,23 +1,22 @@
 package bad.robot.temperature
 
-import java.text.SimpleDateFormat
-import java.util.Calendar
-
+import bad.robot.temperature.rrd.Rrd
 
 object TemperatureProbe {
-  def apply() = new TemperatureProbe("/Users/toby/Workspace/bitbucket/temperature-machine/src/test/resources/examples/28-000005e2fdc2/w1_slave")
-}
 
-class TemperatureProbe(filename: String) extends Runnable {
+  val filename = "/Users/toby/Workspace/bitbucket/temperature-machine/src/test/resources/examples/28-000005e2fdc2/w1_slave"
 
-  def run(): Unit = {
-    val temperature = TemperatureReader(filename).read
-    temperature.foreach(temperature => println(s"$currentTime ${temperature.celsius} °C"))
+  def rrdProbe() = {
+    new TemperatureProbe(TemperatureReader(filename), Rrd())
   }
 
-  def currentTime = {
-    val today = Calendar.getInstance().getTime()
-    val format = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss")
-    format.format(today)
+  def consoleProbe() = {
+    new TemperatureProbe(TemperatureReader(filename), Console())
+  }
+}
+
+class TemperatureProbe(input: TemperatureReader, output: TemperatureWriter) extends Runnable {
+  def run(): Unit = {
+    input.read.foreach(output.write)
   }
 }
