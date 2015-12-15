@@ -13,8 +13,8 @@ object Graph {
 
   def create(from: Seconds, to: Seconds) = {
     val graph = new RrdGraphDef()
-    graph.setWidth(500)
-    graph.setHeight(300)
+    graph.setWidth(800)
+    graph.setHeight(500)
     graph.setFilename(path)
     graph.setStartTime(from)
     graph.setEndTime(to)
@@ -24,6 +24,9 @@ object Graph {
     graph.datasource(name, RrdFile.path, name, AVERAGE)
     graph.line(name, Color.blue)
     graph.setImageFormat("png")
+
+    graph.gprint(name, MIN, "min = %.2f%s °C")
+    graph.gprint(name, MAX, "max = %.2f%s °C")
 
     val file = new RrdGraph(graph)
     println(file.getRrdGraphInfo.getFilename)

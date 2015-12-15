@@ -1,9 +1,6 @@
 package bad.robot.temperature.rrd
 
-import java.util.Date
-
 import bad.robot.temperature.rrd.RrdTemperature._
-import bad.robot.temperature.{Temperature, TemperatureWriter}
 import org.rrd4j.ConsolFun._
 import org.rrd4j.DsType.GAUGE
 import org.rrd4j.core._
@@ -16,24 +13,41 @@ object RrdFile {
   val path = "temperature.rrd"
 }
 
-case class RrdFile(step: Duration = Duration(30, "seconds")) {
+case class RrdFile(frequency: Seconds = Duration(30, "seconds")) {
 
   def create(start: Seconds = now()) = {
-    val heartbeat = step + Duration(5, "seconds")
-    val aDay = Duration(24, "hours")
-    val rows = (aDay / step.toSeconds).toSeconds.toInt
 
-    println("rows " + rows)
+    def numberOfStepsFor(duration: Duration) = (duration.toSeconds / frequency).toInt
 
-    val definition = new RrdDef(RrdFile.path, start, step.toSeconds)
-    definition.addDatasource(new DsDef(name, GAUGE, heartbeat.toSeconds, NaN, NaN))
-    definition.addArchive(new ArcDef(AVERAGE, 0.5, 1, rows))
-    createFile()
-
-    def createFile() = {
-      val database = new RrdDb(definition)
-      database.close()
-      println("File created; " + definition.dump())
+    def numberOfRowsFor(period: Duration, numberOfSteps: Int): Int = {
+      val result = (period.toSeconds / (frequency.value * numberOfSteps)).toInt
+      println(s"rows for $frequency frequency in $period : $result")
+      result
     }
+
+    val heartbeat = frequency + Seconds(5)
+
+    val definition = new RrdDef(RrdFile.path, start, frequency)
+    val noAggregation = numberOfStepsFor(frequency)
+    val hourlyAggregation = numberOfStepsFor(anHour)
+    val daily = new ArcDef(AVERAGE, 0.5, noAggregation, numberOfRowsFor(aDay, noAggregation))
+    val dailyHourAvg  = new ArcDef(AVERAGE, 0.5, hourlyAggregation, numberOfRowsFor(aDay, hourlyAggregation))
+//    val weekly = new ArcDef(AVERAGE, 0.5, hourlyAggregation, numberOfRowsFor(aWeek, hourlyAggregation))
+
+    val temperature = new DsDef(name, GAUGE, heartbeat, NaN, NaN)
+
+    definition.addDatasource(temperature)
+    definition.addArchive(daily)
+    definition.addArchive(dailyHourAvg)
+//    definition.addArchive(weekly)
+
+    createFile(definition)
   }
+
+  private def createFile(definition: RrdDef) = {
+    val database = new RrdDb(definition)
+    database.close()
+    println("File created; " + definition.dump())
+  }
+
 }
