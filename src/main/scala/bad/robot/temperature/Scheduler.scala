@@ -1,5 +1,6 @@
 package bad.robot.temperature
 
+import java.util.concurrent.TimeUnit._
 import java.util.concurrent.{ScheduledExecutorService, ScheduledFuture}
 
 import scala.collection.JavaConverters._
@@ -12,7 +13,7 @@ object Scheduler {
 class Scheduler(frequency: Duration, executor: ScheduledExecutorService) {
 
   def start(tasks: Runnable*): List[ScheduledFuture[_]] = {
-    tasks.map(task => executor.scheduleWithFixedDelay(task, 1, frequency.length, frequency.unit)).toList
+    tasks.map(task => executor.scheduleWithFixedDelay(task, 0, frequency.length, frequency.unit)).toList
   }
 
   def cancel(tasks: List[ScheduledFuture[_]]) {

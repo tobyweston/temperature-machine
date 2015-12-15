@@ -14,6 +14,7 @@ object Seconds {
 
 case class Seconds(value: Long) {
   def +(other: Seconds) = Seconds(value + other.value)
+  def -(other: Seconds) = Seconds(value - other.value)
 
   override def toString: String = value + " seconds"
 }

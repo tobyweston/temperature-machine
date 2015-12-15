@@ -15,7 +15,7 @@ object RrdFile {
 
 case class RrdFile(frequency: Seconds = Duration(30, "seconds")) {
 
-  def create(start: Seconds = now()) = {
+  def create(start: Seconds = now() - Seconds(1)) = {
 
     def numberOfStepsFor(duration: Duration) = (duration.toSeconds / frequency).toInt
 
