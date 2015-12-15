@@ -4,7 +4,7 @@ import bad.robot.temperature.rrd.Rrd
 
 object TemperatureProbe {
 
-  val filename = "/Users/toby/Workspace/bitbucket/temperature-machine/src/test/resources/examples/28-000005e2fdc2/w1_slave"
+  val filename = "src/test/resources/examples/28-000005e2fdc2/w1_slave"
 
   def rrdProbe() = {
     new TemperatureProbe(TemperatureReader(filename), Rrd())
