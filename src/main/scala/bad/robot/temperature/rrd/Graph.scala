@@ -43,5 +43,9 @@ object GenerateGraph extends App {
   val period = Duration(5, "minutes")
 
   val start = now() - period.toSeconds
-  Graph.create(start, start + period.toSeconds)
+//  Graph.create(start, start + period.toSeconds)
+
+  val s = Seconds(1450209809)
+  Graph.create(s, s + Duration(8, "hours").toSeconds)
+
 }

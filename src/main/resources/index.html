@@ -7,6 +7,7 @@
 </head>
 <body>
 <div id="chart-img"></div>
+<div><img src="temperature.png"></div>
 <script>
     options = {
         chart: {
@@ -14,7 +15,7 @@
             type: 'spline'
         },
         title: {
-            text: 'Temperatures of the last 24h'
+            text: 'Temperatures (last 24h)'
         },
         subtitle: {
             text: ''
@@ -33,7 +34,7 @@
         },
         tooltip: {
             formatter: function () {
-                return '<b>' + this.series.name + '</b><br/>' + Highcharts.dateFormat('%H:%M', this.x) + ' ' + this.y.toFixed(1) + ' °C';
+                return '<b>' + this.series.name + '</b><br/>' + Highcharts.dateFormat('%H:%M', this.x) + ' <strong>' + this.y.toFixed(1) + ' °C</strong>';
             }
         },
 
@@ -79,12 +80,10 @@
                 });
             });
 
-            options.title.text = "Temperatures (last 24h)"
             $.each(series, function(index) {
                 options.series.push(series[index]);
             });
             chart = new Highcharts.Chart(options);
-            chart.renderTo("chart-img")
         }
     })
 </script>
