@@ -16,16 +16,16 @@ object Example extends App {
   val start = 1450166400L
   val end = start + Duration(1, "days").toSeconds
 
-  RrdFile().create(start - 5)
+  val frequency = Duration(30, "seconds")
+
+  RrdFile(frequency).create(start - 5)
 
   val seed = random.nextInt(30) + random.nextDouble()
 
   def smooth = (value: Double) => if (random.nextDouble() < 0.55) value + random.nextDouble() else value - random.nextDouble()
 
-  val frequency = 30
-
   val temperatures = Stream.iterate(seed)(smooth)
-  val times = Stream.iterate(start)(_ + frequency).takeWhile(_ < end)
+  val times = Stream.iterate(start)(_ + frequency.toSeconds).takeWhile(_ < end)
   times.zip(temperatures).foreach({
     case (time, celsius) => RrdTemperature(time, Temperature(celsius)).apply()
   })
