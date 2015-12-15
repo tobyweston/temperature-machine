@@ -1,6 +1,7 @@
 package bad.robot.temperature.rrd
 
 import java.awt.Color
+import java.awt.Color._
 
 import bad.robot.temperature.rrd.RrdTemperature._
 import org.rrd4j.ConsolFun._
@@ -22,11 +23,13 @@ object Graph {
     graph.setVerticalLabel("°C")
 
     graph.datasource(name, RrdFile.path, name, AVERAGE)
-    graph.line(name, Color.blue)
+    graph.line(name, blue)
     graph.setImageFormat("png")
 
     graph.gprint(name, MIN, "min = %.2f%s °C")
     graph.gprint(name, MAX, "max = %.2f%s °C")
+
+    graph.hrule(0, green.darker(), "freezing")
 
     val file = new RrdGraph(graph)
     println(file.getRrdGraphInfo.getFilename)

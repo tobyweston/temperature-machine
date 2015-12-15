@@ -22,7 +22,7 @@ object Example extends App {
 
   val seed = random.nextInt(30) + random.nextDouble()
 
-  def smooth = (value: Double) => if (random.nextDouble() < 0.55) value + random.nextDouble() else value - random.nextDouble()
+  def smooth = (value: Double) => if (random.nextDouble() > 0.5) value + random.nextDouble() else value - random.nextDouble()
 
   val temperatures = Stream.iterate(seed)(smooth)
   val times = Stream.iterate(start)(_ + frequency.toSeconds).takeWhile(_ < end)
