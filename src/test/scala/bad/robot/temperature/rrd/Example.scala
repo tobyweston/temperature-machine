@@ -18,9 +18,16 @@ object Example extends App {
 
   RrdFile().create(start - 5)
 
+  val seed = random.nextInt(30) + random.nextDouble()
+
+  def smooth = (value: Double) => if (random.nextDouble() < 0.55) value + random.nextDouble() else value - random.nextDouble()
+
   val frequency = 30
-  Stream.iterate(start)(_ + frequency).takeWhile(_ < end).foreach(time => {
-    RrdTemperature(time, Temperature(celsius = random.nextInt(30) + random.nextDouble())).apply()
+
+  val temperatures = Stream.iterate(seed)(smooth)
+  val times = Stream.iterate(start)(_ + frequency).takeWhile(_ < end)
+  times.zip(temperatures).foreach({
+    case (time, celsius) => RrdTemperature(time, Temperature(celsius)).apply()
   })
 
 //  fetchData()
