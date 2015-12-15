@@ -2,14 +2,15 @@ package bad.robot.temperature.rrd
 
 import bad.robot.temperature.Temperature
 import org.rrd4j.core.RrdDb
-import RrdTemperature._
+import RrdUpdate._
 
-object RrdTemperature {
+object RrdUpdate {
   val name = "temperature-1"
 }
 
-case class RrdTemperature(time: Long, temperature: Temperature) {
+case class RrdUpdate(time: Seconds, temperature: Temperature) {
   def apply() = {
+    print(".")
     val database = new RrdDb(RrdFile.path)
     val sample = database.createSample()
     sample.setTime(time)

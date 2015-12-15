@@ -7,13 +7,12 @@ import scala.concurrent.duration.Duration
 
 object Scheduler {
   def apply(frequency: Duration, executor: ScheduledExecutorService) = new Scheduler(frequency, executor)
-  def apply(executor: ScheduledExecutorService) = new Scheduler(Duration(30, "seconds"), executor)
 }
 
 class Scheduler(frequency: Duration, executor: ScheduledExecutorService) {
 
   def start(tasks: Runnable*): List[ScheduledFuture[_]] = {
-    tasks.map(task => executor.scheduleWithFixedDelay(task, 0, frequency.length, frequency.unit)).toList
+    tasks.map(task => executor.scheduleWithFixedDelay(task, 1, frequency.length, frequency.unit)).toList
   }
 
   def cancel(tasks: List[ScheduledFuture[_]]) {

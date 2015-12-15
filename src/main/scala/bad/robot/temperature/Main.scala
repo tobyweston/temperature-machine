@@ -15,9 +15,11 @@ object Main extends App {
     def newThread(runnable: Runnable): Thread = new Thread(runnable, "temperature-reading-thread-" + threadCount.incrementAndGet())
   })
 
-  val frequency = Duration(5, "seconds")
+  val frequency = Duration(30, "seconds")
+
   val rrdFile = RrdFile(frequency)
+
   rrdFile.create()
-  Scheduler(frequency, threadPool).start(TemperatureProbe.rrdProbe())
+  Scheduler(frequency, threadPool).start(Measurements.randomTemperatureToRrd())
 
 }

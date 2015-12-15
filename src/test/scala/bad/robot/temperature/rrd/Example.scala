@@ -27,23 +27,10 @@ object Example extends App {
   val temperatures = Stream.iterate(seed)(smooth)
   val times = Stream.iterate(start)(_ + frequency.toSeconds).takeWhile(_ < end)
   times.zip(temperatures).foreach({
-    case (time, celsius) => RrdTemperature(time, Temperature(celsius)).apply()
+    case (time, celsius) => RrdUpdate(time, Temperature(celsius)).apply()
   })
 
-//  fetchData()
-  generateGraph()
+  Xml.export(start, start + aDay.toSeconds)
+  Graph.create(start, start + aDay.toSeconds)
 
-  def generateGraph(): Unit = {
-    Graph.create(start, start + aDay.toSeconds)
-  }
-
-  def fetchData() = {
-    val database = new RrdDb(RrdFile.path)
-    println("last update " + new Date(database.getLastUpdateTime))
-    println(database.getInfo)
-    val request = database.createFetchRequest(AVERAGE, start, end)
-    val data = request.fetchData()
-    println("rows : " + data.getRowCount)
-    println(data.exportXml())
-  }
 }

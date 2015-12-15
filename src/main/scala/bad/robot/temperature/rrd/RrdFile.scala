@@ -1,6 +1,6 @@
 package bad.robot.temperature.rrd
 
-import bad.robot.temperature.rrd.RrdTemperature._
+import bad.robot.temperature.rrd.RrdUpdate._
 import org.rrd4j.ConsolFun._
 import org.rrd4j.DsType.GAUGE
 import org.rrd4j.core._

@@ -1,11 +1,12 @@
 package bad.robot.temperature.rrd
 
-import java.awt.Color
 import java.awt.Color._
 
-import bad.robot.temperature.rrd.RrdTemperature._
+import bad.robot.temperature.rrd.RrdUpdate._
 import org.rrd4j.ConsolFun._
 import org.rrd4j.graph.{RrdGraph, RrdGraphDef}
+
+import scala.concurrent.duration.Duration
 
 
 object Graph {
@@ -35,4 +36,12 @@ object Graph {
     println(file.getRrdGraphInfo.getFilename)
     println(file.getRrdGraphInfo.dump())
   }
+}
+
+object GenerateGraph extends App {
+
+  val period = Duration(5, "minutes")
+
+  val start = now() - period.toSeconds
+  Graph.create(start, start + period.toSeconds)
 }
