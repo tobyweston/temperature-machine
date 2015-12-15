@@ -11,19 +11,21 @@ object Xml {
   def export(start: Seconds, end: Seconds) = {
     val database = new RrdDb(RrdFile.path)
     println("last update " + new Date(database.getLastUpdateTime))
-    println(database.getInfo)
     val request = database.createFetchRequest(AVERAGE, start, end)
     val data = request.fetchData()
-    println(data.exportXml())
-    println("rows : " + data.getRowCount)
+    val xml = data.exportXml("temperature.xml")
+    println(s"XML data saved, #rows = ${data.getRowCount}")
+    xml
   }
 }
 
 object ExportXml extends App {
 
-  val period = Duration(5, "minutes")
+  val period = Duration(15, "minutes")
 
   val start = now() - period.toSeconds
-  Xml.export(start, start + period.toSeconds)
+//  Xml.export(start, start + period.toSeconds)
 
+  val s = Seconds(1450209809)
+  Xml.export(s, s + Duration(8, "hours").toSeconds)
 }
