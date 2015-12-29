@@ -9,11 +9,12 @@ import scala.concurrent.duration.Duration
 
 object Xml {
   def export(start: Seconds, end: Seconds) = {
-    val database = new RrdDb(RrdFile.path)
+    val path = RrdFile.path / "temperature.xml"
+    val database = new RrdDb(RrdFile.file)
     println("last update " + new Date(database.getLastUpdateTime))
     val request = database.createFetchRequest(AVERAGE, start, end)
     val data = request.fetchData()
-    val xml = data.exportXml("temperature.xml")
+    val xml = data.exportXml(path)
     println(s"XML data saved, #rows = ${data.getRowCount}")
     xml
   }
@@ -26,6 +27,6 @@ object ExportXml extends App {
   val start = now() - period.toSeconds
 //  Xml.export(start, start + period.toSeconds)
 
-  val s = Seconds(1450209809)
-  Xml.export(s, s + Duration(8, "hours").toSeconds)
+  val s = Seconds(1451420961)
+  Xml.export(s, s + Duration(12, "hours").toSeconds)
 }

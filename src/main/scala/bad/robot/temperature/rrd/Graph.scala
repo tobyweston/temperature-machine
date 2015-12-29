@@ -11,7 +11,7 @@ import scala.concurrent.duration.Duration
 
 object Graph {
 
-  val path = "temperature.png"
+  val path = RrdFile.path / "temperature.png"
 
   def create(from: Seconds, to: Seconds) = {
     val graph = new RrdGraphDef()
@@ -23,7 +23,7 @@ object Graph {
     graph.setTitle("Temperature")
     graph.setVerticalLabel("°C")
 
-    graph.datasource(name, RrdFile.path, name, AVERAGE)
+    graph.datasource(name, RrdFile.file, name, AVERAGE)
     graph.line(name, blue)
     graph.setImageFormat("png")
 
@@ -31,6 +31,7 @@ object Graph {
     graph.gprint(name, MAX, "max = %.2f%s °C")
 
     graph.hrule(0, green.darker(), "freezing")
+    graph.hspan(16, 20, blue.brighter(), "Optimal")
 
     val file = new RrdGraph(graph)
     println(file.getRrdGraphInfo.getFilename)
@@ -45,7 +46,7 @@ object GenerateGraph extends App {
   val start = now() - period.toSeconds
 //  Graph.create(start, start + period.toSeconds)
 
-  val s = Seconds(1450209809)
-  Graph.create(s, s + Duration(8, "hours").toSeconds)
+  val s = Seconds(1451420961)
+  Graph.create(s, s + Duration(12, "hours").toSeconds)
 
 }
