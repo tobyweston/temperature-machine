@@ -13,7 +13,7 @@ import scala.concurrent.duration.Duration
 
 object RrdFile {
   val path = new File(sys.props("user.home")) / ".temperature"
-  val file = path / "temperatures.rrd"
+  val file = path / "temperature.rrd"
 
   path.mkdirs()
 }

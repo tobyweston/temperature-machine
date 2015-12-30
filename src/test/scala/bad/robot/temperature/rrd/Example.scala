@@ -1,10 +1,6 @@
 package bad.robot.temperature.rrd
 
-import java.util.Date
-
 import bad.robot.temperature.Temperature
-import org.rrd4j.ConsolFun._
-import org.rrd4j.core.RrdDb
 
 import scala.concurrent.duration.Duration
 import scala.util.Random
