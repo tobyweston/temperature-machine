@@ -13,7 +13,11 @@ class SensorFileTest extends Specification {
     )
   }
 
-  "Non existent folder doesn't barf" >> {
+  "Non existent folder" >> {
     SensorFile.find("nonexistent") must_== List()
+  }
+
+  "Empty contents" >> {
+    SensorFile.find("src/test") must_== List()
   }
 }
