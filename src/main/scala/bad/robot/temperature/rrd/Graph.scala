@@ -1,5 +1,6 @@
 package bad.robot.temperature.rrd
 
+import java.awt.Color
 import java.awt.Color._
 
 import bad.robot.temperature.rrd.RrdUpdate._
@@ -30,12 +31,20 @@ object Graph {
     graph.gprint(name, MIN, "min = %.2f%s °C")
     graph.gprint(name, MAX, "max = %.2f%s °C")
 
-    graph.hrule(0, green.darker(), "freezing")
-    graph.hspan(16, 20, blue.brighter(), "Optimal")
+    graph.hrule(0, new Color(204, 255, 255), "freezing")
+    graph.hspan(16, 20, transparent(green), "Optimal")
 
     val file = new RrdGraph(graph)
     println(file.getRrdGraphInfo.getFilename)
     println(file.getRrdGraphInfo.dump())
+  }
+
+  def transparent(color: Color): Color = {
+    val rgb = color.getRGB
+    val red = (rgb >> 16) & 0xFF
+    val green = (rgb >> 8) & 0xFF
+    val blue = rgb & 0xFF
+    new Color(red, green, blue, 0x33)
   }
 }
 
