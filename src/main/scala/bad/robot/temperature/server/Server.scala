@@ -5,7 +5,7 @@ import org.http4s.server.syntax.ServiceOps
 
 object Server extends App {
 
-  val services = StaticResources.service orElse TemperatureResources.service
+  val services = StaticResources.service orElse TemperatureResources.service orElse CurrentTemperature.service
 
   BlazeBuilder
     .bindHttp(11900, "0.0.0.0")
