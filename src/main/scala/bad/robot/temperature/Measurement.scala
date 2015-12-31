@@ -1,22 +1,23 @@
 package bad.robot.temperature
 
-import bad.robot.temperature.ds18b20.SensorReader
-import bad.robot.temperature.rrd.Rrd
+import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
+import bad.robot.temperature.rrd._
+
 
 object Measurements {
 
-  val filename = "src/test/resources/examples/28-000005e2fdc2/w1_slave"
+  val sensor = SensorFile.find().head
 
   def randomTemperatureToRrd() = {
     new Measurement(RandomTemperatures(), Rrd())
   }
 
   def sensorToRrd() = {
-    new Measurement(SensorReader(filename), Rrd())
+    new Measurement(SensorReader(sensor), Rrd())
   }
 
   def sensorToConsole() = {
-    new Measurement(SensorReader(filename), Console())
+    new Measurement(SensorReader(sensor), Console())
   }
 }
 

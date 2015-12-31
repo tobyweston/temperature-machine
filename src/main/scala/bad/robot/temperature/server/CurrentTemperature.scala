@@ -10,7 +10,7 @@ object CurrentTemperature {
   def service = HttpService {
 
     case GET -> Root / "temperature" => {
-      SensorReader(filename).read.fold(error => {
+      SensorReader(sensor).read.fold(error => {
         InternalServerError(error.message)
       }, temperature => {
         Ok(s"${temperature.celsius} °C")

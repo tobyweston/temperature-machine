@@ -17,6 +17,6 @@ object Main extends App {
 
   val frequency = Duration(30, "seconds")
   RrdFile(frequency).create()
-  Scheduler(frequency, threadPool).start(Measurements.randomTemperatureToRrd())
+  Scheduler(frequency, threadPool).start(Measurements.sensorToConsole())
 
 }
