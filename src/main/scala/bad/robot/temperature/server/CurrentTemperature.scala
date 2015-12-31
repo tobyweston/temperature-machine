@@ -1,11 +1,12 @@
 package bad.robot.temperature.server
 
-import bad.robot.temperature.Measurements._
-import bad.robot.temperature.ds18b20.SensorReader
+import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import org.http4s.dsl._
 import org.http4s.server.HttpService
 
 object CurrentTemperature {
+
+  private val sensor = SensorFile.find().head
 
   def service = HttpService {
 
