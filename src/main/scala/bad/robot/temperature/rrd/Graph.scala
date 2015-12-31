@@ -35,8 +35,8 @@ object Graph {
     graph.hspan(16, 20, transparent(green), "Optimal")
 
     val file = new RrdGraph(graph)
-    println(file.getRrdGraphInfo.getFilename)
-    println(file.getRrdGraphInfo.dump())
+//    println(file.getRrdGraphInfo.getFilename)
+//    println(file.getRrdGraphInfo.dump())
   }
 
   def transparent(color: Color): Color = {
@@ -57,5 +57,4 @@ object GenerateGraph extends App {
 
   val s = Seconds(1451420961)
   Graph.create(s, s + Duration(12, "hours").toSeconds)
-
 }

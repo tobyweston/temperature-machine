@@ -1,22 +1,20 @@
 package bad.robot.temperature
 
-import java.util.concurrent.Executors._
-import java.util.concurrent.ThreadFactory
-import java.util.concurrent.atomic.AtomicInteger
-
+import bad.robot.temperature.TemperatureMachineThreadFactory._
 import bad.robot.temperature.rrd.RrdFile
+import bad.robot.temperature.server.Server
 
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 object Main extends App {
 
-  private val threadPool = newScheduledThreadPool(1, new ThreadFactory() {
-    private val threadCount = new AtomicInteger
-    def newThread(runnable: Runnable): Thread = new Thread(runnable, "temperature-reading-thread-" + threadCount.incrementAndGet())
-  })
+  RrdFile(30 seconds).create()
 
-  val frequency = Duration(30, "seconds")
-  RrdFile(frequency).create()
-  Scheduler(frequency, threadPool).start(Measurements.sensorToRrd())
+  Scheduler(30 seconds, createThreadPool("reading-thread")).start(Measurements.sensorToRrd())
+  Scheduler(90 seconds, createThreadPool("graphing-thread")).start(GenerateGraph(Duration(24, "hours")))
+  Scheduler(100 seconds, createThreadPool("xml-export-thread")).start(XmlExport(Duration(24, "hours")))
+
+  Server(11900).start()
 
 }

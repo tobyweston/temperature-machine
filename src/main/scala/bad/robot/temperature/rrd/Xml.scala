@@ -15,7 +15,7 @@ object Xml {
     val request = database.createFetchRequest(AVERAGE, start, end)
     val data = request.fetchData()
     val xml = data.exportXml(path)
-    println(s"XML data saved, #rows = ${data.getRowCount}")
+//    println(s"XML data saved, #rows = ${data.getRowCount}")
     xml
   }
 }

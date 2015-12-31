@@ -1,6 +1,5 @@
 package bad.robot.temperature
 
-import java.util.concurrent.TimeUnit._
 import java.util.concurrent.{ScheduledExecutorService, ScheduledFuture}
 
 import scala.collection.JavaConverters._
