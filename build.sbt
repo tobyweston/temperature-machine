@@ -1,6 +1,12 @@
 
 name := "temperature-machine"
 
+version := "1.0"
+
+organization := "bad.robot"
+
+assemblyJarName in assembly := s"${name.value}-${version.value}.jar"
+
 scalaVersion := "2.11.7"
 
 mainClass in Compile := Some("bad.robot.temperature.Main")
