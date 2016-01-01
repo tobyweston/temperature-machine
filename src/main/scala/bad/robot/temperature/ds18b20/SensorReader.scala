@@ -5,6 +5,7 @@ import java.io.File
 import bad.robot.temperature._
 
 import scala.io.Source
+import scalaz.\/
 import scalaz.\/._
 import scalaz.syntax.std.option._
 
@@ -15,7 +16,7 @@ object SensorReader {
 
 class SensorReader(file: File) extends TemperatureReader {
 
-  def read = {
+  def read: Error \/ Temperature = {
     for {
       file        <- fromTryCatchNonFatal(Source.fromFile(file)).leftMap(FileError)
       data        <- file.getLines().toList.headOption.toRightDisjunction(UnexpectedError("Problem reading file, is it empty?"))
