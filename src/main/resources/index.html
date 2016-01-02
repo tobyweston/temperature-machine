@@ -2,19 +2,59 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
+
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>-->
     <script src="js/jquery-2.1.4-min.js"></script>
     <script src="js/high-charts-4.2.1.js"></script>
     <script src="js/temperature.js"></script>
-    <script src="js/chart.js"></script></head>
+    <script src="js/chart.js"></script>
+</head>
 <body>
 
-<div>
-    <p>Current Temperature </p>
-    <h1><span id="current-temperature">?</span></h1>
+<div class="jumbotron">
+    <div class="container">
+        <div class="col-md-3">
+            <p class="lead">Current Temperature</p>
+            <h1><span id="current-temperature">?</span></h1>
+        </div>
+        <div class="col-md-9">
+            <p class="lead">Last 24 Hours</p>
+            <div class="row" id="chart-img"></div>
+        </div>
+    </div>
 </div>
-<div id="chart-img"> </div>
-<div>
-    <img src="temperature.png">
+
+<div class="container">
+    <!-- Example row of columns -->
+    <div class="row">
+        <div class="col-md-4">
+            <p class="lead">24 Hours</p>
+            <a href="temperature.png"><img src="temperature.png" width="320" height="160"></a>
+            <p>&nbsp;</p>
+            <a class="btn btn-default" href="temperature.png" role="button">Details &raquo;</a>
+        </div>
+        <div class="col-md-4">
+            <p class="lead">7 Days</p>
+            <a href="temperature.png"><img src="temperature.png" width="320" height="160"></a>
+            <p>&nbsp;</p>
+            <a class="btn btn-default" href="temperature.png" role="button">Details &raquo;</a>
+        </div>
+        <div class="col-md-4">
+            <p class="lead">1 Month</p>
+            <a href="temperature.png"><img src="temperature.png" width="320" height="160"></a>
+            <p>&nbsp;</p>
+            <a class="btn btn-default" href="temperature.png" role="button">Details &raquo;</a>
+        </div>
+    </div>
+
+    <hr>
+
+    <footer>
+        <small>&copy; 2016 toby weston</small>
+    </footer>
 </div>
 
 </body>

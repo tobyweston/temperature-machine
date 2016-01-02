@@ -4,7 +4,7 @@ var options = {
     type: 'spline'
   },
   title: {
-    text: 'Temperatures (last 24h)'
+    text: ''
   },
   subtitle: {
     text: ''
