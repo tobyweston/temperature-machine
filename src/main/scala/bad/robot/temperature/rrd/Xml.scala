@@ -1,7 +1,5 @@
 package bad.robot.temperature.rrd
 
-import java.util.Date
-
 import org.rrd4j.ConsolFun._
 import org.rrd4j.core.RrdDb
 
@@ -11,7 +9,6 @@ object Xml {
   def export(start: Seconds, end: Seconds) = {
     val path = RrdFile.path / "temperature.xml"
     val database = new RrdDb(RrdFile.file)
-    println("last update " + new Date(database.getLastUpdateTime))
     val request = database.createFetchRequest(AVERAGE, start, end)
     val data = request.fetchData()
     val xml = data.exportXml(path)

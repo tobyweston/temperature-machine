@@ -16,6 +16,9 @@ object RrdFile {
   val file = path / "temperature.rrd"
 
   path.mkdirs()
+
+  def exists = RrdFile.file.exists()
+
 }
 
 case class RrdFile(frequency: Seconds = Duration(30, "seconds")) {
@@ -25,9 +28,7 @@ case class RrdFile(frequency: Seconds = Duration(30, "seconds")) {
     def numberOfStepsFor(duration: Duration) = (duration.toSeconds / frequency).toInt
 
     def numberOfRowsFor(period: Duration, numberOfSteps: Int): Int = {
-      val result = (period.toSeconds / (frequency.value * numberOfSteps)).toInt
-      println(s"rows for $frequency frequency in $period : $result")
-      result
+      (period.toSeconds / (frequency.value * numberOfSteps)).toInt
     }
 
     val heartbeat = frequency + Seconds(5)
@@ -52,7 +53,7 @@ case class RrdFile(frequency: Seconds = Duration(30, "seconds")) {
   private def createFile(definition: RrdDef) {
     val database = new RrdDb(definition)
     database.close()
-    println("File created; " + definition.dump())
+    println(definition.dump())
   }
 
 }

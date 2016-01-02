@@ -10,7 +10,6 @@ object RrdUpdate {
 
 case class RrdUpdate(time: Seconds, temperature: Temperature) {
   def apply() = {
-    print(".")
     val database = new RrdDb(RrdFile.file)
     val sample = database.createSample()
     sample.setTime(time)
