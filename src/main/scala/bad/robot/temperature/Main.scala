@@ -16,7 +16,7 @@ object Main extends App {
 
   val Port = 11900
 
-  SensorFile.find("src/test/resources/examples").headOption match {
+  SensorFile.find().headOption match {
     case Some(file) => start(file)
     case _          => println(FailedToFindFile(BaseFolder).message)
   }
