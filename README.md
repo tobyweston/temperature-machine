@@ -31,8 +31,35 @@ then treating it as a single hex value, divide by `16`.
     res: Double = 20.6875
 
 
-### References
+
+## Misc Setup
+
+Make sure any Wifi dongle doesn't fall asleep; famously the Edimax EW-7811UN does. Create a config file for the wifi module with `sudo nano /etc/modprobe.d/8192cu.conf` and add this line
+
+    options 8192cu rtw_power_mgnt=0 rtw_enusbss=0
+
+
+Check it's running with `lsmod`, you should see something like this
+
+    $ lsmod
+    Module                  Size  Used by
+    8192cu                569532  0
+
+
+Setup a `rc.local` file to boot to the thing as the `pi` user;
+
+    $ cat /etc/rc.local
+    #!/bin/sh -e
+    su pi -c 'cd /home/pi/code/temperature-machine && ./start.sh &'
+
+    exit 0
+
+
+Connecting to a non-hidden network is straight forward. Setting things up for a hidden network is [a little more involved](http://www.dafinga.net/2013/01/how-to-setup-raspberry-pi-with-hidden.html).
+
+
+## References
 
 [Interesting discussion](https://www.raspberrypi.org/forums/viewtopic.php?f=37&t=91982)
 [DS18B20 Datasheet](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf)
-
+[Disable power management for the Edimax wifi dongle](https://www.raspberrypi.org/forums/viewtopic.php?t=61665)
