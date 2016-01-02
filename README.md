@@ -57,15 +57,16 @@ Setup a `rc.local` file to boot to the thing as the `pi` user;
 
 Connecting to a non-hidden network is straight forward. Setting things up for a hidden network is [a little more involved](http://www.dafinga.net/2013/01/how-to-setup-raspberry-pi-with-hidden.html).
 
-![](cpu_memory.png)
-
 ## Pi Stats
 
 Load on the Pi is pretty minimal, however the XML export and graph generation do max out the CPU for short periods.
 
+![](cpu_memory.png)
+
 
 ## References
 
-[Interesting discussion](https://www.raspberrypi.org/forums/viewtopic.php?f=37&t=91982)
+[Interesting discussion on the sensor](https://www.raspberrypi.org/forums/viewtopic.php?f=37&t=91982)
 [DS18B20 Datasheet](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf)
 [Disable power management for the Edimax wifi dongle](https://www.raspberrypi.org/forums/viewtopic.php?t=61665)
+
