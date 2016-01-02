@@ -16,9 +16,11 @@ object Main extends App {
 
   val Port = 11900
 
-  SensorFile.find().headOption match {
+  val location = sys.props.getOrElse("sensor.location", BaseFolder)
+
+  SensorFile.find(location).headOption match {
     case Some(file) => start(file)
-    case _          => println(FailedToFindFile(BaseFolder).message)
+    case _          => println(FailedToFindFile(location).message)
   }
 
   private def start(file: File) = {
