@@ -29,8 +29,9 @@ object Main extends App {
     Scheduler(30 seconds, createThreadPool("reading-thread")).start(Measurement(SensorReader(file), Rrd()))
     Scheduler(90 seconds, createThreadPool("graphing-thread")).start(GenerateGraph(Duration(24, "hours")))
     Scheduler(100 seconds, createThreadPool("xml-export-thread")).start(XmlExport(Duration(24, "hours")))
+    println("Ok")
 
-    Server(Port).start()
     println(s"Server started on http://${InetAddress.getLocalHost.getHostAddress}:$Port")
+    Server(Port).start()
   }
 }
