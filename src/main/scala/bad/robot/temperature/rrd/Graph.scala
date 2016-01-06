@@ -7,18 +7,15 @@ import bad.robot.temperature.rrd.RrdUpdate._
 import org.rrd4j.ConsolFun._
 import org.rrd4j.graph.{RrdGraph, RrdGraphDef}
 
-import scala.concurrent.duration.Duration
-
-
 object Graph {
 
-  val path = RrdFile.path / "temperature.png"
+  val path = RrdFile.path
 
   def create(from: Seconds, to: Seconds) = {
     val graph = new RrdGraphDef()
     graph.setWidth(800)
     graph.setHeight(500)
-    graph.setFilename(path)
+    graph.setFilename(path / s"temperature-${(to - from).toDays}-days.png")
     graph.setStartTime(from)
     graph.setEndTime(to)
     graph.setTitle("Temperature")
@@ -46,15 +43,4 @@ object Graph {
     val blue = rgb & 0xFF
     new Color(red, green, blue, 0x33)
   }
-}
-
-object GenerateGraph extends App {
-
-  val period = Duration(5, "minutes")
-
-  val start = now() - period.toSeconds
-//  Graph.create(start, start + period.toSeconds)
-
-  val s = Seconds(1451420961)
-  Graph.create(s, s + Duration(12, "hours").toSeconds)
 }

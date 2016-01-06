@@ -6,12 +6,22 @@ A temperature-machine for the Raspberry Pi.
 
 ## Quick Start
 
-Build some test data by running the `Example` app from within IntelliJ. You can then run the monitoring app from the `Main` class.
+Build some test data by running the `Example` app from within IntelliJ.
+
+You can then run the monitoring app from the `Main` class. If you want to override the sensor file location (for the case when you're testing without sensors), use `-Dsensor-location=src/test/resources/examples`.
 
 Check the web page with [http://localhost:11900](http://localhost:11900)
 
 It won't display the current temperature unless you have a sensor attached but you'll get some basic graphs displaying.
 
+
+## Deploying to Your Pi
+
+There's lots of options here but I tend to;
+
+1. Clone the repository on the Pi
+2. Run `sbt -J-Xmx512m -J-Xms512m assembly` from a terminal (memory set low for the Pi Zero)
+3. Run `./start.sh &` from the checked out folder
 
 
 ## 1-Wire
@@ -71,6 +81,7 @@ Setup a `rc.local` file to boot to the thing as the `pi` user;
 
 
 Connecting to a non-hidden network is straight forward. Setting things up for a hidden network is [a little more involved](http://www.dafinga.net/2013/01/how-to-setup-raspberry-pi-with-hidden.html).
+
 
 ## Pi Stats
 

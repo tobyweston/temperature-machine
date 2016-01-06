@@ -4,13 +4,16 @@ import bad.robot.temperature.Temperature
 
 import scala.concurrent.duration.Duration
 import scala.util.Random
+import Seconds.secondsToLong
 
 object Example extends App {
 
   val random = new Random()
 
-  val start = 1450166400L
-  val end = start + Duration(1, "days").toSeconds
+  val duration = Duration(30, "days")
+
+  val start = now() - duration.toSeconds
+  val end = now()
 
   val frequency = Duration(30, "seconds")
 
@@ -26,7 +29,12 @@ object Example extends App {
     case (time, celsius) => RrdUpdate(time, Temperature(celsius)).apply()
   })
 
-  Xml.export(start, start + aDay.toSeconds)
-  Graph.create(start, start + aDay.toSeconds)
+  Xml.export(start, start + aDay)
 
+  Graph.create(start, start + aDay)
+  Graph.create(start, start + aDay * 2)
+  Graph.create(start, start + aWeek)
+  Graph.create(start, start + aMonth)
+
+  println("Done generating " + duration)
 }

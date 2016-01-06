@@ -10,6 +10,7 @@ package object rrd {
   val anHour = Duration(1, "hour")
   val aDay = Duration(24, "hours")
   val aWeek = Duration(7, "days")
+  val aMonth = Duration(30, "days")
 
   def now() = Seconds(timeInSeconds(new Date()))
 
