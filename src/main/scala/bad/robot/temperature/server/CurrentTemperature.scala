@@ -5,16 +5,12 @@ import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import org.http4s.dsl._
 import org.http4s.server.HttpService
-import java.text.DecimalFormat
 
 import scalaz.syntax.std.option._
 
 object CurrentTemperature {
 
   private val sensor = SensorFile.find().headOption
-
-  private val formatter = new DecimalFormat("#.#")
-
 
   def service = HttpService {
 
