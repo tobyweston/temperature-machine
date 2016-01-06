@@ -1,4 +1,19 @@
 
+# Temperature Machine ™
+
+A temperature-machine for the Raspberry Pi.
+
+
+## Quick Start
+
+Build some test data by running the `Example` app from within IntelliJ. You can then run the monitoring app from the `Main` class.
+
+Check the web page with [http://localhost:11900](http://localhost:11900)
+
+It won't display the current temperature unless you have a sensor attached but you'll get some basic graphs displaying.
+
+
+
 ## 1-Wire
 
 The `w1-therm` module will output the sensor readings (the contents of the 1-Wire "scratchpad") to a file. For example,
