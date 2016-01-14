@@ -2,15 +2,14 @@ package bad.robot.temperature.ds18b20
 
 import java.io.File
 
-import bad.robot.temperature.SensorId
 import org.specs2.mutable.Specification
 
 class SensorFileTest extends Specification {
 
   "Find some sensor files" >> {
     SensorFile.find("src/test/resources/examples") must contain(exactly(
-      SensorFile(SensorId("28-000005e2fdc2"), new File("src/test/resources/examples/28-000005e2fdc2/w1_slave")),
-      SensorFile(SensorId("28-000005e2fdc3"), new File("src/test/resources/examples/28-000005e2fdc3/w1_slave"))
+      new SensorFile("src/test/resources/examples/28-000005e2fdc2/w1_slave"),
+      new SensorFile("src/test/resources/examples/28-000005e2fdc3/w1_slave")
     ))
   }
 

@@ -2,7 +2,6 @@ package bad.robot.temperature.ds18b20
 
 import java.io.{File, FileFilter}
 
-import bad.robot.temperature.SensorId
 import bad.robot.temperature.rrd._
 
 object SensorFile {
@@ -17,11 +16,6 @@ object SensorFile {
 
   def find(base: String = BaseFolder): List[SensorFile] = {
     val files = Option(new File(base).listFiles(SensorFiles))
-
-    files.map(array => array.map(folder => {
-      SensorFile(SensorId(folder.getName), folder / "w1_slave")
-    }).toList).getOrElse(List())
+    files.map(array => array.map(_ / "w1_slave").toList).getOrElse(List())
   }
 }
-
-case class SensorFile(id: SensorId, file: File)

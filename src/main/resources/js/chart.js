@@ -61,7 +61,7 @@ function generateChart(options) {
       $(xml).find("row").each(function () {
         var timestamp = parseInt($(this).find("timestamp").text()) * 1000;
 
-        $(this).find("values").each(function (index) {
+        $(this).find("values").find("v").each(function (index) {
           var values = parseFloat($(this).text());
           values = values || null;
           if (values != null) {

@@ -1,10 +1,10 @@
 package bad.robot.temperature.rrd
 
-import bad.robot.temperature.{SensorId, Temperature}
+import bad.robot.temperature.Temperature
+import bad.robot.temperature.rrd.Seconds.secondsToLong
 
 import scala.concurrent.duration.Duration
 import scala.util.Random
-import Seconds.secondsToLong
 
 object Example extends App {
 
@@ -23,21 +23,15 @@ object Example extends App {
 
   def smooth = (value: Double) => if (random.nextDouble() > 0.5) value + random.nextDouble() else value - random.nextDouble()
 
-  val sensors = List(
-    SensorId("front room"),
-    SensorId("living room")
-  )
-
   val temperatures = Stream.iterate(seed)(smooth)
   val times = Stream.iterate(start)(_ + frequency.toSeconds).takeWhile(_ < end)
   times.zip(temperatures).foreach({
     case (time, celsius) => {
-      RrdUpdate(sensors(0), time, Temperature(celsius)).apply()
-      RrdUpdate(sensors(1), time + Seconds(1), Temperature(celsius + 2.5)).apply()
+      RrdUpdate(time, List(Temperature(celsius), Temperature(celsius + 4.3))).apply()
     }
   })
 
-  val numberOfSensors = sensors.length
+  val numberOfSensors = 2
 
   Xml.export(start, start + aDay, numberOfSensors)
 

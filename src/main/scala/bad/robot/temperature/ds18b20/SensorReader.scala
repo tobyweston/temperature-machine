@@ -15,18 +15,18 @@ object SensorReader {
 
   def apply(files: List[SensorFile]) = new SensorReader(files)
 
-  private val toReading: SensorFile => Error \/ (SensorId, Temperature) = sensor => {
+  private val toReading: SensorFile => Error \/ Temperature = file => {
     for {
-      file <- fromTryCatchNonFatal(Source.fromFile(sensor.file)).leftMap(FileError)
+      file <- fromTryCatchNonFatal(Source.fromFile(file)).leftMap(FileError)
       data <- file.getLines().toList.headOption.toRightDisjunction(UnexpectedError("Problem reading file, is it empty?"))
       temperature <- Parser.parse(data)
-    } yield (sensor.id, temperature)
+    } yield temperature
   }
 
 }
 
 class SensorReader(sensors: List[SensorFile]) extends TemperatureReader {
 
-  def read: Error \/ List[(SensorId, Temperature)] = sensors.map(toReading).sequenceU
+  def read: Error \/ List[Temperature] = sensors.map(toReading).sequenceU
 
 }

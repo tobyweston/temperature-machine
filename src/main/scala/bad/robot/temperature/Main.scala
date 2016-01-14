@@ -25,10 +25,10 @@ object Main extends App {
   private def start(sensors: List[SensorFile]) = {
     implicit val numberOfSensors = sensors.size
 
-    print("RRD initialising (max 5 sensors)...")
+    print(s"RRD initialising (with $numberOfSensors of a maximum of 5 sensors)...")
     if (!RrdFile.exists) RrdFile(30 seconds).create() else println("Ok")
 
-    print(s"Monitoring sensor file(s) ${sensors.map(sensor => sensor.file).mkString("\n\t", "\n\t", "\n")}")
+    print(s"Monitoring sensor file(s) ${sensors.mkString("\n\t", "\n\t", "\n")}")
     Scheduler(30 seconds, createThreadPool("reading-thread")).start(Measurement(SensorReader(sensors), Rrd()))
 
     Scheduler(90 seconds, createThreadPool("graphing-thread")).start(GenerateGraph(24 hours))

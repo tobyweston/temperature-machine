@@ -28,10 +28,9 @@ class Scheduler(frequency: Duration, executor: ScheduledExecutorService) {
   def wrapWithErrorHandler(task: Runnable): Runnable = {
     new Runnable {
       def run() = try {
-        print(".")
         task.run()
       } catch {
-        case e: Throwable => System.err.println(e.getMessage)
+        case e: Throwable => System.err.println(s"An error occurred executed a scheduled task (${task}) ${e.getMessage}")
       }
     }
   }

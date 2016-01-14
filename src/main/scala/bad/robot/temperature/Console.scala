@@ -5,7 +5,7 @@ import java.util.Calendar
 
 case class Console() extends TemperatureWriter {
 
-  def write(id: SensorId, temperature: Temperature): Unit = println(s"${id.ordinal} $currentTime ${temperature.celsius} °C")
+  def write(temperatures: List[Temperature]): Unit = println(s"$currentTime ${temperatures.map(_.celsius).mkString(", ")} °C")
 
   def currentTime = {
     val today = Calendar.getInstance().getTime
