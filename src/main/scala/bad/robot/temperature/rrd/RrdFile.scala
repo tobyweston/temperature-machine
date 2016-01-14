@@ -2,6 +2,7 @@ package bad.robot.temperature.rrd
 
 import java.io.File
 
+import bad.robot.temperature.rrd.RrdFile._
 import bad.robot.temperature.rrd.RrdUpdate._
 import org.rrd4j.DsType.GAUGE
 import org.rrd4j.core._
@@ -14,9 +15,11 @@ object RrdFile {
   val path = new File(sys.props("user.home")) / ".temperature"
   val file = path / "temperature.rrd"
 
+  val MaxSensors = 5
+
   path.mkdirs()
 
-  def exists = RrdFile.file.exists()
+  def exists = file.exists()
 
 }
 
@@ -26,15 +29,16 @@ case class RrdFile(frequency: Seconds = Duration(30, "seconds")) {
 
     val heartbeat = frequency + Seconds(5)
 
-    val definition = new RrdDef(RrdFile.file, start, frequency)
+    val definition = new RrdDef(file, start, frequency)
 
     val daily             = Archive(aDay, frequency, frequency)     // = new ArcDef(AVERAGE, 0.5, 1, 2880)
     val weeklyHourAvg     = Archive(aWeek, frequency, anHour)       // = new ArcDef(AVERAGE, 0.5, 120, 168)
     val monthlyTwoHourAvg = Archive(aMonth, frequency, anHour * 2)  // = new ArcDef(AVERAGE, 0.5, 240, 360)
 
-    val temperature = new DsDef(name, GAUGE, heartbeat, NaN, NaN)
+    for (sensor <- 1 to MaxSensors) {
+      definition.addDatasource(new DsDef(s"sensor-$sensor", GAUGE, heartbeat, NaN, NaN))
+    }
 
-    definition.addDatasource(temperature)
     definition.addArchive(daily)
     definition.addArchive(weeklyHourAvg)
     definition.addArchive(monthlyTwoHourAvg)

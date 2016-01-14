@@ -1,5 +1,6 @@
 package bad.robot.temperature.server
 
+import bad.robot.temperature.readingToTemperature
 import bad.robot.temperature.FailedToFindFile
 import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
@@ -17,10 +18,10 @@ object CurrentTemperature {
     case GET -> Root / "temperature" => {
       val result = for {
         file        <- sensor.toRightDisjunction(FailedToFindFile(BaseFolder))
-        temperature <- SensorReader(file).read
-      } yield temperature
+        temperature <- SensorReader(List(file)).read
+      } yield temperature.head
 
-      result.toHttpResponse(temperature => Ok(f"${temperature.celsius}%.1f °C"))
+      result.toHttpResponse(reading => Ok(f"${reading.celsius}%.1f °C"))
     }
 
   }

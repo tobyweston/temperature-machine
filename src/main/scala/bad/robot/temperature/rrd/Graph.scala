@@ -9,9 +9,18 @@ import org.rrd4j.graph.{RrdGraph, RrdGraphDef}
 
 object Graph {
 
+  private val colours = Array(
+    new Color(69,  113, 167),   // blue
+    new Color(170, 70,  67),    // red
+    new Color(137, 165, 78),    // green
+    new Color(128, 105, 155),   // purple
+    new Color(61,  150, 174),   // cyan
+    new Color(219, 132, 61)     // orange
+  )
+
   val path = RrdFile.path
 
-  def create(from: Seconds, to: Seconds) = {
+  def create(from: Seconds, to: Seconds, numberOfSensors: Int) = {
     val graph = new RrdGraphDef()
     graph.setWidth(800)
     graph.setHeight(500)
@@ -21,12 +30,17 @@ object Graph {
     graph.setTitle("Temperature")
     graph.setVerticalLabel("°C")
 
-    graph.datasource(name, RrdFile.file, name, AVERAGE)
-    graph.line(name, blue)
-    graph.setImageFormat("png")
+    for (sensor <- 1 to numberOfSensors) {
+      val name = s"sensor-$sensor"
+      graph.datasource(name, RrdFile.file, name, AVERAGE)
 
-    graph.gprint(name, MIN, "min = %.2f%s °C")
-    graph.gprint(name, MAX, "max = %.2f%s °C")
+      graph.line(name, colours(sensor - 1))
+
+      graph.gprint(name, MIN, "min = %.2f%s °C")
+      graph.gprint(name, MAX, "max = %.2f%s °C")
+    }
+
+    graph.setImageFormat("png")
 
     graph.hrule(0, new Color(204, 255, 255), "freezing")
     graph.hspan(16, 20, transparent(green), "Optimal")

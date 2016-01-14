@@ -2,28 +2,17 @@ package bad.robot.temperature.rrd
 
 import org.rrd4j.ConsolFun._
 import org.rrd4j.core.RrdDb
+import scala.collection.JavaConverters._
 
-import scala.concurrent.duration.Duration
 
 object Xml {
-  def export(start: Seconds, end: Seconds) = {
+  def export(start: Seconds, end: Seconds, numberOfSensors: Int) = {
     val path = RrdFile.path / "temperature.xml"
     val database = new RrdDb(RrdFile.file)
     val request = database.createFetchRequest(AVERAGE, start, end)
+    val sensors = Stream.iterate(1)(_ + 1).take(numberOfSensors).map(sensor => s"sensor-$sensor").toSet.asJava
+    request.setFilter(sensors)
     val data = request.fetchData()
-    val xml = data.exportXml(path)
-//    println(s"XML data saved, #rows = ${data.getRowCount}")
-    xml
+    data.exportXml(path)
   }
-}
-
-object ExportXml extends App {
-
-  val period = Duration(15, "minutes")
-
-  val start = now() - period.toSeconds
-//  Xml.export(start, start + period.toSeconds)
-
-  val s = Seconds(1451420961)
-  Xml.export(s, s + Duration(12, "hours").toSeconds)
 }

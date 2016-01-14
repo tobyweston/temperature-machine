@@ -1,5 +1,6 @@
 package bad.robot.temperature
 
+import java.lang.Thread.UncaughtExceptionHandler
 import java.util.concurrent.Executors._
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger

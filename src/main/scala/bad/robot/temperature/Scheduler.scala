@@ -12,7 +12,7 @@ object Scheduler {
 class Scheduler(frequency: Duration, executor: ScheduledExecutorService) {
 
   def start(tasks: Runnable*): List[ScheduledFuture[_]] = {
-    tasks.map(task => executor.scheduleWithFixedDelay(task, 0, frequency.length, frequency.unit)).toList
+    tasks.map(task => executor.scheduleWithFixedDelay(wrapWithErrorHandler(task), 0, frequency.length, frequency.unit)).toList
   }
 
   def cancel(tasks: List[ScheduledFuture[_]]) {
@@ -23,6 +23,17 @@ class Scheduler(frequency: Duration, executor: ScheduledExecutorService) {
     val tasks = executor.shutdownNow.asScala
     tasks.foreach(task => task.asInstanceOf[ScheduledFuture[_]].cancel(true))
     tasks.toList
+  }
+
+  def wrapWithErrorHandler(task: Runnable): Runnable = {
+    new Runnable {
+      def run() = try {
+        print(".")
+        task.run()
+      } catch {
+        case e: Throwable => System.err.println(e.getMessage)
+      }
+    }
   }
 
 }

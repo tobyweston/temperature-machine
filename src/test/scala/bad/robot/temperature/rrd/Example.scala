@@ -1,6 +1,6 @@
 package bad.robot.temperature.rrd
 
-import bad.robot.temperature.Temperature
+import bad.robot.temperature.{SensorId, Temperature}
 
 import scala.concurrent.duration.Duration
 import scala.util.Random
@@ -10,7 +10,7 @@ object Example extends App {
 
   val random = new Random()
 
-  val duration = Duration(30, "days")
+  val duration = Duration(1, "days")
 
   val start = now() - duration.toSeconds
   val end = now()
@@ -23,18 +23,28 @@ object Example extends App {
 
   def smooth = (value: Double) => if (random.nextDouble() > 0.5) value + random.nextDouble() else value - random.nextDouble()
 
+  val sensors = List(
+    SensorId("front room"),
+    SensorId("living room")
+  )
+
   val temperatures = Stream.iterate(seed)(smooth)
   val times = Stream.iterate(start)(_ + frequency.toSeconds).takeWhile(_ < end)
   times.zip(temperatures).foreach({
-    case (time, celsius) => RrdUpdate(time, Temperature(celsius)).apply()
+    case (time, celsius) => {
+      RrdUpdate(sensors(0), time, Temperature(celsius)).apply()
+      RrdUpdate(sensors(1), time + Seconds(1), Temperature(celsius + 2.5)).apply()
+    }
   })
 
-  Xml.export(start, start + aDay)
+  val numberOfSensors = sensors.length
 
-  Graph.create(start, start + aDay)
-  Graph.create(start, start + aDay * 2)
-  Graph.create(start, start + aWeek)
-  Graph.create(start, start + aMonth)
+  Xml.export(start, start + aDay, numberOfSensors)
+
+  Graph.create(start, start + aDay, numberOfSensors)
+  Graph.create(start, start + aDay * 2, numberOfSensors)
+  Graph.create(start, start + aWeek, numberOfSensors)
+  Graph.create(start, start + aMonth, numberOfSensors)
 
   println("Done generating " + duration)
 }

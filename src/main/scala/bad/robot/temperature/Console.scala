@@ -5,12 +5,12 @@ import java.util.Calendar
 
 case class Console() extends TemperatureWriter {
 
-  def write(temperature: Temperature): Unit = println(s"$currentTime ${temperature.celsius} °C")
+  def write(id: SensorId, temperature: Temperature): Unit = println(s"${id.ordinal} $currentTime ${temperature.celsius} °C")
 
   def currentTime = {
     val today = Calendar.getInstance().getTime
-    val format = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss")
-    format.format(today)
+    val date = new SimpleDateFormat("dd/MM/YYYY HH:mm:ss")
+    date.format(today)
   }
 
 }
