@@ -5,7 +5,7 @@ import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.server.syntax.ServiceOps
 
 object Server {
-  val services = StaticResources.service orElse TemperatureResources.service orElse CurrentTemperature.service
+  val services = StaticResources.service orElse TemperatureResources.service orElse CurrentAverageTemperature.service
 }
 
 case class Server(port: Int) {
