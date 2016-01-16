@@ -1,14 +1,13 @@
 package bad.robot.temperature.ds18b20
 
 import bad.robot.temperature._
+import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.ds18b20.SensorReader._
 
 import scala.io.Source
+import scalaz.Scalaz._
 import scalaz.\/
 import scalaz.\/._
-import scalaz.std.list._
-import scalaz.syntax.std.option._
-import scalaz.syntax.traverse._
 
 
 object SensorReader {
@@ -17,8 +16,8 @@ object SensorReader {
 
   private val toReading: SensorFile => Error \/ Temperature = file => {
     for {
-      file <- fromTryCatchNonFatal(Source.fromFile(file)).leftMap(FileError)
-      data <- file.getLines().toList.headOption.toRightDisjunction(UnexpectedError("Problem reading file, is it empty?"))
+      file        <- fromTryCatchNonFatal(Source.fromFile(file)).leftMap(FileError)
+      data        <- file.getLines().toList.headOption.toRightDisjunction(UnexpectedError("Problem reading file, is it empty?"))
       temperature <- Parser.parse(data)
     } yield temperature
   }
@@ -27,6 +26,11 @@ object SensorReader {
 
 class SensorReader(sensors: List[SensorFile]) extends TemperatureReader {
 
-  def read: Error \/ List[Temperature] = sensors.map(toReading).sequenceU
+  def read: Error \/ List[Temperature] = {
+    for {
+      files         <- sensors.toNel.toRightDisjunction(FailedToFindFile(BaseFolder))
+      temperatures  <- files.map(toReading).sequenceU
+    } yield temperatures.toList
+  }
 
 }
