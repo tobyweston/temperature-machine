@@ -46,4 +46,14 @@ class SensorReaderTest extends Specification {
     }
   }
 
+  "More than one error with the sensor files (how does sequenceU work on list with multiple errors)" >> {
+    val file = List(
+      new File("src/test/resources/examples/empty-file.txt"),
+      new File("src/test/resources/examples/nonsense-file.txt")
+    )
+    SensorReader(file).read must be_-\/.like {
+      case e => e.message must_== "Problem reading file, is it empty?"
+    }
+  }
+
 }
