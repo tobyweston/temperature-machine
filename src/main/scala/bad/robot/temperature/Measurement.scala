@@ -1,7 +1,9 @@
 package bad.robot.temperature
 
-case class Measurement(input: TemperatureReader, output: TemperatureWriter) extends Runnable {
+import java.io.PrintStream
+
+case class Measurement(input: TemperatureReader, output: TemperatureWriter, error: PrintStream = System.err) extends Runnable {
   def run(): Unit = {
-    input.read.fold(println, output.write)
+    input.read.fold(error.println, output.write)
   }
 }
