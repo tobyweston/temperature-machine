@@ -1,8 +1,9 @@
 package bad.robot.temperature
 
+import java.lang.{Error => _}
+
 import org.http4s.Response
 import org.http4s.dsl._
-import java.lang.{Error => _}
 
 import scalaz.\/
 import scalaz.concurrent.Task
