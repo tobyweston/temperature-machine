@@ -1,9 +1,0 @@
-com.dalsemi.onewire
-com.dalsemi.onewire.adapter
-com.dalsemi.onewire.application.file
-com.dalsemi.onewire.application.monitor
-com.dalsemi.onewire.application.sha
-com.dalsemi.onewire.application.tag
-com.dalsemi.onewire.container
-com.dalsemi.onewire.debug
-com.dalsemi.onewire.utils

@@ -1,3 +1,0 @@
-@echo off
-@echo Starting initcopr...
-java -classpath ..\..\lib\OneWireAPI.jar;%classpath% initcopr %1 %2

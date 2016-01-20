@@ -1,3 +1,0 @@
-@echo off
-@echo Compiling HumidityTest...
-javac -classpath ..\..\lib\OneWireAPI.jar;%classpath% -d . .\src\*.java

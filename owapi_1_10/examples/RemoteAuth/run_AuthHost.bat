@@ -1,3 +1,0 @@
-@echo off
-@echo Starting runHost...
-java -classpath ..\..\lib\OneWireAPI.jar;%classpath% runHost %1 %2

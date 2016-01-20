@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<cluster name="8X1 Switch Board">
-     <sensor addr="B200000018BC2A12" type="Event">
-          <label>Switch #1</label>
-          <max>Activity sensed!</max>
-          <channel>1</channel>
-     </sensor>
-</cluster>
