@@ -4,21 +4,27 @@ import java.net.{DatagramPacket, DatagramSocket, InetAddress, NetworkInterface, 
 
 import bad.robot.temperature.client.DiscoveryClient._
 import bad.robot.temperature.server.DiscoveryServer._
-import bad.robot.temperature.server.Socket
+import bad.robot.temperature.server.Socket._
 
 import scala.collection.JavaConversions._
+import scala.concurrent.duration._
+import scala.language.postfixOps
+import bad.robot.temperature.Error
 
 class DiscoveryClient {
 
-  def discover() {
-    implicit val socket = new DatagramSocket()
+  def discover(onError: Error => Unit = error => println(error)): InetAddress = {
+    val socket = new DatagramSocket()
     socket.setBroadcast(true)
 
     allBroadcastAddresses.foreach(ping(_, socket))
 
     println("Awaiting server...")
-    Socket.await(ServerAddressResponseMessage)(response => {
-      println(s"Server address found: ${response.getAddress}")
+    socket.await(30 seconds).fold(error => {
+      onError(error)
+      discover(onError)
+    }, sender => {
+      sender.getAddress
     })
   }
 }
@@ -53,5 +59,6 @@ object DiscoveryClient {
 
 object TestClient extends App {
   println("Discover Client started, attempting to find server...")
-  new DiscoveryClient().discover()
+  val server = new DiscoveryClient().discover()
+  println(s"Server address found: $server")
 }

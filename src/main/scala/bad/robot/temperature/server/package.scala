@@ -1,6 +1,7 @@
 package bad.robot.temperature
 
 import java.lang.{Error => _}
+import java.net.DatagramPacket
 
 import org.http4s.Response
 import org.http4s.dsl._
@@ -21,7 +22,11 @@ package object server {
       case error @ FileError(_) => InternalServerError(error.message)
       case error @ SensorError(_) => InternalServerError(error.message)
       case error @ UnexpectedError(_) => InternalServerError(error.message)
+      case error @ Timeout(_) => InternalServerError(error.message)
     }
   }
 
+  implicit class DatagramPacketOps(packet: DatagramPacket) {
+    def payload = new String(packet.getData).trim
+  }
 }

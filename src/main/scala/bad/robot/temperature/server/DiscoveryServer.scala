@@ -4,6 +4,8 @@ package bad.robot.temperature.server
 import java.net._
 
 import bad.robot.temperature.server.DiscoveryServer._
+import bad.robot.temperature.server.Socket._
+import bad.robot.temperature.server
 
 object DiscoveryServer {
   val LocalNetworkBroadcastAddress = "255.255.255.255"
@@ -17,16 +19,19 @@ class DiscoveryServer extends Runnable {
 
   def run() {
     try {
-      implicit val socket = new DatagramSocket(ServerPort, InetAddress.getByName("0.0.0.0"))
+      val socket = new DatagramSocket(ServerPort, InetAddress.getByName("0.0.0.0"))
       socket.setBroadcast(true)
 
       while (!Thread.currentThread().isInterrupted) {
         println("Listening for broadcast messages...")
 
-        Socket.await(ServerAddressRequestMessage)(response => {
-          println("request received, sending response...")
-          val data = ServerAddressResponseMessage.getBytes
-          socket.send(new DatagramPacket(data, data.length, response.getAddress, response.getPort))
+        socket.await().fold(error => {
+          sys.error(error.message)
+        }, sender => {
+          if (sender.payload == ServerAddressRequestMessage) {
+            val response = ServerAddressResponseMessage.getBytes
+            socket.send(new DatagramPacket(response, response.length, sender.getAddress, sender.getPort))
+          }
         })
       }
     } catch {

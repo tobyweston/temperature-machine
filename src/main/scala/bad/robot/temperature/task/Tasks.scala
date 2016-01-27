@@ -2,7 +2,8 @@ package bad.robot.temperature.task
 
 import java.util.concurrent.Executors._
 
-import bad.robot.temperature.XmlExport
+import bad.robot.temperature.{TemperatureWriter, XmlExport}
+import bad.robot.temperature.{TemperatureWriter, XmlExport}
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import bad.robot.temperature.rrd.{Rrd, RrdFile}
 import bad.robot.temperature.server.Server
@@ -22,12 +23,12 @@ object Tasks {
     }
   }
 
-  def record(sensors: List[SensorFile]) = {
+  def record(sensors: List[SensorFile], to: TemperatureWriter) = {
     val executor = newScheduledThreadPool(1, TemperatureMachineThreadFactory("reading-thread"))
     for {
-      _ <- Task.delay(print(s"Monitoring sensor file(s) ${sensors.mkString("\n\t", "\n\t", "\n")}"))
-      _ <- Task.delay(executor.schedule(30 seconds, RecordTemperature(SensorReader(sensors), Rrd())))
-    } yield ()
+      _     <- Task.delay(print(s"Monitoring sensor file(s) ${sensors.mkString("\n\t", "\n\t", "\n")}"))
+      tasks <- Task.delay(executor.schedule(30 seconds, RecordTemperature(SensorReader(sensors), to)))
+    } yield tasks
   }
 
   def graphing(implicit numberOfSensors: Int) = {
@@ -49,7 +50,7 @@ object Tasks {
 
     for {
       _ <- Tasks.init
-      _ <- Tasks.record(sensors)
+      _ <- Tasks.record(sensors, Rrd())
       _ <- Tasks.graphing
       _ <- Tasks.exportXml
       _ <- Server.http
