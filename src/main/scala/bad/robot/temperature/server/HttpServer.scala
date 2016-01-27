@@ -2,8 +2,12 @@ package bad.robot.temperature.server
 
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import bad.robot.temperature.server.HttpServer._
+import org._
+import org.http4s.server.{Server => Http4sServer}
 import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.server.syntax.ServiceOps
+
+import scalaz.concurrent.Task
 
 object HttpServer {
   val services =
@@ -14,11 +18,12 @@ object HttpServer {
 
 case class HttpServer(port: Int) {
 
-  def start() = {
+  def start() = build().run.awaitShutdown()
+
+  def build(): Task[Http4sServer] = {
     BlazeBuilder
       .bindHttp(port, "0.0.0.0")
       .mountService(services, "/")
-      .run
-      .awaitShutdown()
+      .start
   }
 }
