@@ -20,7 +20,9 @@ class DiscoveryServer extends Runnable {
       implicit val socket = new DatagramSocket(ServerPort, InetAddress.getByName("0.0.0.0"))
       socket.setBroadcast(true)
 
-      while (Thread.currentThread().isInterrupted) {
+      while (!Thread.currentThread().isInterrupted) {
+        println("Listening for broadcast messages...")
+
         Socket.await(ServerAddressRequestMessage)(response => {
           println("request received, sending response...")
           val data = ServerAddressResponseMessage.getBytes
@@ -34,8 +36,7 @@ class DiscoveryServer extends Runnable {
 }
 
 object TestServer extends App {
-  println("listening...")
+  println("Starting Discovery Server...")
   new Thread(new DiscoveryServer(), "temperature-machine-discovery-server").start()
-  Thread.sleep(100000)
-  println("stopped...")
+  println("Discovery Server stopped...")
 }

@@ -2,13 +2,13 @@ package bad.robot.temperature.client
 
 import java.net.{DatagramPacket, DatagramSocket, InetAddress, NetworkInterface, Socket => _}
 
-import bad.robot.temperature.client.Server._
+import bad.robot.temperature.client.DiscoveryClient._
 import bad.robot.temperature.server.DiscoveryServer._
 import bad.robot.temperature.server.Socket
 
 import scala.collection.JavaConversions._
 
-class Server {
+class DiscoveryClient {
 
   def discover() {
     implicit val socket = new DatagramSocket()
@@ -16,13 +16,14 @@ class Server {
 
     allBroadcastAddresses.foreach(ping(_, socket))
 
+    println("Awaiting server...")
     Socket.await(ServerAddressResponseMessage)(response => {
       println(s"Server address found: ${response.getAddress}")
     })
   }
 }
 
-object Server {
+object DiscoveryClient {
 
   def allNetworkInterfaces: List[NetworkInterface] = {
     NetworkInterface.getNetworkInterfaces
@@ -41,17 +42,16 @@ object Server {
 
   def ping: (InetAddress, DatagramSocket) => Unit = (address, socket) => {
     try {
-      println(s"sending request $address")
       val data = ServerAddressRequestMessage.getBytes
+      println(s"Sending ping request to $address")
       socket.send(new DatagramPacket(data, data.length, address, ServerPort))
     } catch {
-      case e: Throwable => System.err.println(s"An error occurred discovering server. This remote machine may not be able to publish data to the server. ${e.getMessage}")
+      case e: Throwable => System.err.println(s"An error occurred pinging server. ${e.getMessage}")
     }
   }
 }
 
 object TestClient extends App {
-  println("finding server...")
-  new Server().discover()
-  println("done")
+  println("Discover Client started, attempting to find server...")
+  new DiscoveryClient().discover()
 }

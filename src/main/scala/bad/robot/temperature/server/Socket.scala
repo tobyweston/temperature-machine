@@ -8,9 +8,9 @@ object Socket {
 
   def await(matchMessage: String)(onSuccess: (DatagramPacket) => Unit)(implicit socket: DatagramSocket) = {
     val packet = new DatagramPacket(new Array[Byte](BufferSize), BufferSize)
-    println("waiting for data...")
+    print("Waiting for data...")
     socket.receive(packet)
-    println("received data...")
+    println(s"received from ${packet.getAddress}.")
     if (new String(packet.getData).trim == matchMessage) {
       onSuccess(packet)
     }
