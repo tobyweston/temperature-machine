@@ -6,19 +6,18 @@ import scalaz.concurrent.Task
 
 object Server extends App {
 
-  val Port = 11900
-
-  val discovery = {
+  def discovery = {
     for {
       _        <- Task.delay(println("Starting Discovery Server..."))
       listener <- Task.delay(new Thread(new DiscoveryServer(), "temperature-machine-discovery-server").start())
     } yield ()
   }
 
-  val http = {
+  def http = {
+    val port = 11900
     for {
-      http <- HttpServer(Port).build()
-      _    <- Task.delay(println(s"HTTP Server started on http://${InetAddress.getLocalHost.getHostAddress}:$Port"))
+      http <- HttpServer(port).build()
+      _    <- Task.delay(println(s"HTTP Server started on http://${InetAddress.getLocalHost.getHostAddress}:$port"))
       _    <- Task.delay(http.awaitShutdown())
     } yield http
   }

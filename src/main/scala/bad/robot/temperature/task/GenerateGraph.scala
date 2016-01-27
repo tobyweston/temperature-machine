@@ -1,4 +1,4 @@
-package bad.robot.temperature
+package bad.robot.temperature.task
 
 import bad.robot.temperature.rrd._
 
