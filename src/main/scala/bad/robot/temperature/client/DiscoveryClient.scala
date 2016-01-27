@@ -2,18 +2,16 @@ package bad.robot.temperature.client
 
 import java.net.{DatagramPacket, DatagramSocket, InetAddress, NetworkInterface, Socket => _}
 
-import bad.robot.temperature.client.DiscoveryClient._
 import bad.robot.temperature.server.DiscoveryServer._
 import bad.robot.temperature.server.Socket._
 
 import scala.collection.JavaConversions._
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import bad.robot.temperature.Error
 
-class DiscoveryClient {
+object DiscoveryClient {
 
-  def discover(onError: Error => Unit = error => println(error)): InetAddress = {
+  def discover: InetAddress = {
     val socket = new DatagramSocket()
     socket.setBroadcast(true)
 
@@ -21,24 +19,21 @@ class DiscoveryClient {
 
     println("Awaiting server...")
     socket.await(30 seconds).fold(error => {
-      onError(error)
-      discover(onError)
+      println(error)
+      discover
     }, sender => {
       sender.getAddress
     })
   }
-}
 
-object DiscoveryClient {
-
-  def allNetworkInterfaces: List[NetworkInterface] = {
+  private def allNetworkInterfaces: List[NetworkInterface] = {
     NetworkInterface.getNetworkInterfaces
       .toList
       .filter(_.isUp)
       .filterNot(_.isLoopback)
   }
 
-  val broadcastAddresses: (NetworkInterface) => List[InetAddress] = (interface) => {
+  private val broadcastAddresses: (NetworkInterface) => List[InetAddress] = (interface) => {
     interface.getInterfaceAddresses.toList.map(_.getBroadcast).filter(_ != null)
   }
 
@@ -59,6 +54,6 @@ object DiscoveryClient {
 
 object TestClient extends App {
   println("Discover Client started, attempting to find server...")
-  val server = new DiscoveryClient().discover()
+  val server = DiscoveryClient.discover
   println(s"Server address found: $server")
 }

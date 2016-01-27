@@ -1,8 +1,5 @@
 package bad.robot.temperature.client
 
-import java.rmi.activation.ActivationGroup_Stub
-import java.util.concurrent.ScheduledFuture
-
 import bad.robot.temperature.FailedToFindFile
 import bad.robot.temperature.ds18b20.SensorFile
 import bad.robot.temperature.ds18b20.SensorFile._
@@ -21,7 +18,7 @@ object Client extends App {
 
   private def start(sensors: List[SensorFile]) = {
     val client = for {
-      server <- Task.delay(new DiscoveryClient().discover())
+      server <- Task.delay(DiscoveryClient.discover)
       tasks  <- Tasks.record(sensors, HttpUpload(server))
     } yield ()
 
