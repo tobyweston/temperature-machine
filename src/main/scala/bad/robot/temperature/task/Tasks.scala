@@ -2,12 +2,11 @@ package bad.robot.temperature.task
 
 import java.util.concurrent.Executors._
 
-import bad.robot.temperature.{TemperatureWriter, XmlExport}
-import bad.robot.temperature.{TemperatureWriter, XmlExport}
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import bad.robot.temperature.rrd.{Rrd, RrdFile}
 import bad.robot.temperature.server.Server
 import bad.robot.temperature.task.Scheduler._
+import bad.robot.temperature.{TemperatureWriter, XmlExport}
 
 import scala.concurrent.duration._
 import scala.language.postfixOps

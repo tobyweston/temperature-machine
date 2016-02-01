@@ -12,7 +12,7 @@ object HttpServer {
   val services =
     StaticResources.service orElse
     TemperatureResources.service orElse
-    CurrentAverageTemperature.service(SensorReader(SensorFile.find()))
+    TemperatureEndpoint.service(SensorReader(SensorFile.find()))
 }
 
 case class HttpServer(port: Int) {
