@@ -24,6 +24,7 @@ package object server {
       case error @ UnexpectedError(_)  => InternalServerError(error.message)
       case error @ Timeout(_)          => InternalServerError(error.message)
       case error @ ParseError(_)       => BadRequest(error.message)
+      case error @ RrdError(_)         => BadGateway(error.message)
     }
   }
 

@@ -1,20 +1,25 @@
 package bad.robot.temperature.server
 
-import bad.robot.temperature.{Temperature, TemperatureReader}
+import bad.robot.temperature._
 import org.http4s.dsl._
 import org.http4s.server.HttpService
 
 object TemperatureEndpoint {
 
-  def service(sensors: TemperatureReader) = HttpService {
+  def service(sensors: TemperatureReader, writer: TemperatureWriter) = HttpService {
     case GET -> Root / "temperature" => {
       sensors.read.toHttpResponse(temperatures => {
         Ok(f"${average(temperatures).celsius}%.1f °C")
       })
     }
 
-    case PUT -> Root / "temperature" => {
-      InternalServerError()
+    case request @ PUT -> Root / "temperature" => {
+      val json = request.as[String].run
+      val result = for {
+        measurement <- decode[Measurement](json)
+        _           <- writer.write(measurement.temperatures)
+      } yield ()
+      result.toHttpResponse(_ => NoContent())
     }
   }
 

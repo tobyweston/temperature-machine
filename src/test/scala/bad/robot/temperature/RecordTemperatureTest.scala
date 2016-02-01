@@ -15,8 +15,9 @@ class RecordTemperatureTest extends Specification {
     }
     val output = new TemperatureWriter {
       var temperatures = List[Temperature]()
-      def write(data: List[Temperature]): Unit = {
+      def write(data: List[Temperature]) = {
         this.temperatures = data
+        \/-(Unit)
       }
     }
     RecordTemperature(input, output).run

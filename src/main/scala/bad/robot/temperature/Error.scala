@@ -9,3 +9,4 @@ case class FailedToFindFile(location: String) extends Error(s"Failed to find any
 case class FileError(cause: Throwable) extends Error(s"Error loading file; ${cause.getMessage}")
 case class Timeout(reason: String) extends Error(s"Timeout; $reason")
 case class ParseError(reason: String) extends Error(s"Unable to parse content as JSON $reason")
+case class RrdError(reason: String) extends Error(s"Error in RRD $reason")

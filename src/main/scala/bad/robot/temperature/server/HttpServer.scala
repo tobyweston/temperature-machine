@@ -1,6 +1,7 @@
 package bad.robot.temperature.server
 
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
+import bad.robot.temperature.rrd.Rrd
 import bad.robot.temperature.server.HttpServer._
 import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.server.syntax.ServiceOps
@@ -12,7 +13,7 @@ object HttpServer {
   val services =
     StaticResources.service orElse
     TemperatureResources.service orElse
-    TemperatureEndpoint.service(SensorReader(SensorFile.find()))
+    TemperatureEndpoint.service(SensorReader(SensorFile.find()), Rrd())
 }
 
 case class HttpServer(port: Int) {
