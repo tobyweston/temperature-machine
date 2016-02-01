@@ -16,13 +16,13 @@ class TemperatureTest extends Specification {
   "Encode json" >> {
     val expected =
       """{
-        |  "temperature" : 66.99
+        |  "celsius" : 66.99
         |}""".stripMargin
     encode(Temperature(66.99)).spaces2 must_== expected
   }
 
   "Decode json" >> {
-    val temperature = """{ "temperature" : 99.1 }"""
+    val temperature = """{ "celsius" : 99.1 }"""
     val result = decode[Temperature](temperature)
     result must be_\/- (Temperature(99.1))
   }

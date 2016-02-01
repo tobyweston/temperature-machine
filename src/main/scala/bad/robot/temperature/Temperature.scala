@@ -8,13 +8,13 @@ object Temperature {
   implicit def temperatureEncoder: EncodeJson[Temperature] = {
     EncodeJson((temperature: Temperature) =>
       argonaut.Json(
-        "temperature" := temperature.celsius
+        "celsius" := temperature.celsius
       )
     )
   }
 
   implicit def temperatureDecoder: DecodeJson[Temperature] = {
-    DecodeJson(cursor => cursor.get[Double]("temperature").map(Temperature.apply))
+    DecodeJson(cursor => cursor.get[Double]("celsius").map(Temperature.apply))
   }
 }
 
