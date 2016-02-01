@@ -7,7 +7,7 @@ import org.specs2.mutable.Specification
 
 import scalaz.{-\/, \/-}
 
-class MeasurementTest extends Specification {
+class RecordTemperatureTest extends Specification {
 
   "Take a measurement" >> {
     val input = new TemperatureReader {
