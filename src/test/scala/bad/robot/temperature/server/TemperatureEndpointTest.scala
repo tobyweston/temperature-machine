@@ -1,6 +1,7 @@
 package bad.robot.temperature.server
 
 import bad.robot.temperature.{Error, Temperature, TemperatureReader}
+import bad.robot.temperature.test._
 import org.http4s.Method.PUT
 import org.http4s.dsl._
 import org.http4s.{Request, Uri}

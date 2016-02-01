@@ -1,5 +1,23 @@
 package bad.robot.temperature
 
+import argonaut.Argonaut._
+import argonaut._
+
+object Temperature {
+
+  implicit def temperatureEncoder: EncodeJson[Temperature] = {
+    EncodeJson((temperature: Temperature) =>
+      argonaut.Json(
+        "temperature" := temperature.celsius
+      )
+    )
+  }
+
+  implicit def temperatureDecoder: DecodeJson[Temperature] = {
+    DecodeJson(cursor => cursor.get[Double]("temperature").map(Temperature.apply))
+  }
+}
+
 case class Temperature(celsius: Double) {
   def fahrenheit: Double = celsius * 9 / 5 + 32
   def +(other: Temperature) = new Temperature(this.celsius + other.celsius)

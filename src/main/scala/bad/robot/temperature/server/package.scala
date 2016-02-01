@@ -17,12 +17,13 @@ package object server {
     }
 
     val errors = PartialFunction[Error, Task[Response]] {
-      case error @ CrcFailure() => InternalServerError(error.message)
+      case error @ CrcFailure()        => InternalServerError(error.message)
       case error @ FailedToFindFile(_) => NotFound(error.message)
-      case error @ FileError(_) => InternalServerError(error.message)
-      case error @ SensorError(_) => InternalServerError(error.message)
-      case error @ UnexpectedError(_) => InternalServerError(error.message)
-      case error @ Timeout(_) => InternalServerError(error.message)
+      case error @ FileError(_)        => InternalServerError(error.message)
+      case error @ SensorError(_)      => InternalServerError(error.message)
+      case error @ UnexpectedError(_)  => InternalServerError(error.message)
+      case error @ Timeout(_)          => InternalServerError(error.message)
+      case error @ ParseError(_)       => BadRequest(error.message)
     }
   }
 

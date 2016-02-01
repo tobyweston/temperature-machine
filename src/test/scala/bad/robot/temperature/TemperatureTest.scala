@@ -1,5 +1,6 @@
 package bad.robot.temperature
 
+import org.specs2.matcher.DisjunctionMatchers._
 import org.specs2.mutable.Specification
 
 class TemperatureTest extends Specification {
@@ -10,6 +11,20 @@ class TemperatureTest extends Specification {
 
   "Fahrenheit" >> {
     Temperature(23.125).fahrenheit must_== 73.625
+  }
+
+  "Encode json" >> {
+    val expected =
+      """{
+        |  "temperature" : 66.99
+        |}""".stripMargin
+    encode(Temperature(66.99)).spaces2 must_== expected
+  }
+
+  "Decode json" >> {
+    val temperature = """{ "temperature" : 99.1 }"""
+    val result = decode[Temperature](temperature)
+    result must be_\/- (Temperature(99.1))
   }
 
 }
