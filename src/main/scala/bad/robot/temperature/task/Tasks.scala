@@ -3,7 +3,7 @@ package bad.robot.temperature.task
 import java.util.concurrent.Executors._
 
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
-import bad.robot.temperature.rrd.{Rrd, RrdFile}
+import bad.robot.temperature.rrd.{Host, Rrd, RrdFile}
 import bad.robot.temperature.server.Server
 import bad.robot.temperature.task.Scheduler._
 import bad.robot.temperature.{TemperatureWriter, XmlExport}
@@ -14,10 +14,10 @@ import scalaz.concurrent.Task
 
 object Tasks {
 
-  def init(implicit numberOfSensors: Int) = {
+  def init(hosts: List[Host])(implicit numberOfSensors: Int) = {
     print(s"RRD initialising (with $numberOfSensors of a maximum of 5 sensors)...")
     Task.delay(RrdFile.exists).map {
-      case true => RrdFile(30 seconds).create()
+      case false => RrdFile(hosts, 30 seconds).create()
       case _ => println("Ok")
     }
   }
@@ -30,7 +30,7 @@ object Tasks {
     } yield tasks
   }
 
-  def graphing(implicit numberOfSensors: Int) = {
+  def graphing(implicit hosts: List[Host], numberOfSensors: Int) = {
     val executor = newScheduledThreadPool(3, TemperatureMachineThreadFactory("graphing-thread"))
     for {
       _ <- Task.delay(executor.schedule(90 seconds, GenerateGraph(24 hours)))
@@ -39,16 +39,17 @@ object Tasks {
     } yield ()
   }
 
-  def exportXml(implicit numberOfSensors: Int) = {
+  def exportXml(implicit hosts: List[Host], numberOfSensors: Int) = {
     val executor = newScheduledThreadPool(1, TemperatureMachineThreadFactory("xml-export-thread"))
     Task.delay(executor.schedule(100 seconds, XmlExport(24 hours)))
   }
 
   def application(sensors: List[SensorFile]) = {
     implicit val numberOfSensors = sensors.size
+    implicit val hosts = List(Host.name)
 
     for {
-      _ <- Tasks.init
+      _ <- Tasks.init(hosts)
       _ <- Tasks.record(sensors, Rrd())
       _ <- Tasks.graphing
       _ <- Tasks.exportXml

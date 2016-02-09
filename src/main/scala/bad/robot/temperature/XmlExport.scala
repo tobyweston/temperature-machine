@@ -4,9 +4,9 @@ import bad.robot.temperature.rrd._
 
 import scala.concurrent.duration.Duration
 
-case class XmlExport(period: Duration)(implicit numberOfSensors: Int) extends Runnable {
+case class XmlExport(period: Duration)(implicit hosts: List[Host], numberOfSensors: Int) extends Runnable {
   def run(): Unit = {
     val currentTime = now()
-    Xml.export(currentTime - period.toSeconds, currentTime, numberOfSensors)
+    Xml.export(currentTime - period.toSeconds, currentTime, hosts, numberOfSensors)
   }
 }

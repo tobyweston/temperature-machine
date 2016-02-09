@@ -23,7 +23,7 @@ object RrdFile {
 
 }
 
-case class RrdFile(frequency: Seconds = Duration(30, "seconds")) {
+case class RrdFile(hosts: List[Host], frequency: Seconds = Duration(30, "seconds")) {
 
   def create(start: Seconds = now() - Seconds(1)) {
 
@@ -35,8 +35,8 @@ case class RrdFile(frequency: Seconds = Duration(30, "seconds")) {
     val weeklyHourAvg     = Archive(aWeek, frequency, anHour)       // = new ArcDef(AVERAGE, 0.5, 120, 168)
     val monthlyTwoHourAvg = Archive(aMonth, frequency, anHour * 2)  // = new ArcDef(AVERAGE, 0.5, 240, 360)
 
-    for (sensor <- 1 to MaxSensors) {
-      definition.addDatasource(new DsDef(s"sensor-$sensor", GAUGE, heartbeat, NaN, NaN))
+    for (host <- hosts; sensor <- 1 to MaxSensors) {
+      definition.addDatasource(new DsDef(s"${host.name}-sensor-$sensor", GAUGE, heartbeat, NaN, NaN))
     }
 
     definition.addArchive(daily)

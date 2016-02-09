@@ -20,7 +20,7 @@ object Graph {
 
   val path = RrdFile.path
 
-  def create(from: Seconds, to: Seconds, numberOfSensors: Int) = {
+  def create(from: Seconds, to: Seconds, hosts: List[Host], numberOfSensors: Int) = {
     val graph = new RrdGraphDef()
     graph.setWidth(800)
     graph.setHeight(500)
@@ -30,8 +30,8 @@ object Graph {
     graph.setTitle("Temperature")
     graph.setVerticalLabel("°C")
 
-    for (sensor <- 1 to numberOfSensors) {
-      val name = s"sensor-$sensor"
+    for (host <- hosts; sensor <- 1 to numberOfSensors) {
+      val name = s"${host.name}-sensor-$sensor"
       graph.datasource(name, RrdFile.file, name, AVERAGE)
 
       graph.line(name, colours(sensor - 1))
@@ -42,7 +42,7 @@ object Graph {
 
     graph.setImageFormat("png")
 
-    graph.hrule(0, new Color(204, 255, 255), "freezing")
+    graph.hrule(0, new Color(204, 255, 255), "Freezing")
     graph.hspan(16, 20, transparent(green), "Optimal")
 
     val file = new RrdGraph(graph)

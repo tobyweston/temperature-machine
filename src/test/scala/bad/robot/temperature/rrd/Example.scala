@@ -17,7 +17,10 @@ object Example extends App {
 
   val frequency = Duration(30, "seconds")
 
-  RrdFile(frequency).create(start - 5)
+  val host = Host.name
+  val hosts = List(host)
+
+  RrdFile(hosts, frequency).create(start - 5)
 
   val seed = random.nextInt(30) + random.nextDouble()
 
@@ -33,12 +36,12 @@ object Example extends App {
 
   val numberOfSensors = 2
 
-  Xml.export(start, start + aDay, numberOfSensors)
+  Xml.export(start, start + aDay, hosts, numberOfSensors)
 
-  Graph.create(start, start + aDay, numberOfSensors)
-  Graph.create(start, start + aDay * 2, numberOfSensors)
-  Graph.create(start, start + aWeek, numberOfSensors)
-  Graph.create(start, start + aMonth, numberOfSensors)
+  Graph.create(start, start + aDay, hosts, numberOfSensors)
+  Graph.create(start, start + aDay * 2, hosts, numberOfSensors)
+  Graph.create(start, start + aWeek, hosts, numberOfSensors)
+  Graph.create(start, start + aMonth, hosts, numberOfSensors)
 
   println("Done generating " + duration)
 }
