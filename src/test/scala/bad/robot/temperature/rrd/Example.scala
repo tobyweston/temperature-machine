@@ -17,8 +17,7 @@ object Example extends App {
 
   val frequency = Duration(30, "seconds")
 
-  val host = Host.name
-  val hosts = List(host)
+  val hosts = List(Host("lounge"), Host("bedroom"))
 
   RrdFile(hosts, frequency).create(start - 5)
 
@@ -30,7 +29,15 @@ object Example extends App {
   val times = Stream.iterate(start)(_ + frequency.toSeconds).takeWhile(_ < end)
   times.zip(temperatures).foreach({
     case (time, celsius) => {
-      RrdUpdate(time, List(Temperature(celsius), Temperature(celsius + 4.3))).apply()
+      RrdUpdate(time, List(
+        Temperature(celsius),
+        Temperature(celsius + 4.3),
+        Temperature(Double.NaN),
+        Temperature(Double.NaN),
+        Temperature(Double.NaN),
+        Temperature(celsius - 10.3),
+        Temperature(celsius - 9.3)
+      )).apply()
     }
   })
 
