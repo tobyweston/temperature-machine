@@ -9,14 +9,25 @@ import org.rrd4j.graph.{RrdGraph, RrdGraphDef}
 
 object Graph {
 
-  private val colours = Array(
+  class CircularArray[T](array: Array[T]) {
+    private var index = -1
+    def next: T = {
+      if (index == array.length - 1)
+        index = 0
+      else
+        index = index + 1
+      array(index)
+    }
+  }
+
+  private val colours = new CircularArray(Array(
     new Color(69,  113, 167),   // blue
     new Color(170, 70,  67),    // red
     new Color(137, 165, 78),    // green
     new Color(128, 105, 155),   // purple
     new Color(61,  150, 174),   // cyan
     new Color(219, 132, 61)     // orange
-  )
+  ))
 
   val path = RrdFile.path
 
@@ -34,7 +45,7 @@ object Graph {
       val name = s"${host.name}-sensor-$sensor"
       graph.datasource(name, RrdFile.file, name, AVERAGE)
 
-      graph.line(name, colours(sensor - 1))
+      graph.line(name, colours.next)
 
       graph.gprint(name, MIN, "min = %.2f%s °C")
       graph.gprint(name, MAX, "max = %.2f%s °C")
