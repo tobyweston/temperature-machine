@@ -2,13 +2,13 @@ package bad.robot.temperature
 
 import argonaut._
 import Argonaut._
-import bad.robot.temperature.rrd.Seconds
+import bad.robot.temperature.rrd.{Host, Seconds}
 
 object Measurement {
   implicit def measurementEncoder: EncodeJson[Measurement] = {
     EncodeJson((measurement: Measurement) =>
       argonaut.Json(
-        "source" := measurement.source,
+        "host"    := measurement.host.name,
         "seconds" := measurement.time.value,
         "sensors" := measurement.temperatures
       )
@@ -17,11 +17,11 @@ object Measurement {
 
   implicit def measurementDecoder: DecodeJson[Measurement] = {
     DecodeJson(cursor => for {
-      source  <- cursor.get[String]("source")
+      host    <- cursor.get[String]("host")
       seconds <- cursor.get[Long]("seconds")
       sensors <- cursor.get[List[Temperature]]("sensors")
-    } yield Measurement(source, Seconds(seconds), sensors))
+    } yield Measurement(Host(host), Seconds(seconds), sensors))
   }
 }
 
-case class Measurement(source: String, time: Seconds, temperatures: List[Temperature])
+case class Measurement(host: Host, time: Seconds, temperatures: List[Temperature])

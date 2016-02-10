@@ -11,8 +11,8 @@ import scalaz.concurrent.Task
 
 object HttpServer {
   val services =
-    StaticResources.service orElse
-    TemperatureResources.service orElse
+    StaticResources.service ||
+    TemperatureResources.service ||
     TemperatureEndpoint.service(SensorReader(SensorFile.find()), Rrd())
 }
 

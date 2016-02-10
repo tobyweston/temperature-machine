@@ -44,7 +44,7 @@ class TemperatureEndpointTest extends Specification {
   }
 
   "Put some temperature data" >> {
-    val body = """{ "source" : "localhost", "seconds" : 1000, "sensors" : [ { "celsius" : 32.1 } ]}"""
+    val body = """{ "host" : "localhost", "seconds" : 1000, "sensors" : [ { "celsius" : 32.1 } ]}"""
     val request = Request(PUT, Uri(path = s"temperature")).withBody(body).run
     val service = TemperatureEndpoint.service(stubReader(\/-(List())), stubWriter(\/-(Unit)))
     val response = service.apply(request).run
@@ -52,7 +52,7 @@ class TemperatureEndpointTest extends Specification {
   }
 
   "Putting sensor data to the writer" >> {
-    val body = """{ "source" : "localhost", "seconds" : 1000, "sensors" : [ { "celsius" : 31.1 }, { "celsius" : 32.8 } ]}"""
+    val body = """{ "host" : "localhost", "seconds" : 1000, "sensors" : [ { "celsius" : 31.1 }, { "celsius" : 32.8 } ]}"""
     val request = Request(PUT, Uri(path = s"temperature")).withBody(body).run
     var temperatures = List[Temperature]()
     val service = TemperatureEndpoint.service(stubReader(\/-(List())), new TemperatureWriter {
