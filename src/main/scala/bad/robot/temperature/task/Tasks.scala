@@ -3,6 +3,7 @@ package bad.robot.temperature.task
 import java.util.concurrent.Executors._
 
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
+import bad.robot.temperature.rrd.RrdFile.MaxSensors
 import bad.robot.temperature.rrd.{Host, Rrd, RrdFile}
 import bad.robot.temperature.server.Server
 import bad.robot.temperature.task.Scheduler._
@@ -15,7 +16,7 @@ import scalaz.concurrent.Task
 object Tasks {
 
   def init(hosts: List[Host])(implicit numberOfSensors: Int) = {
-    print(s"RRD initialising (with $numberOfSensors of a maximum of 5 sensors)...")
+    print(s"RRD initialising for ${hosts.mkString} (with $numberOfSensors of a maximum of $MaxSensors sensors each)...")
     Task.delay(RrdFile.exists).map {
       case false => RrdFile(hosts, 30 seconds).create()
       case _ => println("Ok")
@@ -47,11 +48,11 @@ object Tasks {
   // stand alone app, records local temperature and serves as a web-page
   def application(sensors: List[SensorFile]) = {
     implicit val numberOfSensors = sensors.size
-    implicit val local = List(Host.name)
+    implicit val local = List(Host.name.trim())
 
     for {
       _ <- Tasks.init(local)
-      _ <- Tasks.record(sensors, Rrd())
+      _ <- Tasks.record(sensors, Rrd(local))
       _ <- Tasks.graphing
       _ <- Tasks.exportXml
       _ <- Server.http

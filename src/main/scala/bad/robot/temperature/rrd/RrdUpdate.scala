@@ -7,17 +7,15 @@ import scala.{Error => _}
 import scalaz.\/
 import scalaz.\/.fromTryCatchNonFatal
 
-case class RrdUpdate(measurement: Measurement) {
+case class RrdUpdate(monitored: List[Host], measurement: Measurement) {
 
-  private val UnknownValues = List().padTo(allHosts.size * RrdFile.MaxSensors, Temperature(Double.NaN))
-
-  val allHosts = List(Host("bedroom"), Host("lounge")) // TODO pass in from command line args; the expected list of clients
+  private val UnknownValues = List().padTo(monitored.size * RrdFile.MaxSensors, Temperature(Double.NaN))
 
   def apply(): Error \/ Unit = {
     fromTryCatchNonFatal {
       val database = new RrdDb(RrdFile.file)
       val sample = database.createSample()
-      val temperatures = UnknownValues.patch(allHosts.indexOf(measurement.host) * RrdFile.MaxSensors, measurement.temperatures, measurement.temperatures.size)
+      val temperatures = UnknownValues.patch(monitored.indexOf(measurement.host) * RrdFile.MaxSensors, measurement.temperatures, measurement.temperatures.size)
       sample.setTime(measurement.time)
       sample.setValues(temperatures.map(_.celsius): _*)
       sample.update()
