@@ -44,12 +44,13 @@ object Tasks {
     Task.delay(executor.schedule(100 seconds, XmlExport(24 hours)))
   }
 
+  // stand alone app, records local temperature and serves as a web-page
   def application(sensors: List[SensorFile]) = {
     implicit val numberOfSensors = sensors.size
-    implicit val hosts = List(Host.name)
+    implicit val local = List(Host.name)
 
     for {
-      _ <- Tasks.init(hosts)
+      _ <- Tasks.init(local)
       _ <- Tasks.record(sensors, Rrd())
       _ <- Tasks.graphing
       _ <- Tasks.exportXml

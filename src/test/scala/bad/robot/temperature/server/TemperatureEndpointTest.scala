@@ -1,6 +1,7 @@
 package bad.robot.temperature.server
 
 import bad.robot.temperature._
+import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.test._
 import org.http4s.Method.{GET, PUT}
 import org.http4s.Status.{InternalServerError, NoContent, Ok}
@@ -56,8 +57,8 @@ class TemperatureEndpointTest extends Specification {
     val request = Request(PUT, Uri(path = s"temperature")).withBody(body).run
     var temperatures = List[Temperature]()
     val service = TemperatureEndpoint.service(stubReader(\/-(List())), new TemperatureWriter {
-      def write(data: List[Temperature]): \/[Error, Unit] = {
-        temperatures = data
+      def write(measurement: Measurement) : \/[Error, Unit] = {
+        temperatures = measurement.temperatures
         \/-(Unit)
       }
     })
@@ -78,11 +79,11 @@ class TemperatureEndpointTest extends Specification {
   }
 
   def stubWriter(result: Error \/ Unit) = new TemperatureWriter {
-    def write(temperature: List[Temperature]) = result
+    def write(measurement: Measurement) = result
   }
 
   def UnexpectedWriter = new TemperatureWriter {
-    def write(temperature: List[Temperature]) = ???
+    def write(measurement: Measurement) = ???
   }
 
 }

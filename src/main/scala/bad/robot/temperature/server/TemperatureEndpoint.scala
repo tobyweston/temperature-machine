@@ -17,7 +17,7 @@ object TemperatureEndpoint {
       val json = request.as[String].run
       val result = for {
         measurement <- decode[Measurement](json)
-        _           <- writer.write(measurement.temperatures)
+        _           <- writer.write(measurement)
       } yield ()
       result.toHttpResponse(_ => NoContent())
     }

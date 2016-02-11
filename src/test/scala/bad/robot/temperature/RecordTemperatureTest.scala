@@ -2,6 +2,7 @@ package bad.robot.temperature
 
 import java.io.{ByteArrayOutputStream, PrintStream}
 
+import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.task.RecordTemperature
 import org.specs2.mutable.Specification
 
@@ -15,8 +16,8 @@ class RecordTemperatureTest extends Specification {
     }
     val output = new TemperatureWriter {
       var temperatures = List[Temperature]()
-      def write(data: List[Temperature]) = {
-        this.temperatures = data
+      def write(measurement: Measurement) = {
+        this.temperatures = measurement.temperatures
         \/-(Unit)
       }
     }
@@ -29,7 +30,7 @@ class RecordTemperatureTest extends Specification {
       def read = -\/(UnexpectedError("whatever"))
     }
     val output = new TemperatureWriter {
-      def write(data: List[Temperature]) = ???
+      def write(measurement: Measurement) = ???
     }
     val log = new ByteArrayOutputStream()
     val error = new PrintStream(log)
