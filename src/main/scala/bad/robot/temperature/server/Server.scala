@@ -32,6 +32,7 @@ object Server extends App {
 
   val server = for {
     _ <- Task.delay(println("Starting temperature-machine (server mode)..."))
+         // TODO rrd init
     _ <- Task.gatherUnordered(List(discovery, http))
          // TODO add graphing / XML export
   } yield ()
