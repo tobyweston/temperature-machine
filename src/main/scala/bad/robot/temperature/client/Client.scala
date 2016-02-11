@@ -14,8 +14,8 @@ object Client extends App {
   val location = sys.props.getOrElse("sensor.location", BaseFolder)
 
   SensorFile.find(location) match {
-    case Nil => println(FailedToFindFile(location).message)
-    case files => start(files)
+    case Nil     => println(FailedToFindFile(location).message)
+    case sensors => start(sensors)
   }
 
   private def start(sensors: List[SensorFile]) = {
