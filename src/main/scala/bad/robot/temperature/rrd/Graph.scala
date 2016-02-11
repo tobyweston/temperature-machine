@@ -3,7 +3,6 @@ package bad.robot.temperature.rrd
 import java.awt.Color
 import java.awt.Color._
 
-import bad.robot.temperature.rrd.RrdUpdate._
 import org.rrd4j.ConsolFun._
 import org.rrd4j.graph.{RrdGraph, RrdGraphDef}
 
