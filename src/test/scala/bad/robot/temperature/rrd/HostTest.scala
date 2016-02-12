@@ -9,4 +9,8 @@ class HostTest extends Specification {
     "cheetah.loc-sensor-1".length must_== 20
   }
 
+  "Doesn't trim" >> {
+    Host("kitchen").trim must_== Host("kitchen")
+  }
+
 }

@@ -35,7 +35,7 @@ object Server extends App {
           |""".stripMargin)
       sys.exit(-1)
     }
-    case hosts => hosts.map(Host.apply)
+    case hosts => hosts.map(host => Host.apply(host).trim())
   }
 
   val server = for {
