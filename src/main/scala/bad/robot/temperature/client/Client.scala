@@ -20,7 +20,7 @@ object Client extends App {
 
   private def start(sensors: List[SensorFile]) = {
     val client = for {
-      _      <- Task.delay(print(s"Initialising client ${Host.name} (with ${sensors.size} of a maximum of $MaxSensors sensors)..."))
+      _      <- Task.delay(println(s"Initialising client ${Host.name.name} (with ${sensors.size} of a maximum of $MaxSensors sensors)..."))
       server <- Task.delay(DiscoveryClient.discover)
       tasks  <- Tasks.record(sensors, HttpUpload(server))
     } yield ()

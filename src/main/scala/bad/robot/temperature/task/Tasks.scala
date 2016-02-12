@@ -15,8 +15,8 @@ import scalaz.concurrent.Task
 
 object Tasks {
 
-  def init(hosts: List[Host])(implicit numberOfSensors: Int) = {
-    print(s"RRD initialising for ${hosts.mkString} (with $numberOfSensors of a maximum of $MaxSensors sensors each)...")
+  def init(hosts: List[Host]) = {
+    print(s"RRD initialising for ${hosts.map(_.name).mkString(", ")} (with up to $MaxSensors sensors each)...")
     Task.delay(RrdFile.exists).map {
       case false => RrdFile(hosts, 30 seconds).create()
       case _ => println("Ok")
