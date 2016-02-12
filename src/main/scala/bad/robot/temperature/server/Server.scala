@@ -45,8 +45,8 @@ object Server extends App {
       discovery,
       Tasks.graphing,
       Tasks.exportXml,
-      http)
-    )
+      http
+    ))
   } yield ()
 
   server.run
