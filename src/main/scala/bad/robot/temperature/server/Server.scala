@@ -4,7 +4,7 @@ import java.net.InetAddress
 
 import bad.robot.temperature.ds18b20.SensorFile
 import bad.robot.temperature.ds18b20.SensorFile._
-import bad.robot.temperature.rrd.{Rrd, RrdFile, Host}
+import bad.robot.temperature.rrd.{RrdFile, Host, Rrd}
 import bad.robot.temperature.task.Tasks
 
 import scalaz.concurrent.Task
@@ -28,6 +28,8 @@ object Server extends App {
   }
 
   def server(sensors: List[SensorFile])(implicit monitored: List[Host]) = {
+    implicit val numberOfSensors = RrdFile.MaxSensors
+
     for {
       _ <- Task.delay(println("Starting temperature-machine (server mode)..."))
       _ <- Tasks.init(hosts)
@@ -50,8 +52,6 @@ object Server extends App {
   }
 
 
-
-  implicit val numberOfSensors = RrdFile.MaxSensors
 
    val hosts = args.toList match {
     case Nil   => quit
