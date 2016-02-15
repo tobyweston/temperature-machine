@@ -19,7 +19,8 @@ case class HttpUpload(address: InetAddress) extends TemperatureWriter {
   def write(measurement: Measurement): Error \/ Unit = {
     val request = Request(PUT, Uri(
       scheme = Some("http".ci),
-      authority = Some(Authority(host = IPv4(address.getHostAddress), port = Some(11900))))
+      authority = Some(Authority(host = IPv4(address.getHostAddress), port = Some(11900))),
+      path = "/temperature")
     ).withBody(encode(measurement).spaces2).run
     blaze.apply(request).map({
       case Successful(_) => \/-(())
