@@ -27,7 +27,7 @@ object Example extends App {
 
   val numberOfSensors = 2
 
-  Xml.export(start, start + aDay, hosts, numberOfSensors)
+  Xml.export(start, start + aDay, hosts)
 
   Graph.create(start, start + aDay, hosts, numberOfSensors)
   Graph.create(start, start + aDay * 2, hosts, numberOfSensors)

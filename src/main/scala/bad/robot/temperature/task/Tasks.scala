@@ -40,7 +40,7 @@ object Tasks {
     } yield ()
   }
 
-  def exportXml(implicit hosts: List[Host], numberOfSensors: Int) = {
+  def exportXml(implicit hosts: List[Host]) = {
     val executor = newScheduledThreadPool(1, TemperatureMachineThreadFactory("xml-export-thread"))
     Task.delay(executor.schedule(100 seconds, XmlExport(24 hours)))
   }
