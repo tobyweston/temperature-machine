@@ -2,6 +2,7 @@ package bad.robot.temperature
 
 import java.io.{ByteArrayOutputStream, PrintStream}
 
+import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.task.RecordTemperature
 import org.specs2.mutable.Specification
 
@@ -20,7 +21,7 @@ class RecordTemperatureTest extends Specification {
         \/-(Unit)
       }
     }
-    RecordTemperature(input, output).run()
+    RecordTemperature(Host("example"), input, output).run()
     output.temperatures must_== List(Temperature(69.9))
   }
 
@@ -33,7 +34,7 @@ class RecordTemperatureTest extends Specification {
     }
     val log = new ByteArrayOutputStream()
     val error = new PrintStream(log)
-    RecordTemperature(input, output, error).run()
+    RecordTemperature(Host("example"), input, output, error).run()
     log.toString must contain("UnexpectedError(whatever)")
   }
 
@@ -46,7 +47,7 @@ class RecordTemperatureTest extends Specification {
     }
     val log = new ByteArrayOutputStream()
     val error = new PrintStream(log)
-    RecordTemperature(input, output, error).run()
+    RecordTemperature(Host("example"), input, output, error).run()
     log.toString must contain("UnexpectedError(whatever)")
   }
 

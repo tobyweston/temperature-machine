@@ -16,18 +16,18 @@ import scalaz.concurrent.Task
 object Tasks {
 
   def init(hosts: List[Host]) = {
-    print(s"RRD initialising for ${hosts.map(_.name).mkString(", ")} (with up to $MaxSensors sensors each)...")
+    print(s"RRD initialising for ${hosts.map(_.name).mkString("'", "', '", "'")} (with up to $MaxSensors sensors each)...")
     Task.delay(RrdFile.exists).map {
       case false => RrdFile(hosts, 30 seconds).create()
       case _ => println("Ok")
     }
   }
 
-  def record(sensors: List[SensorFile], to: TemperatureWriter) = {
+  def record(source: Host, sensors: List[SensorFile], destination: TemperatureWriter) = {
     val executor = newScheduledThreadPool(1, TemperatureMachineThreadFactory("reading-thread"))
     for {
-      _     <- Task.delay(print(s"Monitoring sensor file(s) ${sensors.mkString("\n\t", "\n\t", "\n")}"))
-      tasks <- Task.delay(executor.schedule(30 seconds, RecordTemperature(SensorReader(sensors), to)))
+      _     <- Task.delay(print(s"Monitoring sensor file(s) on '${source.name}' ${sensors.mkString("\n\t", "\n\t", "\n")}"))
+      tasks <- Task.delay(executor.schedule(30 seconds, RecordTemperature(source, SensorReader(sensors), destination)))
     } yield tasks
   }
 
@@ -45,14 +45,15 @@ object Tasks {
     Task.delay(executor.schedule(100 seconds, XmlExport(24 hours)))
   }
 
+  // deprecated
   // stand alone app, records local temperature and serves as a web-page
   def application(sensors: List[SensorFile]) = {
     implicit val numberOfSensors = sensors.size
-    implicit val local = List(Host.name.trim())
+    implicit val monitored = List(Host.local.trim)
 
     for {
-      _ <- Tasks.init(local)
-      _ <- Tasks.record(sensors, Rrd(local))
+      _ <- Tasks.init(monitored)
+      _ <- Tasks.record(Host.local.trim, sensors, Rrd(monitored))
       _ <- Tasks.graphing
       _ <- Tasks.exportXml
       _ <- Server.http

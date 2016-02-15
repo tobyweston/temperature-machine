@@ -5,7 +5,6 @@ import java.net._
 
 import bad.robot.temperature.server.DiscoveryServer._
 import bad.robot.temperature.server.Socket._
-import bad.robot.temperature.server
 
 object DiscoveryServer {
   val LocalNetworkBroadcastAddress = "255.255.255.255"
@@ -38,10 +37,4 @@ class DiscoveryServer extends Runnable {
       case e: Throwable => System.err.println(s"An error occurred listening for server discovery messages. Remote machines may not be able to publish their data to the server. ${e.getMessage}")
     }
   }
-}
-
-object TestServer extends App {
-  println("Starting Discovery Server...")
-  new Thread(new DiscoveryServer(), "temperature-machine-discovery-server").start()
-  println("Discovery Server stopped...")
 }
