@@ -2,6 +2,7 @@ package bad.robot.temperature.server
 
 import java.net.InetAddress
 
+import bad.robot.temperature.client.HttpUpload
 import bad.robot.temperature.ds18b20.SensorFile
 import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.rrd.{RrdFile, Host, Rrd}
@@ -35,7 +36,7 @@ object Server extends App {
       _ <- Tasks.init(hosts)
       _ <- Task.gatherUnordered(List(
         discovery,
-        Tasks.record(Host.local.trim, sensors, Rrd(monitored)),
+        Tasks.record(Host.local.trim, sensors, HttpUpload(InetAddress.getLocalHost)),
         Tasks.graphing,
         Tasks.exportXml,
         http

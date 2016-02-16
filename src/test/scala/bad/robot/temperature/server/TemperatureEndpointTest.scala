@@ -1,7 +1,7 @@
 package bad.robot.temperature.server
 
 import bad.robot.temperature._
-import bad.robot.temperature.rrd.Host
+import bad.robot.temperature.server.Requests._
 import bad.robot.temperature.test._
 import org.http4s.Method.{GET, PUT}
 import org.http4s.Status.{InternalServerError, NoContent, Ok}
@@ -11,7 +11,13 @@ import org.specs2.mutable.Specification
 
 import scalaz.{-\/, \/, \/-}
 
+object Requests {
+  val Put: String => Request = (body) => Request(PUT, Uri(path = s"temperature")).withBody(body).run
+}
+
 class TemperatureEndpointTest extends Specification {
+
+  sequential
 
   "Averages a single temperature" >> {
     val request = Request(GET, Uri.uri("/temperature"))
@@ -45,15 +51,13 @@ class TemperatureEndpointTest extends Specification {
   }
 
   "Put some temperature data" >> {
-    val body = """{ "host" : "localhost", "seconds" : 1000, "sensors" : [ { "celsius" : 32.1 } ]}"""
-    val request = Request(PUT, Uri(path = s"temperature")).withBody(body).run
     val service = TemperatureEndpoint.service(stubReader(\/-(List())), stubWriter(\/-(Unit)))
-    val response = service.apply(request).run
+    val response = service.apply(Put("""{ "host" : "localhost", "seconds" : 9000, "sensors" : [ { "celsius" : 32.1 } ]}""")).run
     response must haveStatus(NoContent)
   }
 
   "Putting sensor data to the writer" >> {
-    val body = """{ "host" : "localhost", "seconds" : 1000, "sensors" : [ { "celsius" : 31.1 }, { "celsius" : 32.8 } ]}"""
+    val body = """{ "host" : "localhost", "seconds" : 7000, "sensors" : [ { "celsius" : 31.1 }, { "celsius" : 32.8 } ]}"""
     val request = Request(PUT, Uri(path = s"temperature")).withBody(body).run
     var temperatures = List[Temperature]()
     val service = TemperatureEndpoint.service(stubReader(\/-(List())), new TemperatureWriter {
@@ -67,11 +71,44 @@ class TemperatureEndpointTest extends Specification {
   }
 
   "Bad json when writing sensor data" >> {
-    val request = Request(PUT, Uri(path = s"temperature")).withBody("bad json").run
     val service = TemperatureEndpoint.service(stubReader(\/-(List())), stubWriter(\/-(Unit)))
-    val response = service.apply(request).run
+    val response = service.apply(Put("bad json")).run
     response must haveStatus(BadRequest)
     response.as[String].run must_== "Unable to parse content as JSON Unexpected content found: bad json"
+  }
+
+  "Get multiple sensors, averaging the temperatures" >> {
+    val service = TemperatureEndpoint.service(stubReader(\/-(List())), stubWriter(\/-(Unit)))
+    service.apply(Request(DELETE, Uri.uri("/temperatures"))).run
+    service.apply(Put("""{ "host" : "lounge", "seconds" : 100, "sensors" : [ { "celsius" : 31.1 }, { "celsius" : 32.8 } ]}""")).run
+    service.apply(Put("""{ "host" : "bedroom", "seconds" : 200, "sensors" : [ { "celsius" : 21.1 }, { "celsius" : 22.8 } ]}""")).run
+
+    val request = Request(GET, Uri.uri("/temperatures"))
+    val response = service(request).run
+
+    response.status must_== Ok
+    response.as[String].run must_== """{
+                                      |  "measurements" : [
+                                      |    {
+                                      |      "host" : "lounge",
+                                      |      "seconds" : 100,
+                                      |      "sensors" : [
+                                      |        {
+                                      |          "celsius" : 31.95
+                                      |        }
+                                      |      ]
+                                      |    },
+                                      |    {
+                                      |      "host" : "bedroom",
+                                      |      "seconds" : 200,
+                                      |      "sensors" : [
+                                      |        {
+                                      |          "celsius" : 21.950000000000003
+                                      |        }
+                                      |      ]
+                                      |    }
+                                      |  ]
+                                      |}""".stripMargin
   }
 
   def stubReader(result: Error \/ List[Temperature]) = new TemperatureReader {
