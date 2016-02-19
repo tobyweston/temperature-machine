@@ -58,13 +58,14 @@ object Graph {
     graph.hrule(0, new Color(51, 153, 255), "Freezing")
     graph.hspan(16, 20, transparent(green), "Optimal\\j")
 
-    hosts.map(host => host -> sensors.filter(_.contains(host.name))).foreach({ case (host, sensors) => {
-      graph.datasource(s"${host.name}-max", generateRpn(sensors, Max))
-      graph.datasource(s"${host.name}-min", generateRpn(sensors, Min))
-      graph.gprint(s"${host.name}-min", MIN, s"${host.name} min = %.2f%s °C")
-      graph.gprint(s"${host.name}-max", MAX, s"${host.name} max = %.2f%s °C\\j")
-
-    }})
+    hosts.map(host => host -> sensors.filter(_.contains(host.name))).foreach({
+      case (_, Nil)        => ()
+      case (host, sensorsForHost) =>
+        graph.datasource(s"${host.name}-max", generateRpn(sensorsForHost, Max))
+        graph.datasource(s"${host.name}-min", generateRpn(sensorsForHost, Min))
+        graph.gprint(s"${host.name}-min", MIN, s"${host.name} min = %.2f%s °C")
+        graph.gprint(s"${host.name}-max", MAX, s"${host.name} max = %.2f%s °C\\j")
+    })
 
     graph.setImageFormat("png")
 
