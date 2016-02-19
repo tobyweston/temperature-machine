@@ -29,8 +29,6 @@ object Server extends App {
   }
 
   def server(sensors: List[SensorFile])(implicit monitored: List[Host]) = {
-    implicit val numberOfSensors = RrdFile.MaxSensors
-
     for {
       _ <- Task.delay(println("Starting temperature-machine (server mode)..."))
       _ <- Tasks.init(hosts)

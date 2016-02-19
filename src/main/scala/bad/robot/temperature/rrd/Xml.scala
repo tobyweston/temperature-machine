@@ -21,10 +21,6 @@ object Xml {
     data.exportXml(path)
   }
 
-  def nonEmpty(sensors: List[String], database: RrdDb) = {
-    sensors.filter(name => {
-      database.getDatasource(name).getAccumValue != 0.0
-    }).toSet
-  }
+  def nonEmpty(sensors: List[String], database: RrdDb) = sensors.filter(database.hasValuesFor).toSet
 
 }

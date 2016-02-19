@@ -3,7 +3,10 @@ package bad.robot.temperature.rrd
 import java.awt.Color
 import java.awt.Color._
 
+import bad.robot.temperature.rrd.RpnGenerator._
+import bad.robot.temperature.rrd.RrdFile.MaxSensors
 import org.rrd4j.ConsolFun._
+import org.rrd4j.core.RrdDb
 import org.rrd4j.graph.{RrdGraph, RrdGraphDef}
 
 object Graph {
@@ -30,7 +33,7 @@ object Graph {
 
   val path = RrdFile.path
 
-  def create(from: Seconds, to: Seconds, hosts: List[Host], numberOfSensors: Int) = {
+  def create(from: Seconds, to: Seconds, hosts: List[Host]) = {
     val graph = new RrdGraphDef()
     graph.setWidth(800)
     graph.setHeight(500)
@@ -40,24 +43,32 @@ object Graph {
     graph.setTitle("Temperature")
     graph.setVerticalLabel("°C")
 
-    for (host <- hosts; sensor <- 1 to numberOfSensors) {
-      val name = s"${host.name}-sensor-$sensor"
+    val all = for {
+      host   <- hosts
+      sensor <- 1 to MaxSensors
+    } yield s"${host.name}-sensor-$sensor"
+
+    val sensors = all.filter(new RrdDb(RrdFile.file).hasValuesFor)
+    sensors.foreach(name => {
       graph.datasource(name, RrdFile.file, name, AVERAGE)
+      graph.line(name, colours.next, name)
+    })
 
-      graph.line(name, colours.next)
+    graph.comment("\\l")
+    graph.hrule(0, new Color(51, 153, 255), "Freezing")
+    graph.hspan(16, 20, transparent(green), "Optimal\\j")
 
-      graph.gprint(name, MIN, "min = %.2f%s °C")
-      graph.gprint(name, MAX, "max = %.2f%s °C")
-    }
+    hosts.map(host => host -> sensors.filter(_.contains(host.name))).foreach({ case (host, sensors) => {
+      graph.datasource(s"${host.name}-max", generateRpn(sensors, Max))
+      graph.datasource(s"${host.name}-min", generateRpn(sensors, Min))
+      graph.gprint(s"${host.name}-min", MIN, s"${host.name} min = %.2f%s °C")
+      graph.gprint(s"${host.name}-max", MAX, s"${host.name} max = %.2f%s °C\\j")
+
+    }})
 
     graph.setImageFormat("png")
 
-    graph.hrule(0, new Color(204, 255, 255), "Freezing")
-    graph.hspan(16, 20, transparent(green), "Optimal")
-
-    val file = new RrdGraph(graph)
-//    println(file.getRrdGraphInfo.getFilename)
-//    println(file.getRrdGraphInfo.dump())
+    new RrdGraph(graph)
   }
 
   def transparent(color: Color): Color = {

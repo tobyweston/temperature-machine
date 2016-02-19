@@ -31,7 +31,7 @@ object Tasks {
     } yield tasks
   }
 
-  def graphing(implicit hosts: List[Host], numberOfSensors: Int) = {
+  def graphing(implicit hosts: List[Host]) = {
     val executor = newScheduledThreadPool(3, TemperatureMachineThreadFactory("graphing-thread"))
     for {
       _ <- Task.delay(executor.schedule(90 seconds, GenerateGraph(24 hours)))

@@ -25,14 +25,12 @@ object Example extends App {
 
   populateRrd(hosts)
 
-  val numberOfSensors = 2
-
   Xml.export(start, start + aDay, hosts)
 
-  Graph.create(start, start + aDay, hosts, numberOfSensors)
-  Graph.create(start, start + aDay * 2, hosts, numberOfSensors)
-  Graph.create(start, start + aWeek, hosts, numberOfSensors)
-  Graph.create(start, start + aMonth, hosts, numberOfSensors)
+  Graph.create(start, start + aDay, hosts)
+  Graph.create(start, start + aDay * 2, hosts)
+  Graph.create(start, start + aWeek, hosts)
+  Graph.create(start, start + aMonth, hosts)
 
   println("Done generating " + duration)
 

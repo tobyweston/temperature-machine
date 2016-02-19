@@ -3,6 +3,8 @@ package bad.robot.temperature
 import java.io.File
 import java.util.Date
 
+import org.rrd4j.core.RrdDb
+
 import scala.concurrent.duration.Duration
 
 package object rrd {
@@ -20,5 +22,9 @@ package object rrd {
 
   implicit class FileOps(file: File) {
     def /(child: String): File = new File(file, child)
+  }
+
+  implicit class RrdDbOps(database: RrdDb) {
+    def hasValuesFor(datasource: String): Boolean = database.getDatasource(datasource).getAccumValue != 0.0
   }
 }
