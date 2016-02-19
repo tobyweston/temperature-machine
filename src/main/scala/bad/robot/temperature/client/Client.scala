@@ -13,7 +13,7 @@ object Client extends App {
     for {
       _      <- Task.delay(println(s"Initialising client '${Host.local.name}' (with ${sensors.size} of a maximum of $MaxSensors sensors)..."))
       server <- Task.delay(DiscoveryClient.discover)
-      tasks  <- Tasks.record(Host("bedroom"), sensors, HttpUpload(server))
+      tasks  <- Tasks.record(Host.local.trim, sensors, HttpUpload(server))
     } yield ()
   })
 
