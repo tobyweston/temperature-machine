@@ -1,12 +1,12 @@
 package bad.robot.temperature
 
-import bad.robot.temperature.ds18b20.SensorFile._
-import bad.robot.temperature.task._
+import bad.robot.temperature.rrd.Host
+import bad.robot.temperature.server.Server
 
 import scala.language.postfixOps
 
 object Main extends App {
 
-  findSensorsAndExecute(Tasks.application)
+  Server.main(Array(Host.local.name))
 
 }
