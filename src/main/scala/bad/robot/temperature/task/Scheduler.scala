@@ -23,7 +23,8 @@ object Scheduler {
       def run() = try {
         task.run()
       } catch {
-        case e: Throwable => System.err.println(s"An error occurred executed a scheduled task ($task) ${e.getMessage}")
+        case e: Throwable =>
+          System.err.println(s"An error occurred executed a scheduled task ($task) ${e.getMessage}")
       }
     }
   }

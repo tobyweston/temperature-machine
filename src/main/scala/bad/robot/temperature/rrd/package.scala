@@ -25,6 +25,6 @@ package object rrd {
   }
 
   implicit class RrdDbOps(database: RrdDb) {
-    def hasValuesFor(datasource: String): Boolean = database.getDatasource(datasource).getAccumValue != 0.0
+    def hasValuesFor(datasource: String): Boolean = database.getDatasource(database.getDsIndex(datasource)).getAccumValue != 0.0
   }
 }
