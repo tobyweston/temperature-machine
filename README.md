@@ -24,7 +24,7 @@ There's lots of options here but I tend to;
 3. Run `./start.sh &` from the checked out folder
 
 
-## 1-Wire
+## DS18b20 Sensor & 1-Wire
 
 The `w1-therm` module will output the sensor readings (the contents of the 1-Wire "scratchpad") to a file. For example,
 
@@ -55,6 +55,25 @@ then treating it as a single hex value, divide by `16`.
     scala> 0x014b / 16.0
     res: Double = 20.6875
 
+
+### Sensor Precision
+
+Byte 4 of the scratchpad is a configuration byte, you can use it to set the conversion resolution, aka, the number of decimal places the temperature will show as. The DS18b20 is supposed to be set at the most accurate (12 bit) at the factory but I've had units that we set to record temperatures at 0.5 °C steps (9 bit).
+
+Byte 4 Hex | Precision | Example
+--- | --- | ---
+1F | 9 bit | 23500
+3F | 10 bit | 25560 ??
+5F | 11 bit | 2345 ??
+7F | 12 bit | 23445
+
+
+So if you see something like this in your scratchpad.
+
+    59 01 4b 01 1f ff 0c 10 39 : crc=39 YES
+    59 01 4b 01 1f ff 0c 10 39 t=23500
+
+the `1f` shows the sensor is set to 9 bit resolution.
 
 
 ## Misc Setup
