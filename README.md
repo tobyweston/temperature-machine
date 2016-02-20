@@ -62,10 +62,10 @@ Byte 4 of the scratchpad is a configuration byte, you can use it to set the conv
 
 Byte 4 Hex | Precision | Example
 --- | --- | ---
-1F | 9 bit | 23500
-3F | 10 bit | 25560 ??
-5F | 11 bit | 2345 ??
-7F | 12 bit | 23445
+1F | 9 bit | 23.5
+3F | 10 bit | 23.45
+5F | 11 bit | 23.445
+7F | 12 bit | 23.4445
 
 
 So if you see something like this in your scratchpad.
@@ -75,6 +75,26 @@ So if you see something like this in your scratchpad.
 
 the `1f` shows the sensor is set to 9 bit resolution.
 
+If your sensor shipped with low resolution you can change it straight from the Pi using `configDS18B20.c` from [Dan Perron](https://github.com/danjperron/BitBangingDS18B20).
+
+    $ curl https://raw.githubusercontent.com/danjperron/BitBangingDS18B20/master/configDS18B20.c -O
+    $ gcc -lrt -o configDS18B20 configDS18B20.c
+    $ sudo ./configDS18B20
+
+It'll output something like the following and prompt you to enter a new resolution.
+
+    GPIO 4
+    BCM GPIO BASE= 20000000
+    ....78 01 4B 46 1F FF 0C 10 FA
+    09 bits  Temperature:  23.50 +/- 0.500000 Celsius
+    DS18B20 Resolution (9,10,11 or 12) ?12
+    Try to set 12 bits  config=7F
+
+Now the scratchpad shows the updated value (`7f` below)
+
+    $ cat /sys/bus/w1/devices/28-0115910f5eff/w1_slave
+    75 01 4b 46 7f ff 7f 10 f5 : crc=f5 YES
+    75 01 4b 46 7f ff 7f 10 f5 t=23312
 
 ## Misc Setup
 
