@@ -5,4 +5,4 @@ nohup java -Xmx512m -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmx
 
 echo "$!" > temperature-machine.pid
 
-echo "Started your temperature-machine, redirecting output to temperature-machine.out, PID stored in temperature-machine.pid"
+echo "Started your temperature-machine, redirecting output to temperature-machine.log, PID stored in temperature-machine.pid"
