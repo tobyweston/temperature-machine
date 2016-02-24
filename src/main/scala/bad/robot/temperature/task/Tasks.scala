@@ -24,7 +24,7 @@ object Tasks {
   }
 
   def record(source: Host, sensors: List[SensorFile], destination: TemperatureWriter) = {
-    val executor = newScheduledThreadPool(1, TemperatureMachineThreadFactory("reading-thread"))
+    val executor = newSingleThreadScheduledExecutor(TemperatureMachineThreadFactory("reading-thread"))
     for {
       _     <- Task.delay(print(s"Monitoring sensor file(s) on '${source.name}' ${sensors.mkString("\n\t", "\n\t", "\n")}"))
       tasks <- Task.delay(executor.schedule(30 seconds, RecordTemperature(source, SensorReader(sensors), destination)))
@@ -41,7 +41,7 @@ object Tasks {
   }
 
   def exportXml(implicit hosts: List[Host]) = {
-    val executor = newScheduledThreadPool(1, TemperatureMachineThreadFactory("xml-export-thread"))
+    val executor = newSingleThreadScheduledExecutor(TemperatureMachineThreadFactory("xml-export-thread"))
     Task.delay(executor.schedule(100 seconds, XmlExport(24 hours)))
   }
 
