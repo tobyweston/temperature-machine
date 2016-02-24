@@ -8,6 +8,7 @@ import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeEach
 
 import scala.Double._
+import scala.util.{Failure, Success, Try}
 
 class RrdDbOpsTest extends Specification with BeforeEach {
   sequential
@@ -31,6 +32,21 @@ class RrdDbOpsTest extends Specification with BeforeEach {
 
     val database = new RrdDb(file)
     database.hasValuesFor("doesnt_exist") must throwA(new IllegalArgumentException("Unknown datasource name: doesnt_exist"))
+  }
+
+  "A failed update doesn't have values" >> {
+    val file = File.createTempFile("test", ".rrd")
+    createRrdFile(createDefinition(file, "example"))
+
+    Try {
+      update(file, Seconds(5), 1.0, 2.0)
+    } match {
+      case Success(_) => ko("Should have got 'IllegalArgumentException: Invalid number of values specified (found 2, only 1 allowed'")
+      case Failure(_) => {
+        val database = new RrdDb(file)
+        database.hasValuesFor("example").aka("the 'hasValuesFor' result for the 'example' datasource") must_== false
+      }
+    }
   }
 
   "Partially populated archive passes the 'hasValuesFor' check" >> {
@@ -86,7 +102,6 @@ class RrdDbOpsTest extends Specification with BeforeEach {
   private def createRrdFile(definition: RrdDef) {
     val database = new RrdDb(definition)
     database.close()
-    println(definition.dump())
   }
 
   private def update(file: File, time: Seconds, values: Double*) = {
