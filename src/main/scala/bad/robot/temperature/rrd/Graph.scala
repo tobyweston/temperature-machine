@@ -60,9 +60,9 @@ object Graph {
 
     hosts.map(host => host -> sensors.filter(_.contains(host.name))).foreach({
       case (_, Nil)               => ()
-      case (_, sensor :: Nil)     =>
-        graph.gprint(sensor, MIN, "min = %.2f%s °C")
-        graph.gprint(sensor, MAX, "max = %.2f%s °C\\j")
+      case (host, (sensor :: Nil))     =>
+        graph.gprint(sensor, MIN, s"${host.name} min = %.2f%s °C")
+        graph.gprint(sensor, MAX, s"${host.name} max = %.2f%s °C\\j")
       case (host, sensorsForHost) =>
         graph.datasource(s"${host.name}-max", generateRpn(sensorsForHost, Max))
         graph.datasource(s"${host.name}-min", generateRpn(sensorsForHost, Min))
