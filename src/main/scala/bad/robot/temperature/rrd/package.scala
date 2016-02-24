@@ -3,8 +3,9 @@ package bad.robot.temperature
 import java.io.File
 import java.util.Date
 
-import org.rrd4j.core.RrdDb
+import org.rrd4j.core.{Sample, RrdDb}
 
+import scala.Double._
 import scala.concurrent.duration.Duration
 
 package object rrd {
@@ -25,6 +26,26 @@ package object rrd {
   }
 
   implicit class RrdDbOps(database: RrdDb) {
-    def hasValuesFor(datasource: String): Boolean = database.getDatasource(database.getDsIndex(datasource)).getAccumValue != 0.0
+    def hasValuesFor(datasource: String): Boolean = {
+      DataSources.updated.contains(database.getDatasource(database.getDsIndex(datasource)).getName)
+    }
+  }
+
+  implicit class RrdSampleOps(sample: Sample) {
+    def setValues(database: RrdDb, time: Seconds, values: Double*) = {
+      val matched = (0 until values.size)
+        .filter(index => !(values(index) equals NaN))
+        .map(index => database.getDatasource(index).getName)
+
+      DataSources.updated = DataSources.updated ++ matched.toSet
+
+      sample.setTime(time)
+      sample.setValues(values: _*)
+      sample.update()
+    }
+  }
+
+  object DataSources {
+    var updated = Set[String]()
   }
 }

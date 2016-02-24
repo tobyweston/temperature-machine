@@ -16,11 +16,8 @@ case class RrdUpdate(monitored: List[Host], measurement: Measurement) {
       val database = new RrdDb(RrdFile.file)
       val sample = database.createSample()
       val temperatures = UnknownValues.patch(monitored.indexOf(measurement.host) * RrdFile.MaxSensors, measurement.temperatures, measurement.temperatures.size)
-      sample.setTime(measurement.time)
-      sample.setValues(temperatures.map(_.celsius): _*)
-      sample.update()
+      sample.setValues(database, measurement.time, temperatures.map(_.celsius): _*)
       database.close()
     }.leftMap(error => RrdError(error.getMessage))
-
   }
 }
