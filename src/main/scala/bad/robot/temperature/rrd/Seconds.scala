@@ -3,11 +3,9 @@ package bad.robot.temperature.rrd
 import scala.concurrent.duration.Duration
 
 object Seconds {
-  def now() = {
-    def millisToSeconds(millis: Long) = (millis + 500) / 1000L
 
-    Seconds(millisToSeconds(System.currentTimeMillis()))
-  }
+  def now() = Seconds(millisToSeconds(System.currentTimeMillis()))
+  def millisToSeconds(millis: Long) = (millis + 500) / 1000L
 
   implicit def secondsToLong(seconds: Seconds): Long = seconds.value
   implicit def longToSeconds(seconds: Long): Seconds = Seconds(seconds)
