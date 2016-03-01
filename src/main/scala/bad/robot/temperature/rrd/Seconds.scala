@@ -1,11 +1,14 @@
 package bad.robot.temperature.rrd
 
-import java.util.Date
-
 import scala.concurrent.duration.Duration
 
 object Seconds {
-  implicit def dateToSeconds(date: Date): Seconds = Seconds(timeInSeconds(date))
+  def now() = {
+    def millisToSeconds(millis: Long) = (millis + 500) / 1000L
+
+    Seconds(millisToSeconds(System.currentTimeMillis()))
+  }
+
   implicit def secondsToLong(seconds: Seconds): Long = seconds.value
   implicit def longToSeconds(seconds: Long): Seconds = Seconds(seconds)
   implicit def durationToSeconds(duration: Duration): Seconds = Seconds(duration.toSeconds)

@@ -15,10 +15,6 @@ package object rrd {
   val aWeek = Duration(7, "days")
   val aMonth = Duration(30, "days")
 
-  def now() = Seconds(timeInSeconds(new Date()))
-
-  def timeInSeconds(date: Date) = (date.getTime + 499L) / 1000L
-
   implicit def fileToString(file: File): String = file.getAbsolutePath
 
   implicit class FileOps(file: File) {

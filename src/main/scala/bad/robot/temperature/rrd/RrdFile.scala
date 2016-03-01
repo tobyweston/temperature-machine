@@ -3,9 +3,9 @@ package bad.robot.temperature.rrd
 import java.io.File
 
 import bad.robot.temperature.rrd.RrdFile._
+import bad.robot.temperature.rrd.Seconds.now
 import org.rrd4j.DsType.GAUGE
 import org.rrd4j.core._
-
 import scala.Double._
 import scala.concurrent.duration.Duration
 
