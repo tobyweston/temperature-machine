@@ -1,5 +1,7 @@
 package bad.robot.temperature.rrd
 
+import java.io.{PrintWriter, StringWriter}
+
 import bad.robot.temperature.{Temperature, Error, Measurement, RrdError}
 import org.rrd4j.core.RrdDb
 
@@ -18,6 +20,16 @@ case class RrdUpdate(monitored: List[Host], measurement: Measurement) {
       val temperatures = UnknownValues.patch(monitored.indexOf(measurement.host) * RrdFile.MaxSensors, measurement.temperatures, measurement.temperatures.size)
       sample.setValues(database, measurement.time, temperatures.map(_.celsius): _*)
       database.close()
-    }.leftMap(error => RrdError(error.getMessage))
+    }.leftMap(error => {
+      RrdError(messageOrStackTrace(error))
+    })
+  }
+
+  def messageOrStackTrace(error: Throwable): String = {
+    Option(error.getMessage).getOrElse {
+      val writer = new StringWriter()
+      error.printStackTrace(new PrintWriter(writer))
+      writer.toString
+    }
   }
 }

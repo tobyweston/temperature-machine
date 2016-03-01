@@ -1,6 +1,7 @@
 package bad.robot.temperature.rrd
 
 import bad.robot.temperature.{Measurement, Temperature}
+import bad.robot.temperature.rrd.Seconds.now
 import bad.robot.temperature.rrd.Seconds.secondsToLong
 import bad.robot.temperature.Error
 import scala.concurrent.duration.Duration
