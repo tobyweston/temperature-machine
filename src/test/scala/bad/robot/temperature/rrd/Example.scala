@@ -11,6 +11,8 @@ import scalaz.{\/, -\/}
 
 object Example extends App {
 
+  sys.props += ("org.slf4j.simpleLogger.defaultLogLevel" -> "info")
+
   val random = new Random()
 
   val duration = Duration(1, "days")

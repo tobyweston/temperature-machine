@@ -51,9 +51,3 @@ object DiscoveryClient {
     }
   }
 }
-
-object TestClient extends App {
-  println("Discover Client started, attempting to find server...")
-  val server = DiscoveryClient.discover
-  println(s"Server address found: $server")
-}
