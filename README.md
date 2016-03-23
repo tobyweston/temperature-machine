@@ -3,6 +3,7 @@
 
 A temperature-machine for the Raspberry Pi.
 
+![](temperature-machine.png)
 
 ## Quick Start
 
