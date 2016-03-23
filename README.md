@@ -1,5 +1,5 @@
 
-# Temperature Machine ™
+# Temperature Machine
 
 A temperature-machine for the Raspberry Pi.
 
