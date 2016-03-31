@@ -9,23 +9,43 @@ A temperature-machine for the Raspberry Pi.
 
 Build some test data by running the `Example` app from within IntelliJ.
 
-You can then run the monitoring app from the `Main` class. If you want to override the sensor file location (for the case when you're testing without sensors), use `-Dsensor-location=src/test/resources/examples`.
+You can then start up the app from the `Main` class. If you want to override the sensor file location (for the case when you're testing without sensors), use `-Dsensor-location=src/test/resources/examples`.
 
-Check the web page with [http://localhost:11900](http://localhost:11900)
-
-It won't display the current temperature unless you have a sensor attached but you'll get some basic graphs displaying.
+Check the web page with [http://localhost:11900](http://localhost:11900).
 
 
 ## Deploying to Your Pi
 
-There's lots of options here but I tend to;
+On the Pi, you should only need to add the following line `/boot/config.txt`. Older tutorials on the web will also say you have to load the `w1-therm` module but that seems to load automatically these days.
+
+    dtoverlay=w1-gpio
+
+
+To get the software on the box, I tend to do the following;
 
 1. Clone the repository on the Pi
 2. Run `sbt -J-Xmx512m -J-Xms512m assembly` from a terminal (memory set low for the Pi Zero)
-3. Run `./start.sh &` from the checked out folder
+3. Run `./start.sh &`, `./start-server.sh room1 room2 room3` or `./start-client.sh` from the checked out folder
+
+You can also read my [blog post](http://baddotrobot.com/blog/2016/03/23/homebrew-temperature-logger/) for more information.
 
 
-## DS18b20 Sensor & 1-Wire
+
+## Client / Server
+
+The server broadcasts it's address over the network. The client(s) will wait to hear the broadcast then startup, sending their data to the server.
+
+
+## RRD and Cleanup
+
+Because we have to declare what's in the RRD upfront, you'll have to delete the `~/.temperature/temperature.rdd` if the configuration changes. Starting the server for the first time will initialise the RRD; it will create "archives" for every machine it's expecting to monitor. These are passed in as command line arguments (`room1`, `room2` and `room3` in the above example).
+
+So adding an additional machine may mean you need to do `rm ~/.temperature/*`
+
+Starting the server up when the `~/temperature.rrd` already exists **doesn't** delete it.
+
+
+## DS18B20 Sensor & 1-Wire
 
 The `w1-therm` module will output the sensor readings (the contents of the 1-Wire "scratchpad") to a file. For example,
 
