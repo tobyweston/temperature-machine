@@ -77,9 +77,12 @@ then treating it as a single hex value, divide by `16`.
     res: Double = 20.6875
 
 
+This is how the software goes about it.
+
+
 ### Sensor Precision
 
-Byte 4 of the scratchpad is a configuration byte, you can use it to set the conversion resolution, aka, the number of decimal places the temperature will show as. The DS18b20 is supposed to be set at the most accurate (12 bit) at the factory but I've had units that we set to record temperatures at 0.5 °C steps (9 bit).
+Byte 4 of the scratchpad is a configuration byte, you can use it to set the conversion resolution; the number of decimal places the temperature will show as. The DS18B20 is supposed to be set at the most accurate (12 bit) at the factory but I've had units that we set to record temperatures at 0.5 °C steps (9 bit).
 
 Byte 4 Hex | Precision | Example
 --- | --- | ---
