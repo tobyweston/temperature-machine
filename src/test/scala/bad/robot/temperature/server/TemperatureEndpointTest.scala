@@ -106,6 +106,100 @@ class TemperatureEndpointTest extends Specification {
     response.as[String].run must_== "Unable to parse content as JSON Unexpected content found: bad json"
   }
 
+  "Get multiple sensors temperatures" >> {
+    val measurement1 = """{
+                         |  "host" : "lounge",
+                         |  "seconds" : 100,
+                         |  "sensors" : [
+                         |     {
+                         |        "name" : "28-00000dfg34ca",
+                         |        "temperature" : {
+                         |          "celsius" : 31.1
+                         |        }
+                         |     },
+                         |     {
+                         |        "name" : "28-00000f33fdc3",
+                         |        "temperature" : {
+                         |          "celsius" : 32.8
+                         |       }
+                         |     }
+                         |   ]
+                         |}""".stripMargin
+
+    val measurement2 = """{
+                         |  "host" : "bedroom",
+                         |  "seconds" : 200,
+                         |  "sensors" : [
+                         |     {
+                         |        "name" : "28-00000f3554ds",
+                         |        "temperature" : {
+                         |          "celsius" : 21.1
+                         |        }
+                         |     },
+                         |     {
+                         |        "name" : "28-000003dd3433",
+                         |        "temperature" : {
+                         |          "celsius" : 22.8
+                         |       }
+                         |     }
+                         |   ]
+                         |}""".stripMargin
+
+
+    val service = TemperatureEndpoint.service(stubReader(\/-(List())), stubWriter(\/-(Unit)))
+    service.apply(Request(DELETE, Uri.uri("/temperatures"))).run
+    service.apply(Put(measurement1)).run
+    service.apply(Put(measurement2)).run
+
+    val request = Request(GET, Uri.uri("/temperatures"))
+    val response = service(request).run
+
+    response.status must_== Ok
+
+    val expected = """{
+                      |  "measurements" : [
+                      |    {
+                      |      "host" : "lounge",
+                      |      "seconds" : 100,
+                      |      "sensors" : [
+                      |        {
+                      |          "name" : "28-00000dfg34ca",
+                      |          "temperature" : {
+                      |            "celsius" : 31.1
+                      |          }
+                      |        },
+                      |        {
+                      |          "name" : "28-00000f33fdc3",
+                      |          "temperature" : {
+                      |            "celsius" : 32.8
+                      |          }
+                      |        }
+                      |      ]
+                      |    },
+                      |    {
+                      |      "host" : "bedroom",
+                      |      "seconds" : 200,
+                      |      "sensors" : [
+                      |        {
+                      |          "name" : "28-00000f3554ds",
+                      |          "temperature" : {
+                      |            "celsius" : 21.1
+                      |          }
+                      |        },
+                      |        {
+                      |          "name" : "28-000003dd3433",
+                      |          "temperature" : {
+                      |            "celsius" : 22.8
+                      |          }
+                      |        }
+                      |      ]
+                      |    }
+                      |  ]
+                      |}""".stripMargin
+
+    response.as[String].run must_== expected
+  }
+
   "Get multiple sensors, averaging the temperatures" >> {
     val measurement1 = """{
                          |  "host" : "lounge",

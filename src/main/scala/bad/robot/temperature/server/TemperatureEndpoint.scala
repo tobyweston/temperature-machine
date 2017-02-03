@@ -35,6 +35,10 @@ object TemperatureEndpoint {
       Ok(encode(average).spaces2)
     }
 
+    case GET -> Root / "temperatures"  => {
+      Ok(encode(current).spaces2)
+    }
+
     case DELETE -> Root / "temperatures" => {
       current = Map[Host, Measurement]()
       NoContent()
