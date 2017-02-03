@@ -1,7 +1,7 @@
 function getCurrentTemperatures() {
   $.ajax({
       method: "GET",
-      url: "temperatures",
+      url: "temperatures/average",
       dataType: "json"
     })
     .done(function (temperatures) {

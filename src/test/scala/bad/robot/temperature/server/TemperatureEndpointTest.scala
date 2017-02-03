@@ -151,7 +151,7 @@ class TemperatureEndpointTest extends Specification {
     service.apply(Put(measurement1)).run
     service.apply(Put(measurement2)).run
 
-    val request = Request(GET, Uri.uri("/temperatures"))
+    val request = Request(GET, Uri.uri("/temperatures/average"))
     val response = service(request).run
 
     response.status must_== Ok
@@ -162,7 +162,7 @@ class TemperatureEndpointTest extends Specification {
                                       |      "seconds" : 100,
                                       |      "sensors" : [
                                       |        {
-                                      |          "name" : "Ignored",
+                                      |          "name" : "28-00000dfg34ca",
                                       |          "temperature" : {
                                       |            "celsius" : 31.95
                                       |          }
@@ -174,7 +174,7 @@ class TemperatureEndpointTest extends Specification {
                                       |      "seconds" : 200,
                                       |      "sensors" : [
                                       |        {
-                                      |          "name" : "Ignored",
+                                      |          "name" : "28-00000f3554ds",
                                       |          "temperature" : {
                                       |            "celsius" : 21.950000000000003
                                       |          }

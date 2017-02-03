@@ -20,6 +20,15 @@ object SensorTemperature {
       temperature <- cursor.get[Temperature]("temperature")
     } yield SensorTemperature(name, temperature))
   }
+
+  implicit class ListSensorTemperatureOps(temperatures: List[SensorTemperature]) {
+    def average: SensorTemperature = {
+      temperatures.headOption.map(sensor => {
+        val average = temperatures.map(_.temperature).reduce(_ + _) / temperatures.length
+        SensorTemperature(sensor.name, average)
+      }).getOrElse(SensorTemperature("Unknown", Temperature(0.0)))
+    }
+  }
 }
 
 case class SensorTemperature(name: String, temperature: Temperature) {

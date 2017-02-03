@@ -14,10 +14,8 @@ object TemperatureEndpoint {
 
     EncodeJson((measurements: Map[Host, Measurement]) =>
       argonaut.Json(
-        "measurements" := measurements.values.map(measurement => {
-          measurement.copy(temperatures = List(average(measurement.temperatures)))
-        }
-      ))
+        "measurements" := measurements.values
+      )
     )
   }
 
@@ -26,12 +24,15 @@ object TemperatureEndpoint {
   def service(sensors: TemperatureReader, writer: TemperatureWriter) = HttpService {
     case GET -> Root / "temperature" => {
       sensors.read.toHttpResponse(temperatures => {
-        Ok(f"${average(temperatures).temperature.celsius}%.1f °C")
+        Ok(f"${temperatures.average.temperature.celsius}%.1f °C")
       })
     }
 
-    case GET -> Root / "temperatures" => {
-      Ok(encode(current).spaces2)
+    case GET -> Root / "temperatures" / "average" => {
+      val average = current.map { case (host, measurement) => {
+        host -> measurement.copy(temperatures = List(measurement.temperatures.average))
+      }}
+      Ok(encode(average).spaces2)
     }
 
     case DELETE -> Root / "temperatures" => {
@@ -50,11 +51,6 @@ object TemperatureEndpoint {
         NoContent()
       })
     }
-  }
-
-  private val average: (List[SensorTemperature]) => SensorTemperature = temperatures => {
-    val avg = temperatures.map(_.temperature).fold(Temperature(0.0))(_ + _) / temperatures.length
-    SensorTemperature("Ignored", avg)
   }
 
 }
