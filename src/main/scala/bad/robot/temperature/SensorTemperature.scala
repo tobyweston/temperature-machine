@@ -22,9 +22,10 @@ object SensorTemperature {
   }
 
   implicit class ListSensorTemperatureOps(temperatures: List[SensorTemperature]) {
-    def average: SensorTemperature = {
-      if (temperatures.isEmpty) SensorTemperature("Unknown", Temperature(0.0))
-      else SensorTemperature("Average", temperatures.map(_.temperature).reduce(_ + _) / temperatures.length)
+    def average: SensorTemperature = temperatures match {
+      case Nil           => SensorTemperature("Unknown", Temperature(0.0))
+      case sensor :: Nil => SensorTemperature(sensor.name, sensor.temperature)
+      case _             => SensorTemperature("Average", temperatures.map(_.temperature).reduce(_ + _) / temperatures.length)
     }
   }
 }

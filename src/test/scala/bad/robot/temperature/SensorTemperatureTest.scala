@@ -12,6 +12,13 @@ class SensorTemperatureTest extends Specification {
     List(a, b, c).average must_== SensorTemperature("Average", Temperature(23.333333333333332))
   }
 
+  "Average a single temperature" >> {
+    val a = SensorTemperature("A", Temperature(23.4))
+
+    List(a).average must_== SensorTemperature("A", Temperature(23.4))
+
+  }
+
   "Averages an empty list" >> {
     List[SensorTemperature]().average must_== SensorTemperature("Unknown", Temperature(0.0))
   }
