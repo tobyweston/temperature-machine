@@ -14,6 +14,6 @@ case class RandomTemperatures() extends TemperatureReader {
       current = current + random.nextDouble()
     else
       current = current - random.nextDouble()
-    \/-(List(Temperature(current)))
+    \/-(List(SensorTemperature("28-00005efdc3", Temperature(current))))
   }
 }

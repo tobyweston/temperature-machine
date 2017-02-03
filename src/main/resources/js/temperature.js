@@ -10,7 +10,7 @@ function getCurrentTemperatures() {
         $('#temperatures').append('<p>No readings</p>');
 
       for (i = 0; i < measurements.length; i++) {
-        var celsius = Math.round(measurements[i].sensors[0].celsius * 10) / 10;
+        var celsius = Math.round(measurements[i].sensors[0].temperature.celsius * 10) / 10;
         var host = measurements[i].host;
         var lastUpdate = moment.unix(measurements[i].seconds).format('ddd HH:mm a');
         var html =

@@ -26,7 +26,7 @@ object TemperatureEndpoint {
   def service(sensors: TemperatureReader, writer: TemperatureWriter) = HttpService {
     case GET -> Root / "temperature" => {
       sensors.read.toHttpResponse(temperatures => {
-        Ok(f"${average(temperatures).celsius}%.1f °C")
+        Ok(f"${average(temperatures).temperature.celsius}%.1f °C")
       })
     }
 
@@ -52,8 +52,9 @@ object TemperatureEndpoint {
     }
   }
 
-  private val average: (List[Temperature]) => Temperature = (temperatures) => {
-    temperatures.fold(Temperature(0.0))(_ + _) / temperatures.length
+  private val average: (List[SensorTemperature]) => SensorTemperature = temperatures => {
+    val avg = temperatures.map(_.temperature).fold(Temperature(0.0))(_ + _) / temperatures.length
+    SensorTemperature("Ignored", avg)
   }
 
 }

@@ -12,20 +12,49 @@ class MeasurementTest extends Specification {
                      |  "seconds" : 1000,
                      |  "sensors" : [
                      |    {
-                     |      "celsius" : 32.1
+                     |      "name" : "28-00000f33fdc3",
+                     |      "temperature" : {
+                     |        "celsius" : 32.1
+                     |      }
                      |    },
                      |    {
-                     |      "celsius" : 32.8
+                     |      "name" : "28-00000dfg34ca",
+                     |      "temperature" : {
+                     |        "celsius" : 32.8
+                     |      }
                      |    }
                      |  ]
                      |}""".stripMargin
-    val json = encode(Measurement(Host("localhost"), Seconds(1000), List(Temperature(32.1), Temperature(32.8)))).spaces2
+    val json = encode(Measurement(Host("localhost"), Seconds(1000), List(
+      SensorTemperature("28-00000f33fdc3", Temperature(32.1)),
+      SensorTemperature("28-00000dfg34ca", Temperature(32.8)))
+    )).spaces2
     json must_== expected
   }
 
   "Decode json" >> {
-    val json = """{ "host" : "localhost", "seconds" : 1000, "sensors" : [ { "celsius" : 32.1 }, { "celsius" : 32.8 } ]}"""
-    decode[Measurement](json) must be_\/-(Measurement(Host("localhost"), Seconds(1000), List(Temperature(32.1), Temperature(32.8))))
+    val json = """{
+                 |  "host" : "localhost",
+                 |  "seconds" : 1000,
+                 |  "sensors" : [
+                 |     {
+                 |        "name" : "28-00000dfg34ca",
+                 |        "temperature" : {
+                 |          "celsius" : 32.1
+                 |        }
+                 |     },
+                 |     {
+                 |        "name" : "28-00000f33fdc3",
+                 |        "temperature" : {
+                 |          "celsius" : 32.8
+                 |       }
+                 |     }
+                 |   ]
+                 |}""".stripMargin
+    decode[Measurement](json) must be_\/-(Measurement(Host("localhost"), Seconds(1000), List(
+      SensorTemperature("28-00000dfg34ca", Temperature(32.1)),
+      SensorTemperature("28-00000f33fdc3", Temperature(32.8)))
+    ))
   }
 
 }
