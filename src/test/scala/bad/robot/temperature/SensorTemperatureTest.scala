@@ -9,7 +9,7 @@ class SensorTemperatureTest extends Specification {
     val b = SensorTemperature("B", Temperature(23.5))
     val c = SensorTemperature("C", Temperature(23.1))
 
-    List(a, b, c).average must_== SensorTemperature("A", Temperature(23.333333333333332))
+    List(a, b, c).average must_== SensorTemperature("Average", Temperature(23.333333333333332))
   }
 
   "Averages an empty list" >> {

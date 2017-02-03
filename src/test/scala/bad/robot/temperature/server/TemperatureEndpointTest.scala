@@ -256,7 +256,7 @@ class TemperatureEndpointTest extends Specification {
                                       |      "seconds" : 100,
                                       |      "sensors" : [
                                       |        {
-                                      |          "name" : "28-00000dfg34ca",
+                                      |          "name" : "Average",
                                       |          "temperature" : {
                                       |            "celsius" : 31.95
                                       |          }
@@ -268,7 +268,7 @@ class TemperatureEndpointTest extends Specification {
                                       |      "seconds" : 200,
                                       |      "sensors" : [
                                       |        {
-                                      |          "name" : "28-00000f3554ds",
+                                      |          "name" : "Average",
                                       |          "temperature" : {
                                       |            "celsius" : 21.950000000000003
                                       |          }
