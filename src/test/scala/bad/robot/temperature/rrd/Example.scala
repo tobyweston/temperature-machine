@@ -1,7 +1,7 @@
 package bad.robot.temperature.rrd
 
 import bad.robot.temperature.rrd.Seconds.{now, secondsToLong}
-import bad.robot.temperature.{Error, Measurement, SensorTemperature, Temperature}
+import bad.robot.temperature.{Error, Measurement, SensorReading, SensorReading$, Temperature}
 
 import scala.concurrent.duration.Duration
 import scala.util.Random
@@ -47,12 +47,12 @@ object Example extends App {
     times.zip(temperatures).foreach({
       case (time, (temperature1, temperature2)) => {
         handleError(RrdUpdate(hosts, Measurement(hosts(0), time, List(
-          SensorTemperature("?", Temperature(temperature1)),
-          SensorTemperature("?", Temperature(temperature1 + 6.3)))
+          SensorReading("?", Temperature(temperature1)),
+          SensorReading("?", Temperature(temperature1 + 6.3)))
         )).apply())
         handleError(RrdUpdate(hosts, Measurement(hosts(1), time + 1, List(
-          SensorTemperature("?", Temperature(temperature2)),
-          SensorTemperature("?", Temperature(temperature2 + 1.3)))
+          SensorReading("?", Temperature(temperature2)),
+          SensorReading("?", Temperature(temperature2 + 1.3)))
         )).apply())
       }
     })

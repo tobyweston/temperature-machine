@@ -21,7 +21,7 @@ class TemperatureEndpointTest extends Specification {
 
   "Averages a single temperature" >> {
     val request = Request(GET, Uri.uri("/temperature"))
-    val service = TemperatureEndpoint.service(stubReader(\/-(List(SensorTemperature("28-0002343fd", Temperature(56.34))))), UnexpectedWriter)
+    val service = TemperatureEndpoint.service(stubReader(\/-(List(SensorReading("28-0002343fd", Temperature(56.34))))), UnexpectedWriter)
     val response = service(request).run
 
     response.status must_== Ok
@@ -31,9 +31,9 @@ class TemperatureEndpointTest extends Specification {
   "Averages several temperatures" >> {
     val request = Request(GET, Uri.uri("/temperature"))
     val service = TemperatureEndpoint.service(stubReader(\/-(List(
-      SensorTemperature("28-0000d34c3", Temperature(25.344)),
-      SensorTemperature("28-0000d34c3", Temperature(23.364)),
-      SensorTemperature("28-0000d34c3", Temperature(21.213))
+      SensorReading("28-0000d34c3", Temperature(25.344)),
+      SensorReading("28-0000d34c3", Temperature(23.364)),
+      SensorReading("28-0000d34c3", Temperature(21.213))
     ))), UnexpectedWriter)
     val response = service(request).run
 
@@ -279,8 +279,8 @@ class TemperatureEndpointTest extends Specification {
                                       |}""".stripMargin
   }
 
-  def stubReader(result: Error \/ List[SensorTemperature]) = new TemperatureReader {
-    def read: Error \/ List[SensorTemperature] = result
+  def stubReader(result: Error \/ List[SensorReading]) = new TemperatureReader {
+    def read: Error \/ List[SensorReading] = result
   }
 
   def stubWriter(result: Error \/ Unit) = new TemperatureWriter {

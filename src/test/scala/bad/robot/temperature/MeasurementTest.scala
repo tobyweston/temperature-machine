@@ -26,8 +26,8 @@ class MeasurementTest extends Specification {
                      |  ]
                      |}""".stripMargin
     val json = encode(Measurement(Host("localhost"), Seconds(1000), List(
-      SensorTemperature("28-00000f33fdc3", Temperature(32.1)),
-      SensorTemperature("28-00000dfg34ca", Temperature(32.8)))
+      SensorReading("28-00000f33fdc3", Temperature(32.1)),
+      SensorReading("28-00000dfg34ca", Temperature(32.8)))
     )).spaces2
     json must_== expected
   }
@@ -52,8 +52,8 @@ class MeasurementTest extends Specification {
                  |   ]
                  |}""".stripMargin
     decode[Measurement](json) must be_\/-(Measurement(Host("localhost"), Seconds(1000), List(
-      SensorTemperature("28-00000dfg34ca", Temperature(32.1)),
-      SensorTemperature("28-00000f33fdc3", Temperature(32.8)))
+      SensorReading("28-00000dfg34ca", Temperature(32.1)),
+      SensorReading("28-00000f33fdc3", Temperature(32.8)))
     ))
   }
 

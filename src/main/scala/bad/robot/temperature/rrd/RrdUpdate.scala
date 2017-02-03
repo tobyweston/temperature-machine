@@ -2,7 +2,7 @@ package bad.robot.temperature.rrd
 
 import java.io.{PrintWriter, StringWriter}
 
-import bad.robot.temperature.{Error, Measurement, RrdError, SensorTemperature, Temperature}
+import bad.robot.temperature.{Error, Measurement, RrdError, SensorReading, SensorReading$, Temperature}
 import org.rrd4j.core.RrdDb
 
 import scala.{Error => _}
@@ -11,7 +11,7 @@ import scalaz.\/.fromTryCatchNonFatal
 
 case class RrdUpdate(monitored: List[Host], measurement: Measurement) {
 
-  private val UnknownValues = List().padTo(monitored.size * RrdFile.MaxSensors, SensorTemperature("Unknown", Temperature(Double.NaN)))
+  private val UnknownValues = List().padTo(monitored.size * RrdFile.MaxSensors, SensorReading("Unknown", Temperature(Double.NaN)))
 
   def apply(): Error \/ Unit = {
     fromTryCatchNonFatal {

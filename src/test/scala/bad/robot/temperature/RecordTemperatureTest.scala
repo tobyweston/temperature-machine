@@ -12,7 +12,7 @@ class RecordTemperatureTest extends Specification {
 
   "Take a measurement and write it out" >> {
     val input = new TemperatureReader {
-      def read = \/-(List(SensorTemperature("", Temperature(69.9))))
+      def read = \/-(List(SensorReading("example", Temperature(69.9))))
     }
     val output = new TemperatureWriter {
       var temperatures = List[Temperature]()
@@ -40,7 +40,7 @@ class RecordTemperatureTest extends Specification {
 
   "Take a measurement but fail to write it" >> {
     val input = new TemperatureReader {
-      def read = \/-(List(SensorTemperature("?", Temperature(69.9))))
+      def read = \/-(List(SensorReading("example", Temperature(69.9))))
     }
     val output = new TemperatureWriter {
       def write(measurement: Measurement) = -\/(UnexpectedError("whatever"))

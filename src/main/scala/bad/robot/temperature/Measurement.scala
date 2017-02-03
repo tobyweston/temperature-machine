@@ -19,9 +19,9 @@ object Measurement {
     DecodeJson(cursor => for {
       host    <- cursor.get[String]("host")
       seconds <- cursor.get[Long]("seconds")
-      sensors <- cursor.get[List[SensorTemperature]]("sensors")
+      sensors <- cursor.get[List[SensorReading]]("sensors")
     } yield Measurement(Host(host), Seconds(seconds), sensors))
   }
 }
 
-case class Measurement(host: Host, time: Seconds, temperatures: List[SensorTemperature])
+case class Measurement(host: Host, time: Seconds, temperatures: List[SensorReading])
