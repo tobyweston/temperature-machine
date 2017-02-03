@@ -10,13 +10,15 @@ function getCurrentTemperatures() {
         $('#temperatures').append('<p>No readings</p>');
 
       for (i = 0; i < measurements.length; i++) {
-        var celsius = Math.round(measurements[i].sensors[0].temperature.celsius * 10) / 10;
+        var sensor = measurements[i].sensors[0];
+        var celsius = Math.round(sensor.temperature.celsius * 10) / 10;
         var host = measurements[i].host;
+        var name = sensor.name;
         var lastUpdate = moment.unix(measurements[i].seconds).format('ddd HH:mm a');
         var html =
             '<div class="temperature">' +
                 '<h1><span class="temperature">' + celsius + ' °C</span></h1>' +
-                '<p class="source">' + host + '</p>' +
+                '<p class="source">' + host + ' (' + name.toLowerCase() + ')</p>' +
                 '<span class="updated small">updated: ' + lastUpdate + '</span>' +
             '</div>';
         $('#temperatures').append('' + html);
