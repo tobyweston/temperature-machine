@@ -5,7 +5,7 @@ import argonaut._
 import Argonaut._
 
 object SensorReading {
-  implicit def sensorReadingncoder: EncodeJson[SensorReading] = {
+  implicit def jsonEncoder: EncodeJson[SensorReading] = {
     EncodeJson((sensor: SensorReading) =>
       argonaut.Json(
         "name"        := sensor.name,
@@ -14,7 +14,7 @@ object SensorReading {
     )
   }
 
-  implicit def sensorReadingDecoder: DecodeJson[SensorReading] = {
+  implicit def jsonDecoder: DecodeJson[SensorReading] = {
     DecodeJson(cursor => for {
       name        <- cursor.get[String]("name")
       temperature <- cursor.get[Temperature]("temperature")

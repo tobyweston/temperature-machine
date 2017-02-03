@@ -8,7 +8,7 @@ import org.http4s.server.HttpService
 
 object TemperatureEndpoint {
 
-  implicit def hostAndMeasurementEncoder: EncodeJson[Map[Host, Measurement]] = {
+  implicit def jsonEncoder: EncodeJson[Map[Host, Measurement]] = {
     import argonaut._
     import Argonaut._
 
