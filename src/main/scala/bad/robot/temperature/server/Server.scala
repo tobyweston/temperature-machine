@@ -5,7 +5,7 @@ import java.net.InetAddress
 import bad.robot.temperature.client.HttpUpload
 import bad.robot.temperature.ds18b20.SensorFile
 import bad.robot.temperature.ds18b20.SensorFile._
-import bad.robot.temperature.rrd.{RrdFile, Host, Rrd}
+import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.task.Tasks
 
 import scalaz.concurrent.Task
@@ -53,8 +53,7 @@ object Server extends App {
   }
 
 
-
-   val hosts = args.toList match {
+  val hosts = args.toList match {
     case Nil   => quit
     case hosts => hosts.map(host => Host.apply(host).trim)
   }

@@ -3,6 +3,7 @@ package bad.robot.temperature.server
 import argonaut.EncodeJson
 import bad.robot.temperature._
 import bad.robot.temperature.rrd.Host
+import org.http4s.Header
 import org.http4s.dsl._
 import org.http4s.server.HttpService
 
@@ -32,10 +33,10 @@ object TemperatureEndpoint {
       val average = current.map { case (host, measurement) => {
         host -> measurement.copy(temperatures = List(measurement.temperatures.average))
       }}
-      Ok(encode(average).spaces2)
+      Ok(encode(average).spaces2).replaceAllHeaders(Header("Access-Control-Allow-Origin", "*"))
     }
 
-    case GET -> Root / "temperatures"  => {
+    case GET -> Root / "temperatures" => {
       Ok(encode(current).spaces2)
     }
 
