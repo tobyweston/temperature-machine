@@ -21,7 +21,7 @@ class TemperatureEndpointTest extends Specification {
 
   "Averages a single temperature" >> {
     val request = Request(GET, Uri.uri("/temperature"))
-    val service = TemperatureEndpoint.service(stubReader(\/-(List(Temperature(56.34)))), UnexpectedWriter)
+    val service = TemperatureEndpoint.service(stubReader(\/-(List(SensorReading("28-0002343fd", Temperature(56.34))))), UnexpectedWriter)
     val response = service(request).run
 
     response.status must_== Ok
@@ -31,9 +31,9 @@ class TemperatureEndpointTest extends Specification {
   "Averages several temperatures" >> {
     val request = Request(GET, Uri.uri("/temperature"))
     val service = TemperatureEndpoint.service(stubReader(\/-(List(
-      Temperature(25.344),
-      Temperature(23.364),
-      Temperature(21.213)
+      SensorReading("28-0000d34c3", Temperature(25.344)),
+      SensorReading("28-0000d34c3", Temperature(23.364)),
+      SensorReading("28-0000d34c3", Temperature(21.213))
     ))), UnexpectedWriter)
     val response = service(request).run
 
@@ -52,17 +52,46 @@ class TemperatureEndpointTest extends Specification {
 
   "Put some temperature data" >> {
     val service = TemperatureEndpoint.service(stubReader(\/-(List())), stubWriter(\/-(Unit)))
-    val response = service.apply(Put("""{ "host" : "localhost", "seconds" : 9000, "sensors" : [ { "celsius" : 32.1 } ]}""")).run
+    val measurement = """{
+                         |  "host" : "localhost",
+                         |  "seconds" : 9000,
+                         |  "sensors" : [
+                         |     {
+                         |        "name" : "28-00000dfg34ca",
+                         |        "temperature" : {
+                         |          "celsius" : 31.1
+                         |        }
+                         |     }
+                         |   ]
+                         |}""".stripMargin
+    val response = service.apply(Put(measurement)).run
     response must haveStatus(NoContent)
   }
 
   "Putting sensor data to the writer" >> {
-    val body = """{ "host" : "localhost", "seconds" : 7000, "sensors" : [ { "celsius" : 31.1 }, { "celsius" : 32.8 } ]}"""
+    val body = """{
+                  |  "host" : "localhost",
+                  |  "seconds" : 7000,
+                  |  "sensors" : [
+                  |     {
+                  |        "name" : "28-00000dfg34ca",
+                  |        "temperature" : {
+                  |          "celsius" : 31.1
+                  |        }
+                  |     },
+                  |     {
+                  |        "name" : "28-0000012d432b",
+                  |        "temperature" : {
+                  |          "celsius" : 32.8
+                  |        }
+                  |     }
+                  |   ]
+                  |}""".stripMargin
     val request = Request(PUT, Uri(path = s"temperature")).withBody(body).run
     var temperatures = List[Temperature]()
     val service = TemperatureEndpoint.service(stubReader(\/-(List())), new TemperatureWriter {
       def write(measurement: Measurement) : \/[Error, Unit] = {
-        temperatures = measurement.temperatures
+        temperatures = measurement.temperatures.map(_.temperature)
         \/-(Unit)
       }
     })
@@ -77,13 +106,146 @@ class TemperatureEndpointTest extends Specification {
     response.as[String].run must_== "Unable to parse content as JSON Unexpected content found: bad json"
   }
 
-  "Get multiple sensors, averaging the temperatures" >> {
+  "Get multiple sensors temperatures" >> {
+    val measurement1 = """{
+                         |  "host" : "lounge",
+                         |  "seconds" : 100,
+                         |  "sensors" : [
+                         |     {
+                         |        "name" : "28-00000dfg34ca",
+                         |        "temperature" : {
+                         |          "celsius" : 31.1
+                         |        }
+                         |     },
+                         |     {
+                         |        "name" : "28-00000f33fdc3",
+                         |        "temperature" : {
+                         |          "celsius" : 32.8
+                         |       }
+                         |     }
+                         |   ]
+                         |}""".stripMargin
+
+    val measurement2 = """{
+                         |  "host" : "bedroom",
+                         |  "seconds" : 200,
+                         |  "sensors" : [
+                         |     {
+                         |        "name" : "28-00000f3554ds",
+                         |        "temperature" : {
+                         |          "celsius" : 21.1
+                         |        }
+                         |     },
+                         |     {
+                         |        "name" : "28-000003dd3433",
+                         |        "temperature" : {
+                         |          "celsius" : 22.8
+                         |       }
+                         |     }
+                         |   ]
+                         |}""".stripMargin
+
+
     val service = TemperatureEndpoint.service(stubReader(\/-(List())), stubWriter(\/-(Unit)))
     service.apply(Request(DELETE, Uri.uri("/temperatures"))).run
-    service.apply(Put("""{ "host" : "lounge", "seconds" : 100, "sensors" : [ { "celsius" : 31.1 }, { "celsius" : 32.8 } ]}""")).run
-    service.apply(Put("""{ "host" : "bedroom", "seconds" : 200, "sensors" : [ { "celsius" : 21.1 }, { "celsius" : 22.8 } ]}""")).run
+    service.apply(Put(measurement1)).run
+    service.apply(Put(measurement2)).run
 
     val request = Request(GET, Uri.uri("/temperatures"))
+    val response = service(request).run
+
+    response.status must_== Ok
+
+    val expected = """{
+                      |  "measurements" : [
+                      |    {
+                      |      "host" : "lounge",
+                      |      "seconds" : 100,
+                      |      "sensors" : [
+                      |        {
+                      |          "name" : "28-00000dfg34ca",
+                      |          "temperature" : {
+                      |            "celsius" : 31.1
+                      |          }
+                      |        },
+                      |        {
+                      |          "name" : "28-00000f33fdc3",
+                      |          "temperature" : {
+                      |            "celsius" : 32.8
+                      |          }
+                      |        }
+                      |      ]
+                      |    },
+                      |    {
+                      |      "host" : "bedroom",
+                      |      "seconds" : 200,
+                      |      "sensors" : [
+                      |        {
+                      |          "name" : "28-00000f3554ds",
+                      |          "temperature" : {
+                      |            "celsius" : 21.1
+                      |          }
+                      |        },
+                      |        {
+                      |          "name" : "28-000003dd3433",
+                      |          "temperature" : {
+                      |            "celsius" : 22.8
+                      |          }
+                      |        }
+                      |      ]
+                      |    }
+                      |  ]
+                      |}""".stripMargin
+
+    response.as[String].run must_== expected
+  }
+
+  "Get multiple sensors, averaging the temperatures" >> {
+    val measurement1 = """{
+                         |  "host" : "lounge",
+                         |  "seconds" : 100,
+                         |  "sensors" : [
+                         |     {
+                         |        "name" : "28-00000dfg34ca",
+                         |        "temperature" : {
+                         |          "celsius" : 31.1
+                         |        }
+                         |     },
+                         |     {
+                         |        "name" : "28-00000f33fdc3",
+                         |        "temperature" : {
+                         |          "celsius" : 32.8
+                         |       }
+                         |     }
+                         |   ]
+                         |}""".stripMargin
+
+    val measurement2 = """{
+                         |  "host" : "bedroom",
+                         |  "seconds" : 200,
+                         |  "sensors" : [
+                         |     {
+                         |        "name" : "28-00000f3554ds",
+                         |        "temperature" : {
+                         |          "celsius" : 21.1
+                         |        }
+                         |     },
+                         |     {
+                         |        "name" : "28-000003dd3433",
+                         |        "temperature" : {
+                         |          "celsius" : 22.8
+                         |       }
+                         |     }
+                         |   ]
+                         |}""".stripMargin
+
+
+    val service = TemperatureEndpoint.service(stubReader(\/-(List())), stubWriter(\/-(Unit)))
+    service.apply(Request(DELETE, Uri.uri("/temperatures"))).run
+    service.apply(Put(measurement1)).run
+    service.apply(Put(measurement2)).run
+
+    val request = Request(GET, Uri.uri("/temperatures/average"))
     val response = service(request).run
 
     response.status must_== Ok
@@ -94,7 +256,10 @@ class TemperatureEndpointTest extends Specification {
                                       |      "seconds" : 100,
                                       |      "sensors" : [
                                       |        {
-                                      |          "celsius" : 31.95
+                                      |          "name" : "Average",
+                                      |          "temperature" : {
+                                      |            "celsius" : 31.95
+                                      |          }
                                       |        }
                                       |      ]
                                       |    },
@@ -103,7 +268,10 @@ class TemperatureEndpointTest extends Specification {
                                       |      "seconds" : 200,
                                       |      "sensors" : [
                                       |        {
-                                      |          "celsius" : 21.950000000000003
+                                      |          "name" : "Average",
+                                      |          "temperature" : {
+                                      |            "celsius" : 21.950000000000003
+                                      |          }
                                       |        }
                                       |      ]
                                       |    }
@@ -111,8 +279,8 @@ class TemperatureEndpointTest extends Specification {
                                       |}""".stripMargin
   }
 
-  def stubReader(result: Error \/ List[Temperature]) = new TemperatureReader {
-    def read: Error \/ List[Temperature] = result
+  def stubReader(result: Error \/ List[SensorReading]) = new TemperatureReader {
+    def read: Error \/ List[SensorReading] = result
   }
 
   def stubWriter(result: Error \/ Unit) = new TemperatureWriter {

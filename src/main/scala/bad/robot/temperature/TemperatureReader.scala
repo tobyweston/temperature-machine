@@ -3,5 +3,5 @@ package bad.robot.temperature
 import scalaz.\/
 
 trait TemperatureReader {
-  def read: Error \/ List[Temperature]
+  def read: Error \/ List[SensorReading]
 }
