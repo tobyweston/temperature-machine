@@ -4,8 +4,7 @@ import java.util.concurrent.Executors._
 
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import bad.robot.temperature.rrd.RrdFile.MaxSensors
-import bad.robot.temperature.rrd.{Host, Rrd, RrdFile}
-import bad.robot.temperature.server.Server
+import bad.robot.temperature.rrd.{Host, RrdFile}
 import bad.robot.temperature.task.Scheduler._
 import bad.robot.temperature.{TemperatureWriter, XmlExport}
 
@@ -19,7 +18,7 @@ object Tasks {
     print(s"RRD initialising for ${hosts.map(_.name).mkString("'", "', '", "'")} (with up to $MaxSensors sensors each)...")
     Task.delay(RrdFile.exists).map {
       case false => RrdFile(hosts, 30 seconds).create()
-      case _ => println("Ok")
+      case _     => println("Ok")
     }
   }
 
