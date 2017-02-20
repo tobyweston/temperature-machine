@@ -33,7 +33,7 @@ object TemperatureEndpoint {
       val average = current.map { case (host, measurement) => {
         host -> measurement.copy(temperatures = List(measurement.temperatures.average))
       }}
-      Ok(encode(average).spaces2).replaceAllHeaders(Header("Access-Control-Allow-Origin", "*"))
+      Ok(encode(average).spaces2)
     }
 
     case GET -> Root / "temperatures" => {
