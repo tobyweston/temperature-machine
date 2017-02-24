@@ -49,7 +49,7 @@ object Series {
   implicit def seriesEncoder: EncodeJson[Series] = {
     EncodeJson((series: Series) =>
       Json(
-        "radius" -> jNumber(0),
+        "label" -> jString(series.name),
         "data" -> data(series.data)
       )
     )
