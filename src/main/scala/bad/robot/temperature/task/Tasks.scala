@@ -6,7 +6,7 @@ import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import bad.robot.temperature.rrd.RrdFile.MaxSensors
 import bad.robot.temperature.rrd.{Host, RrdFile}
 import bad.robot.temperature.task.Scheduler._
-import bad.robot.temperature.{TemperatureWriter, XmlExport}
+import bad.robot.temperature.{JsonExport, TemperatureWriter, XmlExport}
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -42,6 +42,11 @@ object Tasks {
   def exportXml(implicit hosts: List[Host]) = {
     val executor = newSingleThreadScheduledExecutor(TemperatureMachineThreadFactory("xml-export-thread"))
     Task.delay(executor.schedule(100 seconds, XmlExport(24 hours)))
+  }
+
+  def exportJson(implicit hosts: List[Host]) = {
+    val executor = newSingleThreadScheduledExecutor(TemperatureMachineThreadFactory("json-export-thread"))
+    Task.delay(executor.schedule(100 seconds, JsonExport(24 hours)))
   }
 
 }

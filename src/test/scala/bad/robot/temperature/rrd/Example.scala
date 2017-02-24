@@ -1,7 +1,7 @@
 package bad.robot.temperature.rrd
 
 import bad.robot.temperature.rrd.Seconds.{now, secondsToLong}
-import bad.robot.temperature.{Error, Measurement, SensorReading, SensorReading$, Temperature}
+import bad.robot.temperature.{Error, Measurement, SensorReading, Temperature}
 
 import scala.concurrent.duration.Duration
 import scala.util.Random
@@ -27,7 +27,9 @@ object Example extends App {
 
   populateRrd(hosts)
 
-  Xml.export(start, start + aDay, hosts)
+  val xml = Xml(start, start + aDay, hosts)
+  xml.exportJson("temperature.json")
+  xml.exportXml("temperature.xml")
 
   Graph.create(start, start + aDay, hosts)
   Graph.create(start, start + aDay * 2, hosts)
