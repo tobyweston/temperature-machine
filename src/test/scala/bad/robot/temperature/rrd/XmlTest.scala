@@ -123,7 +123,7 @@ class XmlTest extends Specification {
         |    ]
         |  }
         |]""".stripMargin.replace("\r", "")
-    Xml.toJson(xml) must_== json
+    Xml(xml).toJson must_== json
   }
 
 }

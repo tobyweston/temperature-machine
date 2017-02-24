@@ -10,9 +10,27 @@ import org.rrd4j.core.RrdDb
 import scala.collection.JavaConverters._
 import scala.xml.{Elem, XML}
 
+case class Xml(xml: Elem) {
+  def exportXml(filename: String) = {
+    XML.save(RrdFile.path / filename, xml)
+  }
+
+  def exportJson(filename: String) = {
+    val file = RrdFile.path / filename
+    val writer = new BufferedWriter(new FileWriter(file))
+    writer.write(toJson())
+    writer.close()
+  }
+
+  def toJson(): String = {
+    val series = parse(xml)
+    encode(series).spaces2
+  }
+
+}
 
 object Xml {
-  def export(start: Seconds, end: Seconds, hosts: List[Host], filename: Option[String] = Some("temperature.xml")): Elem = {
+  def apply(start: Seconds, end: Seconds, hosts: List[Host]): Xml = {
     val database = new RrdDb(RrdFile.file)
     val request = database.createFetchRequest(AVERAGE, start, end)
     val sensors = for {
@@ -24,22 +42,7 @@ object Xml {
     request.setFilter(nonEmpty(sensors, database).asJava)
     val data = request.fetchData()
     val xml = data.exportXml()
-    saveFileIfRequired(filename, xml)
-    XML.loadString(xml)
-  }
-
-  def toJson(xml: Elem): String = {
-    val series = parse(xml)
-    encode(series).spaces2
-  }
-
-  private def saveFileIfRequired(filename: Option[String], xml: String) = {
-    filename.foreach(path => {
-      val file = RrdFile.path / path
-      val writer = new BufferedWriter(new FileWriter(file))
-      writer.write(xml)
-      writer.close()
-    })
+    new Xml(XML.loadString(xml))
   }
 
   def nonEmpty(sensors: List[String], database: RrdDb) = sensors.filter(database.hasValuesFor).toSet
