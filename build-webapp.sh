@@ -24,15 +24,15 @@ cd temperature-machine-ui
 npm update
 npm run build
 
+# remove old version
+git rm -r ${ROOT}/src/main/resources
+git commit -m "removing old version of web-app during deployment of new version"
+
 # copy into resources folder and sort git out
-rm -rf ${ROOT}/src/main/resources
 mkdir -p ${ROOT}/src/main/resources
 cp -R build/ ${ROOT}/src/main/resources/
-
-cd ${ROOT}/src/main/resources/
-git status | grep deleted | awk '{print $2}' | xargs git rm
-git add .
-git commit -m "updated web-app from http://github.com/tobyweston/temperature-machine-ui"
+git add ${ROOT}/src/main/resources/
+git commit -m "adding latest version of the web-app (from http://github.com/tobyweston/temperature-machine-ui)"
 
 cd ${ROOT}
 echo "Ok"
