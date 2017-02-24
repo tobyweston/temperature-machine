@@ -38,7 +38,7 @@ object Server extends App {
         discovery,
         Tasks.record(Host.local.trim, sensors, HttpUpload(InetAddress.getLocalHost)),
         Tasks.graphing,
-        Tasks.exportXml,
+        Tasks.exportJson,
         http
       ))
     } yield ()
