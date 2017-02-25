@@ -25,12 +25,13 @@ npm update
 npm run build
 
 # remove old version
-git rm -r ${ROOT}/src/main/resources
+cd ${ROOT}
+git rm -r src/main/resources
 git commit -m "removing old version of web-app during deployment of new version"
 
 # copy into resources folder and sort git out
 mkdir -p ${ROOT}/src/main/resources
-cp -R build/ ${ROOT}/src/main/resources/
+cp -R ${ROOT}/target/web-app/temperature-machine-ui/build/ ${ROOT}/src/main/resources/
 git add ${ROOT}/src/main/resources/
 git commit -m "adding latest version of the web-app (from http://github.com/tobyweston/temperature-machine-ui)"
 
