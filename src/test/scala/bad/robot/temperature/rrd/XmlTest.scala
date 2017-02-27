@@ -55,7 +55,7 @@ class XmlTest extends Specification {
     val json =
       """[
         |  {
-        |    "radius" : 0,
+        |    "label" : "lounge-sensor-2",
         |    "data" : [
         |      {
         |        "x" : 1487582430000,
@@ -72,7 +72,7 @@ class XmlTest extends Specification {
         |    ]
         |  },
         |  {
-        |    "radius" : 0,
+        |    "label" : "bedroom-sensor-2",
         |    "data" : [
         |      {
         |        "x" : 1487582430000,
@@ -89,7 +89,7 @@ class XmlTest extends Specification {
         |    ]
         |  },
         |  {
-        |    "radius" : 0,
+        |    "label" : "lounge-sensor-1",
         |    "data" : [
         |      {
         |        "x" : 1487582430000,
@@ -106,7 +106,7 @@ class XmlTest extends Specification {
         |    ]
         |  },
         |  {
-        |    "radius" : 0,
+        |    "label" : "bedroom-sensor-1",
         |    "data" : [
         |      {
         |        "x" : 1487582430000,
