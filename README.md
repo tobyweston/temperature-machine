@@ -146,6 +146,11 @@ Setup a `rc.local` file to boot to the thing as the `pi` user;
 Connecting to a non-hidden network is straight forward. Setting things up for a hidden network is [a little more involved](http://www.dafinga.net/2013/01/how-to-setup-raspberry-pi-with-hidden.html).
 
 
+## Contributing
+
+See the [Developer's Readme](DEVELOPERS.md)
+
+
 ## Pi Stats
 
 Load on the Pi is pretty minimal, however the XML export and graph generation do max out the CPU for short periods.

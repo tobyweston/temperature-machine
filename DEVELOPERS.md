@@ -13,5 +13,6 @@ The `resources` folder is statically served from `Server.scala`.
 
 ## Build Deployment JAR
 
-How to produce the `temperature-machine-1.0.jar` file.
+Run the following to produce the `temperature-machine-2.0.jar` file.
 
+    sbt assembly
