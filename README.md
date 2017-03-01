@@ -27,8 +27,7 @@ To get the software on the box, I tend to do the following;
 2. Run `sbt -J-Xmx512m -J-Xms512m assembly` from a terminal (memory set low for the Pi Zero)
 3. Run `./start.sh &`, `./start-server.sh room1 room2 room3` or `./start-client.sh` from the checked out folder
 
-You can also read my [blog post](http://baddotrobot.com/blog/2016/03/23/homebrew-temperature-logger/) for more information.
-
+You can also read my [blog post](http://baddotrobot.com/blog/2016/03/23/homebrew-temperature-logger/) for more detailed instructions (including automatically logging temperatures on reboot).
 
 
 ## Client / Server
