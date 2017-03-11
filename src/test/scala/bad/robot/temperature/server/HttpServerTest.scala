@@ -6,12 +6,11 @@ import bad.robot.temperature.rrd.{Host, RrdFile}
 import org.http4s.Method.GET
 import org.http4s.client.blaze._
 import org.http4s.{Request, Status, Uri}
-import org.specs2.matcher.TaskMatchers
 import org.specs2.mutable.Specification
 
 import scalaz.concurrent.Task
 
-class HttpServerTest extends Specification with TaskMatchers {
+class HttpServerTest extends Specification {
 
   "When the Http server has been started" >> {
     val server = HttpServer(8080, List(Host("example"))).unsafePerformSync
