@@ -3,7 +3,8 @@ package bad.robot.temperature.server
 import bad.robot.temperature.rrd.RrdFile
 import org.http4s.server.staticcontent._
 import org.http4s.{HttpService, Response, Service, StaticFile}
-object TemperatureResources {
+
+object StaticFiles {
 
   def service: HttpService = Service.lift(request => {
     val file = RrdFile.path + request.uri.path

@@ -7,7 +7,6 @@ import bad.robot.temperature.ds18b20.SensorFile
 import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.task.{Tasks, TemperatureMachineThreadFactory}
-import org.http4s.server.{Server => Http4sServer}
 
 import scalaz.concurrent.Task
 
