@@ -1,8 +1,8 @@
 package bad.robot.temperature.server
 
 import java.lang.Math._
-import java.util.concurrent.Executors._
 import java.util.concurrent.{CountDownLatch, ExecutorService}
+import java.util.concurrent.Executors._
 
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import bad.robot.temperature.rrd.{Host, Rrd}
@@ -20,11 +20,6 @@ object HttpServer {
     server.build().unsafePerformSync
     server
   }
-
-  val DefaultExecutorService: ExecutorService = {
-    newFixedThreadPool(max(4, Runtime.getRuntime.availableProcessors), TemperatureMachineThreadFactory("http-server", daemon = true))
-  }
-
 }
 
 class HttpServer(port: Int, monitored: List[Host]) {
@@ -35,8 +30,12 @@ class HttpServer(port: Int, monitored: List[Host]) {
 
   def shutdown(): Task[Unit] = Task.delay(latch.countDown())
 
+  private val DefaultExecutorService: ExecutorService = {
+    newFixedThreadPool(max(4, Runtime.getRuntime.availableProcessors), TemperatureMachineThreadFactory("http-server"))
+  }
+
   private def build(): Task[Http4sServer] = BlazeBuilder
-    .withServiceExecutor(HttpServer.DefaultExecutorService)
+    .withServiceExecutor(DefaultExecutorService)
     .bindHttp(port, "0.0.0.0")
     .mountService(services(), "/")
     .start

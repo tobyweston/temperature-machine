@@ -6,7 +6,7 @@ import bad.robot.temperature.client.HttpUpload
 import bad.robot.temperature.ds18b20.SensorFile
 import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.rrd.Host
-import bad.robot.temperature.task.Tasks
+import bad.robot.temperature.task.{Tasks, TemperatureMachineThreadFactory}
 import org.http4s.server.{Server => Http4sServer}
 
 import scalaz.concurrent.Task
@@ -18,7 +18,7 @@ object Server extends App {
   def discovery = {
     for {
       _        <- Task.delay(println(s"Starting Discovery Server, listening for ${hosts.map(_.name).mkString("'", "', '", "'")}..."))
-      listener <- Task.delay(new Thread(new DiscoveryServer(), "temperature-machine-discovery-server").start())
+      listener <- Task.delay(TemperatureMachineThreadFactory("machine-discovery-server").newThread(new DiscoveryServer()).start())
     } yield ()
   }
 

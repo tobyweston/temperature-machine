@@ -4,7 +4,7 @@ import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.AtomicInteger
 
 object TemperatureMachineThreadFactory {
-  def apply(name: String, daemon: Boolean = false): ThreadFactory = {
+  def apply(name: String, daemon: Boolean = true): ThreadFactory = {
     new ThreadFactory() {
       val count = new AtomicInteger
       def newThread(runnable: Runnable): Thread = {
