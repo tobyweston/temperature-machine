@@ -1,9 +1,8 @@
 package bad.robot.temperature
 
 import java.io.File
-import java.util.Date
 
-import org.rrd4j.core.{Sample, RrdDb}
+import org.rrd4j.core.{RrdDb, Sample}
 
 import scala.Double._
 import scala.concurrent.duration.Duration

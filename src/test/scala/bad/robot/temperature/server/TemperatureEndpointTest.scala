@@ -87,7 +87,7 @@ class TemperatureEndpointTest extends Specification {
                   |     }
                   |   ]
                   |}""".stripMargin
-    val request = Request(PUT, Uri(path = s"temperature")).withBody(body).unsafePerformSync
+    val request = Request(PUT, Uri(path = "temperature")).withBody(body).unsafePerformSync
     var temperatures = List[Temperature]()
     val service = TemperatureEndpoint.service(stubReader(\/-(List())), new TemperatureWriter {
       def write(measurement: Measurement) : \/[Error, Unit] = {
