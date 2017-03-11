@@ -11,7 +11,7 @@ object RpnGenerator {
   def generateRpn(sensors: List[String], aggregator: Aggregator) = {
     sensors match {
       case sensor :: Nil => sensor + "," + aggregator.toRpn(1)
-      case items => items.mkString("", ",", ",") + aggregator.toRpn(sensors.size - 1)
+      case items         => items.mkString("", ",", ",") + aggregator.toRpn(sensors.size - 1)
     }
   }
 }
