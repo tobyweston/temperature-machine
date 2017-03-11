@@ -23,7 +23,7 @@ class SensorFileTest extends Specification {
   }
 
   "Find some sensor files (using system property) and execute" >> {
-    def example(sensors: List[SensorFile]) = Task.delay(sensors)
+    val example: List[SensorFile] => Task[List[SensorFile]] = sensors => Task.delay(sensors)
 
     sys.props += ("sensor.location" -> "src/test/resources/examples")
 
@@ -35,7 +35,7 @@ class SensorFileTest extends Specification {
   }
 
   "Fail to find some sensor files (using system property) and not execute" >> {
-    def example(sensors: List[SensorFile]) = Task.delay(sensors)
+    val example: List[SensorFile] => Task[List[SensorFile]] = sensors => Task.delay(sensors)
 
     sys.props += ("sensor.location" -> "missing")
 
