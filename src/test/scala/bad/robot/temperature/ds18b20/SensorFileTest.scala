@@ -2,11 +2,12 @@ package bad.robot.temperature.ds18b20
 
 import org.specs2.matcher.DisjunctionMatchers._
 import org.specs2.mutable.Specification
-import org.specs2.specification.AfterEach
 
 import scalaz.concurrent.Task
 
-class SensorFileTest extends Specification with AfterEach {
+class SensorFileTest extends Specification {
+
+  sequential
 
   "Find some sensor files" >> {
     SensorFile.find("src/test/resources/examples") must contain(exactly(
@@ -27,6 +28,9 @@ class SensorFileTest extends Specification with AfterEach {
     sys.props += ("sensor.location" -> "src/test/resources/examples")
 
     val result = SensorFile.findSensorsAndExecute[List[SensorFile]](sensors => Task.delay(sensors))
+
+    sys.props -= "sensor.location"
+
     result must be_\/-(List(
       new SensorFile("src/test/resources/examples/28-000005e2fdc2/w1_slave"),
       new SensorFile("src/test/resources/examples/28-000005e2fdc3/w1_slave")
@@ -37,11 +41,10 @@ class SensorFileTest extends Specification with AfterEach {
     sys.props += ("sensor.location" -> "missing")
 
     val result = SensorFile.findSensorsAndExecute(sensors => Task.delay(sensors))
-    result must be_-\/
-  }
 
-  def after = {
     sys.props -= "sensor.location"
+
+    result must be_-\/
   }
 
 }
