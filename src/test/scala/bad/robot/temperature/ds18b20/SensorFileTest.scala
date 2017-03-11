@@ -1,11 +1,11 @@
 package bad.robot.temperature.ds18b20
 
 import org.specs2.matcher.DisjunctionMatchers._
-import org.specs2.mutable.Specification
+import org.specs2.mutable.{After, Specification}
 
 import scalaz.concurrent.Task
 
-class SensorFileTest extends Specification {
+class SensorFileTest extends Specification with After {
 
   "Find some sensor files" >> {
     SensorFile.find("src/test/resources/examples") must contain(exactly(
@@ -38,4 +38,7 @@ class SensorFileTest extends Specification {
     val result = SensorFile.findSensorsAndExecute(sensors => Task.delay(sensors))
     result must be_-\/
   }
+
+  def after = sys.props -= "sensor.location"
+
 }
