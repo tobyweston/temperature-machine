@@ -22,7 +22,7 @@ object SensorFile {
 
     SensorFile.find(location) match {
       case Nil     => println(FailedToFindFile(location).message)
-      case sensors => task(sensors).run
+      case sensors => task(sensors).unsafePerformSync
     }
   }
 

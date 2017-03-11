@@ -5,7 +5,7 @@ import java.net.{DatagramPacket, DatagramSocket, InetAddress, NetworkInterface, 
 import bad.robot.temperature.server.DiscoveryServer._
 import bad.robot.temperature.server.Socket._
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
@@ -28,13 +28,14 @@ object DiscoveryClient {
 
   private def allNetworkInterfaces: List[NetworkInterface] = {
     NetworkInterface.getNetworkInterfaces
+      .asScala
       .toList
       .filter(_.isUp)
       .filterNot(_.isLoopback)
   }
 
   private val broadcastAddresses: (NetworkInterface) => List[InetAddress] = (interface) => {
-    interface.getInterfaceAddresses.toList.map(_.getBroadcast).filter(_ != null)
+    interface.getInterfaceAddresses.asScala.toList.map(_.getBroadcast).filter(_ != null)
   }
 
   def allBroadcastAddresses: List[InetAddress] = {

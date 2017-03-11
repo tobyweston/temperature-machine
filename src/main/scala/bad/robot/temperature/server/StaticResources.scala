@@ -1,9 +1,9 @@
 package bad.robot.temperature.server
 
 import org.http4s.CacheDirective.{`max-age`, `no-cache`, `no-store`}
+import org.http4s.{HttpService, Service}
 import org.http4s.headers.`Cache-Control`
 import org.http4s.server.staticcontent._
-import org.http4s.server.{HttpService, Service}
 
 import scala.concurrent.duration.Duration._
 

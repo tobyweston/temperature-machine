@@ -14,14 +14,14 @@ class EitherToResponseTest extends Specification {
   val okResponse = (_: Any) => Ok()
 
   "Error mappings" >> {
-    -\/(CrcFailure()).toHttpResponse(okResponse).run.status                    must_== InternalServerError
-    -\/(SensorError("???")).toHttpResponse(okResponse).run.status              must_== InternalServerError
-    -\/(UnexpectedError("???")).toHttpResponse(okResponse).run.status          must_== InternalServerError
-    -\/(FailedToFindFile("???")).toHttpResponse(okResponse).run.status         must_== NotFound
-    -\/(FileError(new Exception("???"))).toHttpResponse(okResponse).run.status must_== InternalServerError
+    -\/(CrcFailure()).toHttpResponse(okResponse).unsafePerformSync.status                    must_== InternalServerError
+    -\/(SensorError("???")).toHttpResponse(okResponse).unsafePerformSync.status              must_== InternalServerError
+    -\/(UnexpectedError("???")).toHttpResponse(okResponse).unsafePerformSync.status          must_== InternalServerError
+    -\/(FailedToFindFile("???")).toHttpResponse(okResponse).unsafePerformSync.status         must_== NotFound
+    -\/(FileError(new Exception("???"))).toHttpResponse(okResponse).unsafePerformSync.status must_== InternalServerError
   }
 
   "Success mapping" >> {
-    \/-("Well done").toHttpResponse(okResponse).run.status must_== Ok
+    \/-("Well done").toHttpResponse(okResponse).unsafePerformSync.status must_== Ok
   }
 }

@@ -1,7 +1,12 @@
 package bad.robot.temperature.server
 
+import java.lang.Math._
+import java.util.concurrent.Executors._
+import java.util.concurrent.{CountDownLatch, ExecutorService}
+
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import bad.robot.temperature.rrd.{Host, Rrd}
+import bad.robot.temperature.task.TemperatureMachineThreadFactory
 import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.server.middleware.CORS
 import org.http4s.server.syntax.ServiceOps
@@ -10,20 +15,37 @@ import org.http4s.server.{Server => Http4sServer}
 import scalaz.concurrent.Task
 
 object HttpServer {
-  def apply(port: Int, monitored: List[Host]): HttpServer = new HttpServer(port, monitored)
+  def apply(port: Int, monitored: List[Host]): Task[HttpServer] = Task.delay {
+    val server = new HttpServer(port, monitored)
+    server.build().unsafePerformSync
+    server
+  }
+
+  val DefaultExecutorService: ExecutorService = {
+    newFixedThreadPool(max(4, Runtime.getRuntime.availableProcessors), TemperatureMachineThreadFactory("http-server", daemon = true))
+  }
+
 }
 
 class HttpServer(port: Int, monitored: List[Host]) {
 
-  def start() = build().run.awaitShutdown()
+  private val latch = new CountDownLatch(1)
 
-  def build(): Task[Http4sServer] = BlazeBuilder.bindHttp(port, "0.0.0.0").mountService(services(), "/").start
+  def awaitShutdown(): Task[Unit] = Task.delay(latch.await())
 
-  def services() = {
+  def shutdown(): Task[Unit] = Task.delay(latch.countDown())
+
+  private def build(): Task[Http4sServer] = BlazeBuilder
+    .withServiceExecutor(HttpServer.DefaultExecutorService)
+    .bindHttp(port, "0.0.0.0")
+    .mountService(services(), "/")
+    .start
+
+  private def services() = {
     CORS(
-      StaticResources.service ||
-        TemperatureResources.service ||
-        TemperatureEndpoint.service(SensorReader(SensorFile.find()), Rrd(monitored))
+      TemperatureEndpoint.service(SensorReader(SensorFile.find()), Rrd(monitored)) ||
+      TemperatureResources.service ||
+      StaticResources.service
     )
   }
 }

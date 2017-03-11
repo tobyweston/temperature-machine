@@ -3,9 +3,8 @@ package bad.robot.temperature.server
 import argonaut.EncodeJson
 import bad.robot.temperature._
 import bad.robot.temperature.rrd.Host
-import org.http4s.Header
+import org.http4s.HttpService
 import org.http4s.dsl._
-import org.http4s.server.HttpService
 
 object TemperatureEndpoint {
 
@@ -15,7 +14,7 @@ object TemperatureEndpoint {
 
     EncodeJson((measurements: Map[Host, Measurement]) =>
       argonaut.Json(
-        "measurements" := measurements.values
+        "measurements" := measurements.values.toList
       )
     )
   }
@@ -46,7 +45,7 @@ object TemperatureEndpoint {
     }
 
     case request @ PUT -> Root / "temperature" => {
-      val json = request.as[String].run
+      val json = request.as[String].unsafePerformSync
       val result = for {
         measurement <- decode[Measurement](json)
         _           <- writer.write(measurement)

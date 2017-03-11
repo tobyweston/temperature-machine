@@ -12,7 +12,7 @@ import org.specs2.mutable.Specification
 import scalaz.{-\/, \/, \/-}
 
 object Requests {
-  val Put: String => Request = (body) => Request(PUT, Uri(path = s"temperature")).withBody(body).run
+  val Put: String => Request = (body) => Request(PUT, Uri(path = s"temperature")).withBody(body).unsafePerformSync
 }
 
 class TemperatureEndpointTest extends Specification {
@@ -22,10 +22,10 @@ class TemperatureEndpointTest extends Specification {
   "Averages a single temperature" >> {
     val request = Request(GET, Uri.uri("/temperature"))
     val service = TemperatureEndpoint.service(stubReader(\/-(List(SensorReading("28-0002343fd", Temperature(56.34))))), UnexpectedWriter)
-    val response = service(request).run
+    val response = service(request).unsafePerformSync
 
     response.status must_== Ok
-    response.as[String].run must_== "56.3 °C"
+    response.as[String].unsafePerformSync must_== "56.3 °C"
   }
 
   "Averages several temperatures" >> {
@@ -35,19 +35,19 @@ class TemperatureEndpointTest extends Specification {
       SensorReading("28-0000d34c3", Temperature(23.364)),
       SensorReading("28-0000d34c3", Temperature(21.213))
     ))), UnexpectedWriter)
-    val response = service(request).run
+    val response = service(request).unsafePerformSync
 
     response.status must_== Ok
-    response.as[String].run must_== "23.3 °C"
+    response.as[String].unsafePerformSync must_== "23.3 °C"
   }
 
   "General Error reading temperatures" >> {
     val request = Request(GET, Uri.uri("/temperature"))
     val service = TemperatureEndpoint.service(stubReader(-\/(SensorError("An example error"))), UnexpectedWriter)
-    val response = service(request).run
+    val response = service(request).unsafePerformSync
 
     response.status must_== InternalServerError
-    response.as[String].run must_== "An example error"
+    response.as[String].unsafePerformSync must_== "An example error"
   }
 
   "Put some temperature data" >> {
@@ -64,7 +64,7 @@ class TemperatureEndpointTest extends Specification {
                          |     }
                          |   ]
                          |}""".stripMargin
-    val response = service.apply(Put(measurement)).run
+    val response = service.apply(Put(measurement)).unsafePerformSync
     response must haveStatus(NoContent)
   }
 
@@ -87,7 +87,7 @@ class TemperatureEndpointTest extends Specification {
                   |     }
                   |   ]
                   |}""".stripMargin
-    val request = Request(PUT, Uri(path = s"temperature")).withBody(body).run
+    val request = Request(PUT, Uri(path = s"temperature")).withBody(body).unsafePerformSync
     var temperatures = List[Temperature]()
     val service = TemperatureEndpoint.service(stubReader(\/-(List())), new TemperatureWriter {
       def write(measurement: Measurement) : \/[Error, Unit] = {
@@ -95,15 +95,15 @@ class TemperatureEndpointTest extends Specification {
         \/-(Unit)
       }
     })
-    service.apply(request).run
+    service.apply(request).unsafePerformSync
     temperatures must_== List(Temperature(31.1), Temperature(32.8))
   }
 
   "Bad json when writing sensor data" >> {
     val service = TemperatureEndpoint.service(stubReader(\/-(List())), stubWriter(\/-(Unit)))
-    val response = service.apply(Put("bad json")).run
+    val response = service.apply(Put("bad json")).unsafePerformSync
     response must haveStatus(BadRequest)
-    response.as[String].run must_== "Unable to parse content as JSON Unexpected content found: bad json"
+    response.as[String].unsafePerformSync must_== "Unable to parse content as JSON Unexpected content found: bad json"
   }
 
   "Get multiple sensors temperatures" >> {
@@ -147,12 +147,12 @@ class TemperatureEndpointTest extends Specification {
 
 
     val service = TemperatureEndpoint.service(stubReader(\/-(List())), stubWriter(\/-(Unit)))
-    service.apply(Request(DELETE, Uri.uri("/temperatures"))).run
-    service.apply(Put(measurement1)).run
-    service.apply(Put(measurement2)).run
+    service.apply(Request(DELETE, Uri.uri("/temperatures"))).unsafePerformSync
+    service.apply(Put(measurement1)).unsafePerformSync
+    service.apply(Put(measurement2)).unsafePerformSync
 
     val request = Request(GET, Uri.uri("/temperatures"))
-    val response = service(request).run
+    val response = service(request).unsafePerformSync
 
     response.status must_== Ok
 
@@ -197,7 +197,7 @@ class TemperatureEndpointTest extends Specification {
                       |  ]
                       |}""".stripMargin
 
-    response.as[String].run must_== expected
+    response.as[String].unsafePerformSync must_== expected
   }
 
   "Get multiple sensors, averaging the temperatures" >> {
@@ -241,15 +241,16 @@ class TemperatureEndpointTest extends Specification {
 
 
     val service = TemperatureEndpoint.service(stubReader(\/-(List())), stubWriter(\/-(Unit)))
-    service.apply(Request(DELETE, Uri.uri("/temperatures"))).run
-    service.apply(Put(measurement1)).run
-    service.apply(Put(measurement2)).run
+    service.apply(Request(DELETE, Uri.uri("/temperatures"))).unsafePerformSync
+    service.apply(Put(measurement1)).unsafePerformSync
+    service.apply(Put(measurement2)).unsafePerformSync
 
     val request = Request(GET, Uri.uri("/temperatures/average"))
-    val response = service(request).run
+    val response = service(request).unsafePerformSync
 
     response.status must_== Ok
-    response.as[String].run must_== """{
+    response.as[String].unsafePerformSync must_==
+                                    """{
                                       |  "measurements" : [
                                       |    {
                                       |      "host" : "lounge",

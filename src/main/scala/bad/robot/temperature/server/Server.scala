@@ -7,6 +7,7 @@ import bad.robot.temperature.ds18b20.SensorFile
 import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.task.Tasks
+import org.http4s.server.{Server => Http4sServer}
 
 import scalaz.concurrent.Task
 
@@ -21,13 +22,13 @@ object Server extends App {
     } yield ()
   }
 
-  def http(implicit monitored: List[Host]) = {
+  def http(implicit monitored: List[Host]): Task[HttpServer] = {
     val port = 11900
     for {
-      http <- HttpServer(port, monitored).build()
-      _    <- Task.delay(println(s"HTTP Server started on http://${InetAddress.getLocalHost.getHostAddress}:$port"))
-      _    <- Task.delay(http.awaitShutdown())
-    } yield http
+      server <- HttpServer(port, monitored)
+      _      <- Task.delay(println(s"HTTP Server started on http://${InetAddress.getLocalHost.getHostAddress}:$port"))
+      _      <- server.awaitShutdown()
+    } yield server
   }
 
   def server(sensors: List[SensorFile])(implicit monitored: List[Host]) = {
@@ -47,8 +48,8 @@ object Server extends App {
   def quit = {
     println(
       """|Usage: Server <hosts>
-        |Please supply at least one source host, e.g. 'Server bedroom lounge'
-        |""".stripMargin)
+         |Please supply at least one source host, e.g. 'Server bedroom lounge'
+         |""".stripMargin)
     sys.exit(-1)
   }
 
