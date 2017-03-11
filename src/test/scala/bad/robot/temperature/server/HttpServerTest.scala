@@ -55,7 +55,6 @@ class HttpServerTest extends Specification {
 
     def createFile(filename: String) = {
       val file = new File(s"${RrdFile.path}/$filename")
-      println(file.getAbsoluteFile)
       val writer = new BufferedWriter(new FileWriter(file))
       writer.close()
     }
