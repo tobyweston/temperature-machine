@@ -58,5 +58,6 @@ object Server extends App {
     case hosts => hosts.map(host => Host.apply(host).trim)
   }
 
-  findSensorsAndExecute(server(_)(hosts))
+  findSensorsAndExecute(server(_)(hosts)).leftMap(error => println(error.message))
+
 }
