@@ -1,7 +1,9 @@
 
-# Temperature Machine
+# Temperature Machine 
 
-A temperature-machine for the Raspberry Pi.
+![](https://travis-ci.org/tobyweston/temperature-machine.svg?branch=master)
+
+A temperature-machine for the Raspberry Pi. 
 
 ![](temperature-machine.png)
 
