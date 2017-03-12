@@ -20,7 +20,7 @@ object Socket {
         packet
       }.leftMap {
         case e: SocketTimeoutException => Timeout(s"socket timed out after $timeout ms")
-        case e: Throwable => UnexpectedError(e.getMessage)
+        case e: Throwable              => UnexpectedError(e.getMessage)
       }
     }
   }
