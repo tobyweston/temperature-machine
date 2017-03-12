@@ -60,7 +60,11 @@ class HttpServerTest extends Specification {
     }
 
     step {
-      server.shutdown()
+      val shutdown = for {
+        _ <- server.shutdown()
+        _ <- Task.delay(println(s"HTTP Server shutting down"))
+      } yield ()
+      shutdown.unsafePerformSync
     }
   }
 
