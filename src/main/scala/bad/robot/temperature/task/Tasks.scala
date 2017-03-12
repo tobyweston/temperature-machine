@@ -5,7 +5,7 @@ import java.util.concurrent.Executors._
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import bad.robot.temperature.rrd.RrdFile.MaxSensors
 import bad.robot.temperature.rrd.{Host, RrdFile}
-import bad.robot.temperature.task.Scheduler._
+import bad.robot.temperature.task.Scheduler.ScheduledExecutorServiceOps
 import bad.robot.temperature.{JsonExport, TemperatureWriter, XmlExport}
 
 import scala.concurrent.duration._
