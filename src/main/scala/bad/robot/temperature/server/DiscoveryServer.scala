@@ -10,6 +10,8 @@ object DiscoveryServer {
   val LocalNetworkBroadcastAddress = "255.255.255.255"
   val ServerAddressRequestMessage = "SERVER_ADDRESS_REQUEST"
   val ServerAddressResponseMessage = "SERVER_ADDRESS_RESPONSE"
+  val UnknownRequestResponseMessage = "UNKNOWN_REQUEST"
+  val Quit = "QUIT"
   val ServerPort = 8888
   val BufferSize = 15000
 }
@@ -27,14 +29,18 @@ class DiscoveryServer extends Runnable {
         socket.await().fold(error => {
           sys.error(error.message)
         }, sender => {
-          if (sender.payload == ServerAddressRequestMessage) {
-            val response = ServerAddressResponseMessage.getBytes
-            socket.send(new DatagramPacket(response, response.length, sender.getAddress, sender.getPort))
+          val response = sender.payload match {
+            case ServerAddressRequestMessage => ServerAddressResponseMessage.getBytes
+            case Quit                        => Thread.currentThread().interrupt(); Quit.getBytes
+            case _                           => UnknownRequestResponseMessage.getBytes
           }
+          socket.send(new DatagramPacket(response, response.length, sender.getAddress, sender.getPort))
         })
       }
     } catch {
       case e: Throwable => System.err.println(s"An error occurred listening for server discovery messages. Remote machines may not be able to publish their data to the server. ${e.getMessage}")
     }
+
+    println("Discovery server shutdown")
   }
 }
