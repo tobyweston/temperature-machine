@@ -18,6 +18,7 @@ object Client extends App {
     for {
       _      <- Task.delay(println(s"Initialising client '${Host.local.name}' (with ${sensors.size} of a maximum of $MaxSensors sensors)..."))
       server <- Task.delay(DiscoveryClient.discover)
+      _      <- Task.delay(println(s"Server discovered on ${server.getHostAddress}, monitoring temperatures..."))
       _      <- Tasks.record(Host.local.trim, sensors, HttpUpload(server))
       _      <- awaitShutdown()
     } yield ()

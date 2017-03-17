@@ -4,7 +4,7 @@ import java.net.{DatagramPacket, DatagramSocket, InetAddress, NetworkInterface, 
 
 import bad.robot.temperature.server.DiscoveryServer._
 import bad.robot.temperature.server.Socket._
-
+import bad.robot.temperature.server.DatagramPacketOps
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -17,13 +17,21 @@ object DiscoveryClient {
 
     allBroadcastAddresses.foreach(ping(_, socket))
 
-    println("Awaiting server...")
+    println("Awaiting discovery server...")
     socket.await(30 seconds).fold(error => {
       println(error)
-      discover
+      retry
     }, sender => {
-      sender.getAddress
+      sender.payload match {
+        case ServerAddressResponseMessage => sender.getAddress
+        case _                            => retry
+      }
     })
+  }
+
+  private def retry = {
+    Thread.sleep((30 seconds).toMillis)
+    discover
   }
 
   private def allNetworkInterfaces: List[NetworkInterface] = {

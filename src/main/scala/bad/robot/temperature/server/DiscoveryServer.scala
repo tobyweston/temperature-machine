@@ -1,6 +1,5 @@
 package bad.robot.temperature.server
 
-
 import java.net._
 
 import bad.robot.temperature.server.DiscoveryServer._
