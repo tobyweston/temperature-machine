@@ -22,5 +22,4 @@ package object temperature {
       })
   }
 
-  type Ip = String
 }

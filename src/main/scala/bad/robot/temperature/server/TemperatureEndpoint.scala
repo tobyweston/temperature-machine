@@ -50,7 +50,7 @@ object TemperatureEndpoint {
       val result = for {
         measurement <- decode[Measurement](json)
         _           <- writer.write(measurement)
-        _           <- ConnectionsEndpoint.update(request.headers.get(`X-Forwarded-For`)) // todo tuple of (host, ip)
+        _           <- ConnectionsEndpoint.update(measurement.host, request.headers.get(`X-Forwarded-For`))
       } yield measurement
       result.toHttpResponse(success => {
         current = current + (success.host -> success)
