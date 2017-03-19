@@ -25,7 +25,7 @@ class DiscoveryServerTest extends Specification {
       response must be_\/-
       response match {
         case \/-((ip, message)) if ip == InetAddress.getLocalHost.getHostAddress => message must_== ServerAddressResponseMessage
-        case \/-((ip, message)) if ip == "127.0.1.1"                             => message must_== ServerAddressResponseMessage
+        case \/-((ip, message)) if ip == "127.0.0.1" || ip == "127.0.1.1"        => message must_== ServerAddressResponseMessage
         case \/-((ip, _))                                                        => throw new Exception(s"$ip wasn't expected")
         case _                                                                   => throw new Exception("specs2 is a dick")
       }
