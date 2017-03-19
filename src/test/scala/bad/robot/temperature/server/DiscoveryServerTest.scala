@@ -19,9 +19,9 @@ class DiscoveryServerTest extends Specification {
       val socket = new DatagramSocket()
       pingServerOn(ServerAddressRequestMessage, socket)
 
-      val response = socket.await(30 seconds).map(server => (server.getAddress, server.payload))
+      val response = socket.await(30 seconds).map(server => (server.getAddress.getHostAddress, server.payload))
       socket.close()
-      response must be_\/-((InetAddress.getLocalHost, ServerAddressResponseMessage))
+      response must be_\/-((InetAddress.getLocalHost.getHostAddress, ServerAddressResponseMessage))
     }
 
     "Server response when unknown message is received" >> {
