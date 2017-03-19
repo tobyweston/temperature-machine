@@ -2,12 +2,13 @@ package bad.robot.temperature.server
 
 import java.net.{DatagramPacket, DatagramSocket, InetAddress, InetSocketAddress, Socket => _}
 
-import bad.robot.temperature.server.DiscoveryServer.{ServerAddressRequestMessage, Quit, ServerAddressResponseMessage, UnknownRequestResponseMessage}
+import bad.robot.temperature.server.DiscoveryServer.{Quit, ServerAddressRequestMessage, ServerAddressResponseMessage, UnknownRequestResponseMessage}
 import bad.robot.temperature.server.Socket._
 import org.specs2.matcher.DisjunctionMatchers._
 import org.specs2.mutable.Specification
 
 import scala.concurrent.duration._
+import scalaz.\/-
 
 class DiscoveryServerTest extends Specification {
 
@@ -21,7 +22,13 @@ class DiscoveryServerTest extends Specification {
 
       val response = socket.await(30 seconds).map(server => (server.getAddress.getHostAddress, server.payload))
       socket.close()
-      response must be_\/-((InetAddress.getLocalHost.getHostAddress, ServerAddressResponseMessage))
+      response must be_\/-
+      response match {
+        case \/-((ip, message)) if ip == InetAddress.getLocalHost.getHostAddress => message must_== ServerAddressResponseMessage
+        case \/-((ip, message)) if ip == "127.0.1.1"                             => message must_== ServerAddressResponseMessage
+        case \/-((ip, _))                                                        => throw new Exception(s"$ip wasn't expected")
+        case _                                                                   => throw new Exception("specs2 is a dick")
+      }
     }
 
     "Server response when unknown message is received" >> {
