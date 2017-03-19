@@ -21,4 +21,6 @@ package object temperature {
         ParseError(detailMessage).left[A]
       })
   }
+
+  type Ip = String
 }

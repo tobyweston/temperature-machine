@@ -10,7 +10,8 @@ import org.specs2.mutable.Specification
 
 import scalaz.concurrent.Task
 
-class HttpServerTest extends Specification {
+class
+HttpServerTest extends Specification {
 
   "When the Http server has been started" >> {
     val server = HttpServer(8080, List(Host("example"))).unsafePerformSync
@@ -44,6 +45,14 @@ class HttpServerTest extends Specification {
 
     "media can be loaded" >> {
       assertOk(Request(GET, path("/static/media/glyphicons-halflings-regular.f4769f9b.eot")))
+    }
+
+    "list of connections can be retrieved" >> {
+      assertOk(Request(GET, path("/connections")))
+    }
+
+    "list of recent connections can be retrieved" >> {
+      assertOk(Request(GET, path("/connections/active/within/5/mins")))
     }
 
     def assertOk(request: Request) = {

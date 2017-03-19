@@ -7,7 +7,9 @@ import org.http4s.Method._
 import org.http4s.Status.ResponseClass.Successful
 import org.http4s.Uri.{Authority, IPv4}
 import org.http4s.util.string._
-import org.http4s.{Request, Response, Uri}
+import org.http4s.{Headers, Request, Response, Uri}
+import org.http4s.headers.`X-Forwarded-For`
+import org.http4s.util.NonEmptyList
 
 import scalaz.concurrent.Task
 import scalaz.{-\/, \/, \/-}
@@ -20,7 +22,8 @@ case class HttpUpload(address: InetAddress) extends TemperatureWriter {
     val request = Request(PUT, Uri(
       scheme = Some("http".ci),
       authority = Some(Authority(host = IPv4(address.getHostAddress), port = Some(11900))),
-      path = "/temperature")
+      path = "/temperature"),
+      headers = Headers(`X-Forwarded-For`(currentIpAddress))
     ).withBody(encode(measurement).spaces2).unsafePerformSync
 
     blaze.fetch(request) {
@@ -30,6 +33,8 @@ case class HttpUpload(address: InetAddress) extends TemperatureWriter {
       case t: Throwable    => Task.now(-\/(UnexpectedError(s"Failed to connect to $address\n\nError was $t")))
     }).unsafePerformSync
   }
+
+  private def currentIpAddress = NonEmptyList(Some(InetAddress.getLocalHost))
 }
 
 object Error {

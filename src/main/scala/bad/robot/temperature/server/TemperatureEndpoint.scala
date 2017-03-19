@@ -5,6 +5,7 @@ import bad.robot.temperature._
 import bad.robot.temperature.rrd.Host
 import org.http4s.HttpService
 import org.http4s.dsl._
+import org.http4s.headers.`X-Forwarded-For`
 
 object TemperatureEndpoint {
 
@@ -49,6 +50,7 @@ object TemperatureEndpoint {
       val result = for {
         measurement <- decode[Measurement](json)
         _           <- writer.write(measurement)
+        _           <- ConnectionsEndpoint.update(request.headers.get(`X-Forwarded-For`)) // todo tuple of (host, ip)
       } yield measurement
       result.toHttpResponse(success => {
         current = current + (success.host -> success)
