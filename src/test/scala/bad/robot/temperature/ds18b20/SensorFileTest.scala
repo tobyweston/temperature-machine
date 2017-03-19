@@ -31,10 +31,10 @@ class SensorFileTest extends Specification {
 
     sys.props -= "sensor.location"
 
-    result must be_\/-(List(
+    result must be_\/-(contain(exactly(
       new SensorFile("src/test/resources/examples/28-000005e2fdc2/w1_slave"),
       new SensorFile("src/test/resources/examples/28-000005e2fdc3/w1_slave")
-    ))
+    )))
   }
 
   "Fail to find some sensor files (using system property) and not execute" >> {
