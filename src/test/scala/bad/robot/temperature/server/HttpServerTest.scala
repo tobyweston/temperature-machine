@@ -4,10 +4,12 @@ import java.io.{BufferedWriter, File, FileWriter}
 
 import bad.robot.temperature.rrd.{Host, RrdFile}
 import org.http4s.Method.GET
+import org.http4s.client.blaze.BlazeClientConfig._
 import org.http4s.client.blaze._
 import org.http4s.{Request, Status, Uri}
 import org.specs2.mutable.Specification
 
+import scala.concurrent.duration._
 import scalaz.concurrent.Task
 
 class
@@ -15,7 +17,7 @@ HttpServerTest extends Specification {
 
   "When the Http server has been started" >> {
     val server = HttpServer(8080, List(Host("example"))).unsafePerformSync
-    val client = SimpleHttp1Client()
+    val client = SimpleHttp1Client(defaultConfig.copy(idleTimeout = 3 seconds))
 
     "index.html can be loaded" >> {
       assertOk(Request(GET, path("")))
