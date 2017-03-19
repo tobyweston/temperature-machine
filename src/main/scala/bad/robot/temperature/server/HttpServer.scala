@@ -1,6 +1,7 @@
 package bad.robot.temperature.server
 
 import java.lang.Math._
+import java.time.Clock
 import java.util.concurrent.{CountDownLatch, ExecutorService}
 import java.util.concurrent.Executors._
 
@@ -43,7 +44,7 @@ class HttpServer(port: Int, monitored: List[Host]) {
   private def services() = {
     CORS(
       TemperatureEndpoint.service(SensorReader(SensorFile.find()), Rrd(monitored)) ||
-      ConnectionsEndpoint.service ||
+      ConnectionsEndpoint.service(Clock.systemDefaultZone) ||
       StaticFiles.service ||
       StaticResources.service
     )
