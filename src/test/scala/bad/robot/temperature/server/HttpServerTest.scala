@@ -17,7 +17,7 @@ HttpServerTest extends Specification {
 
   "When the Http server has been started" >> {
     val server = HttpServer(8080, List(Host("example"))).unsafePerformSync
-    val client = SimpleHttp1Client(defaultConfig.copy(idleTimeout = 3 minutes))
+    val client = SimpleHttp1Client(defaultConfig.copy(idleTimeout = 30 minutes))
 
     "index.html can be loaded" >> {
       assertOk(Request(GET, path("")))
