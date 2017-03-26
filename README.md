@@ -7,9 +7,9 @@ A temperature-machine for the Raspberry Pi.
 
 ![](temperature-machine.png)
 
-## Quick Start
+## Quick Start (in an IDE)
 
-Build some test data by running the `Example` app from within IntelliJ.
+If you want to play with the source, you can build some test data by running the `Example` app from within IntelliJ.
 
 You can then start up the app from the `Main` class. If you want to override the sensor file location (for the case when you're testing without sensors), use `-Dsensor-location=src/test/resources/examples`.
 
@@ -18,19 +18,80 @@ Check the web page with [http://localhost:11900](http://localhost:11900).
 
 ## Deploying to Your Pi
 
-On the Pi, you should only need to add the following line `/boot/config.txt`. Older tutorials on the web will also say you have to load the `w1-therm` module but that seems to load automatically these days.
+If you want to run it in earnest, deploy to your Pi.
+
+On the Pi, you should only need to add the following line `/boot/config.txt` to enable [1-wire](https://pinout.xyz/pinout/1_wire). Older tutorials on the web will also say you have to load the `w1-therm` module but that seems to load automatically these days.
 
     dtoverlay=w1-gpio
 
 
+In terms of deployment (running the temperature-machine software), you have three options here.
+
+1. Build and run from source
+1. Download a pre-installed Raspian image with the above pre-done
+1. Download the binary distribution (`temperature-machine-2.0.jar`) and run manually
+
+### Build from Source
+
 To get the software on the box, I tend to do the following;
 
 1. Clone the repository on the Pi
-2. Run `sbt -J-Xmx512m -J-Xms512m assembly` from a terminal (memory set low for the Pi Zero)
+2. Run `sbt -J-Xmx512m -J-Xms512m assembly` from a terminal (memory set low for the Pi Zero). This might take around 30m on the Pi Zero.
 3. Run `./start.sh &`, `./start-server.sh room1 room2 room3` or `./start-client.sh` from the checked out folder
 
 You can also read my [blog post](http://baddotrobot.com/blog/2016/03/23/homebrew-temperature-logger/) for more detailed instructions (including automatically logging temperatures on reboot).
 
+### Download a Pre-installed Raspian Image
+
+I followed the previous steps to [Build from Source](#Build_From_Source) then ran `sudo dd if=/dev/rdisk3 of=2017-03-02-raspbian-temperature-machine.img bs=1m count=2000` to create an image file based Raspian Jessie Lite (the `count=2000` was to reduce a 16Gb card down to 2Gb having messed about with partions with [GParted](http://gparted.org/index.php) on a Linux box first).
+
+1. Download the image from my [Google Drive](https://drive.google.com/open?id=0B-I9xnCr64hFczR4aTBsRFNuZlU).
+1. On Mac, use [Etcher](https://etcher.io/) to flash a new SD card with the image. Refer to [raspberrypi.org](https://www.raspberrypi.org/documentation/installation/installing-images/) for other platforms.
+1. Setup you're wifi by inserting your new SD card to your machine and creating a file `wpa_supplicant.conf` under `/boot`. Mine looks like this (the `scan_ssid=1` is only needed if you're using a hidden network). 
+
+    ```
+    ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+    update_config=1
+    
+    network={
+      ssid="ssid"
+      scan_ssid=1
+      psk="plain text password"
+    }
+    ```
+1. Unmount and stick the card in the Pi. Power up. 
+1. On the Pi (`ssh pi@raspberrypi.local`), run `raspi-config` to:
+    1. Set the hostname to the room name (`garage`, `study` etc) 
+    1. Expand the file system
+1. Setup the Pi to start temperature-machine on boot
+    1. If this is the first temperature-machine, run in server mode. Add the following to `/etc/rc.local` above the `exit 0` line.
+    
+    ```
+    su pi -c 'cd /home/pi/code/temperature-machine && ./start-server.sh garage bedroom &'
+    ```
+    
+    Set `garage` and `bedroom` to be the host names of all the temperature-machines you intend to run. Don't forget to include the name of the server node (this machine).
+    
+    1. If you already have a server, run in client mode. Add the following to `/etc/rc.local` above the `exit 0` line.
+
+    ```
+    su pi -c 'cd /home/pi/code/temperature-machine && ./start-client.sh &'
+    ```
+    
+1. Reboot. Enjoy.
+
+### Download Binary Release
+
+If you already have Java and SBT running. You can run download the binary from the [bad.robot.repo](http://robotooling.com/maven/) repository. Just run the following to start the server up.
+
+    java -jar temperature-machine-2.0.jar bad.robot.temperature.server.Server garage bedroom
+    
+or
+
+    java -jar temperature-machine-2.0.jar bad.robot.temperature.client.Client
+
+to start up the client.
+    
 
 ## Client / Server
 
