@@ -1,16 +1,20 @@
 package bad.robot.temperature.client
 
-import java.net.InetAddress
+import java.net.{InetAddress, NetworkInterface}
 
+import bad.robot.temperature.IpAddress.{unapply => _, _}
 import bad.robot.temperature._
+import bad.robot.temperature.client.HttpUpload.currentIpAddress
 import org.http4s.Method._
 import org.http4s.Status.ResponseClass.Successful
 import org.http4s.Uri.{Authority, IPv4}
-import org.http4s.util.string._
-import org.http4s.{Headers, Request, Response, Uri}
 import org.http4s.headers.`X-Forwarded-For`
 import org.http4s.util.NonEmptyList
+import org.http4s.util.string._
+import org.http4s.{Headers, Request, Response, Uri}
 
+import scala.collection.JavaConverters._
+import scalaz.Scalaz._
 import scalaz.concurrent.Task
 import scalaz.{-\/, \/, \/-}
 
@@ -34,7 +38,26 @@ case class HttpUpload(address: InetAddress) extends TemperatureWriter {
     }).unsafePerformSync
   }
 
-  private def currentIpAddress = NonEmptyList(Some(InetAddress.getLocalHost))
+}
+
+object HttpUpload {
+  val allNetworkInterfaces: List[NetworkInterface] = {
+    NetworkInterface.getNetworkInterfaces
+      .asScala
+      .toList
+      .filter(_.isUp)
+      .filterNot(_.isLoopback)
+  }
+
+  val currentIpAddress: NonEmptyList[Option[InetAddress]] = {
+    val addresses = for {
+      interface <- allNetworkInterfaces
+      address   <- interface.getInetAddresses.asScala
+      ip        <- isIpAddress(address.getHostAddress).option(address)
+    } yield Some(ip)
+
+    NonEmptyList(addresses.head, addresses.tail:_*)
+  }
 }
 
 object Error {
