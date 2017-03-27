@@ -43,7 +43,7 @@ You can also read my [blog post](http://baddotrobot.com/blog/2016/03/23/homebrew
 
 ### Download a Pre-installed Raspian Image
 
-I followed the previous steps to [Build from Source](#Build_From_Source) then ran `sudo dd if=/dev/rdisk3 of=2017-03-02-raspbian-temperature-machine.img bs=1m count=2000` to create an image file based Raspian Jessie Lite (the `count=2000` was to reduce a 16Gb card down to 2Gb having messed about with partions with [GParted](http://gparted.org/index.php) on a Linux box first).
+I followed the previous steps to [Build from Source](#Build_From_Source) then ran `sudo dd if=/dev/rdisk3 of=2017-03-02-raspbian-temperature-machine.img bs=1m count=2000` to create an image file based Raspian Jessie Lite (the `count=2000` was to reduce a 16GB card down to 2GB having messed about with partions with [GParted](http://gparted.org/index.php) on a Linux box first).
 
 1. Download the image from my [Google Drive](https://drive.google.com/open?id=0B-I9xnCr64hFczR4aTBsRFNuZlU).
 1. On Mac, use [Etcher](https://etcher.io/) to flash a new SD card with the image. Refer to [raspberrypi.org](https://www.raspberrypi.org/documentation/installation/installing-images/) for other platforms.
@@ -66,17 +66,17 @@ I followed the previous steps to [Build from Source](#Build_From_Source) then ra
 1. Setup the Pi to start temperature-machine on boot
     1. If this is the first temperature-machine, run in server mode. Add the following to `/etc/rc.local` above the `exit 0` line.
     
-    ```
-    su pi -c 'cd /home/pi/code/temperature-machine && ./start-server.sh garage bedroom &'
-    ```
+        ```
+        su pi -c 'cd /home/pi/code/temperature-machine && ./start-server.sh garage bedroom &'
+        ```
     
     Set `garage` and `bedroom` to be the host names of all the temperature-machines you intend to run. Don't forget to include the name of the server node (this machine).
     
     1. If you already have a server, run in client mode. Add the following to `/etc/rc.local` above the `exit 0` line.
 
-    ```
-    su pi -c 'cd /home/pi/code/temperature-machine && ./start-client.sh &'
-    ```
+        ```
+        su pi -c 'cd /home/pi/code/temperature-machine && ./start-client.sh &'
+        ```
     
 1. Reboot. Enjoy.
 
