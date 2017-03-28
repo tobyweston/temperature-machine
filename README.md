@@ -80,6 +80,9 @@ I followed the previous steps to [Build from Source](#Build_From_Source) then ra
     
 1. Reboot. Enjoy.
 
+The source has been cloned to `~/code/temperature-machine`. To keep up to date with changes, go into that folder and run `git pull` followed by `sbt assembly` occasionally.
+
+
 ### Download Binary Release
 
 If you already have Java and SBT running. You can run download the binary from the [bad.robot.repo](http://robotooling.com/maven/) repository. Just run the following to start the server up.
