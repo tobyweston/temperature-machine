@@ -67,6 +67,27 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
                                                     |]""".stripMargin
   }
 
+  "Multiple IPs" >> {
+    ConnectionsEndpoint.update(Host("garage"), Some(xForwardedFor("84.12.43.124", "10.0.1.12")))
+
+    val request = Request(GET, Uri.uri("/connections"))
+    val service = ConnectionsEndpoint.service(fixedClock())
+    val response = service(request).unsafePerformSync
+
+    response.status must_== Ok
+    response.as[String].unsafePerformSync must_==
+      """[
+        |  {
+        |    "host" : {
+        |      "name" : "garage"
+        |    },
+        |    "ip" : {
+        |      "value" : "84.12.43.124, 10.0.1.12"
+        |    }
+        |  }
+        |]""".stripMargin
+  }
+
   "Connections expire / only recent connections show up" >> {
     val service = ConnectionsEndpoint.service(fixedClock(Instant.now.plus(6, minutes)))
 
@@ -80,7 +101,10 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
 
   def fixedClock(instant: Instant = Instant.now) = Clock.fixed(instant, ZoneId.systemDefault())
 
-  def xForwardedFor(ipAddress: String) = `X-Forwarded-For`(NonEmptyList(Some(InetAddress.getByName(ipAddress))))
+  def xForwardedFor(ipAddresses: String*) = {
+    val ips = ipAddresses.map(ip => Some(InetAddress.getByName(ip)))
+    `X-Forwarded-For`(NonEmptyList(ips.head, ips.tail:_*))
+  }
 
   def after = ConnectionsEndpoint.reset()
 
