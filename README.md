@@ -43,9 +43,9 @@ You can also read my [blog post](http://baddotrobot.com/blog/2016/03/23/homebrew
 
 ### Download a Pre-installed Raspian Image
 
-I followed the previous steps to [Build from Source](#Build_From_Source) then ran `sudo dd if=/dev/rdisk3 of=2017-03-02-raspbian-temperature-machine.img bs=1m count=2000` to create an image file based Raspian Jessie Lite (the `count=2000` was to reduce a 16GB card down to 2GB having messed about with partions with [GParted](http://gparted.org/index.php) on a Linux box first).
+I followed the previous steps to [Build from Source](#Build_From_Source) then ran `sudo dd if=/dev/rdisk3 of=2017-03-02-raspbian-temperature-machine.img bs=1m` to create an image file based Raspian Jessie Lite (4.9.y). It comes with a few extras including a disabled activity light and a patched driver to disable the LED for Edimax wifi adapters).
 
-1. Download the image from my [Google Drive](https://drive.google.com/open?id=0B-I9xnCr64hFczR4aTBsRFNuZlU).
+1. Download the image from my [Google Drive](https://drive.google.com/open?id=0B-I9xnCr64hFWjBoS0Z6akUwVVU).
 1. On Mac, use [Etcher](https://etcher.io/) to flash a new SD card with the image. Refer to [raspberrypi.org](https://www.raspberrypi.org/documentation/installation/installing-images/) for other platforms.
 1. Setup you're wifi by inserting your new SD card to your machine and creating a file `wpa_supplicant.conf` under `/boot`. Mine looks like this (the `scan_ssid=1` is only needed if you're using a hidden network). 
 
