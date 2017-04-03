@@ -1,53 +1,50 @@
 ---
 layout: docs
+title: Introduction
 ---
 
-> This project it's just a dummy example using [sbt-microsites](https://github.com/47deg/sbt-microsites) plugin. All the contents have been randmly generated for demo purposes.
+# Introduction
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque rutrum ac eros at pellentesque. Curabitur suscipit sagittis urna, et congue mi faucibus in. Nulla nulla lectus, fringilla vitae auctor in, dignissim et nisl. Nullam vitae nulla a velit consequat porta vitae non magna. Vivamus efficitur, nibh nec aliquet pretium, sapien turpis ultrices lacus, sit amet viverra justo eros id turpis. Duis interdum, felis nec gravida dapibus, augue ante vestibulum dui, a venenatis nunc velit ac ex. Vestibulum eget elit a tellus mollis vehicula. Nunc vulputate, lorem id rhoncus tristique, nunc justo placerat sem, non congue dui tellus non ipsum. Donec ut finibus ligula, vel condimentum enim.
+The temperature-machine is a low cost, do-it-yourself data logger built around the Raspberry Pi and the [DS18D20](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf) temperature sensor. You can track ambient temperature over days, weeks and months and display some pretty graphs.
 
-```
-Nullam vitae nulla a velit consequat porta vitae non magna.
-Vivamus efficitur, nibh nec aliquet pretium, sapien turpis ultrices lacus, sit amet viverra justo eros id turpis.
-Duis interdum, felis nec gravida dapibus, augue ante vestibulum dui, a venenatis nunc velit ac ex.
-```
+## Distributed Design
 
-<div class="msg warn"> <p><strong>Phasellus dapibus condimentum vehicula</strong>. Nulla accumsan enim sed finibus pretium. Integer vulputate pharetra sapien, et finibus mauris pellentesque dapibus. In hendrerit, augue dictum aliquet auctor, tortor justo tempor neque, eu porttitor elit orci at mauris. Aenean laoreet massa nisi, nec bibendum diam varius vitae. </p> </div>
+The temperature-machine can run on one or more Raspberry Pis connected to one or more temperature sensors. One Pi acts as the _hub_ or _server_ whilst additional machines act as _clients_ and upload their temperature data to the hub. The hub itself should be connected to a temperature sensor.
+
+Each Pi can have up to five physical sensors attached. This is so that you can get an average temperature for the room (say, placing one sensor high in the room and another at floor level) or up to five individual temperatures. All temperatures will be graphed.
+
+By convention, each machine will identify itself by it's hostname. So, if you have a machine in the office, change the hostname (via `raspi-config`) to `office`.
+
+The server broadcasts it's address over the network. When clients start up, they wait to hear the broadcast and perform a basic handshake. The server's broadcast message includes the servers address. So when a client hears it, it knows where to send it's temperature data.
 
 
-# Getting Started
+### Example Setup
 
-Nunc volutpat efficitur vestibulum. Donec quis auctor mauris. Sed eu semper leo. Suspendisse sodales et elit a maximus. Donec posuere vestibulum ullamcorper. Duis in mauris interdum, facilisis nisl viverra, semper libero. Ut iaculis pretium mi, sed pulvinar elit porta sed. Fusce volutpat tortor sit amet lectus semper, eget pulvinar eros pretium. Aenean consectetur, erat vitae sodales maximus, libero nulla congue nunc, eget scelerisque nisl nulla quis dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec in ipsum ullamcorper, mattis odio vitae, fringilla orci. Pellentesque ut libero nisi. Duis vulputate, velit vitae facilisis sagittis, metus orci dapibus sapien, quis congue velit ante quis lectus. Donec efficitur risus ac orci ultrices rhoncus. Fusce eleifend lobortis felis, quis tristique mauris volutpat ut. Quisque volutpat velit massa, ultricies ornare odio volutpat vel.
+The following uses three physical Pi Zeros setup in the following configuration. Each has the room name set as the machine's `hostname`.
 
-    libraryDependencies += "org.loremipsum" %% "lorem-ipsum" % "1.0.0"
+ * Study has the _server_ with one sensor
+ * Bedroom 1 has a _client_ with two sensors
+ * Kitchen has a _client_ with one sensor
+ 
+<img src="../img/temperature-machine-alt.png" alt="" width="667" height="517" style="max-width:100%;">
 
-Nulla facilisi. Cras vitae commodo urna, vitae scelerisque neque. Duis non odio at elit bibendum feugiat. Quisque mi ipsum, ultrices vel purus sed, condimentum tempor velit. Nulla facilisi. Donec ex mi, tincidunt a ullamcorper ac, venenatis vel orci. Mauris at tortor ut neque mattis porta. Quisque sit amet odio erat. Morbi vulputate, velit in malesuada consequat, neque lacus imperdiet mi, nec iaculis arcu `nisl quis ipsum`.
 
- * `Proin`: in pellentesque orci tincidunt nec.
- * `pharetra`: Etiam vitae suscipit nisl (*pellentesque*).
- * `sapien`: sit amet congue ipsum.
- * `lacus`: Integer pulvinar interdum nulla.
- * `in`: in lobortis mauris fermentum sed.
 
-Sed luctus pretium turpis vitae maximus [sbt-microsites](https://github.com/47deg/sbt-microsites).
 
-# Motivation
+## Hardware
 
-Fusce nisl lorem, euismod ac pulvinar non, euismod vel eros. Aliquam ut pulvinar nunc, ut aliquam risus. Nullam hendrerit risus a diam tempor cursus. Ut id placerat libero, in molestie elit. Suspendisse sed ornare velit. Maecenas facilisis enim in magna hendrerit semper. Aliquam dignissim cursus quam eu interdum. Ut orci lorem, placerat at pharetra eu, efficitur et felis. Ut mattis fringilla odio in laoreet. Nulla vitae lectus non neque euismod suscipit nec vel magna. In sit amet lorem ac nisi congue sollicitudin ut at nunc.
+Build it yourself with the following.
 
-<a name="copyright"></a>
-# Copyright and License
+| Item | Price |
+|------|-------|
+| [Raspberry Pi Zero W](https://shop.pimoroni.com/products/raspberry-pi-zero-w) | £ 10
+| [SanDisk 8GB microSDHC memory card](http://amzn.to/1T6zIc9) | £ 4
+| [2.54mm Header strip](http://amzn.to/1pIKZ7m)  | £ 0.89
+| [DS18B20 1-Wire temperature sensor](http://amzn.to/1RhmOHc)    | £ 1.45
+| 1 x 4.7k Ω resistor | £ 0.10
+| [Some jumper wires](http://amzn.to/1Rlrbj9) or otherwise recycled wires with connectors |    £ 0.97
+| Software (you're looking at it) | <span style="color:green;">[FREE](https://github.com/tobyweston/temperature-machine)</span>
+| | &nbsp;
+| **Total** | **£ 16.44**
 
-Copyright 2016 47 Degrees, LLC. <http://www.47deg.com>
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+**Optional extras** You could go for a regular [Pi Zero](https://shop.pimoroni.com/products/raspberry-pi-zero) (£ 4) and [USB Wifi adapter](http://amzn.to/1RhmTKQ) (about £ 6), a case (I like the one from [Switched On Components](https://socomponents.co.uk/shop/black-laser-cut-acrylic-raspberry-pi-zero-case-v2/) at £ 3.80) and a USB to TTL serial connection for headless setup. Something with a PL2302TA chip in it like [this module](http://amzn.to/1ZtRWoA) or the [Adafruit console cable](https://www.adafruit.com/product/954). See my post on using a [Pi Console Lead](http://baddotrobot.com/blog/2015/12/28/pi-console-lead/).
