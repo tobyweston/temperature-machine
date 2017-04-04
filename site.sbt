@@ -12,6 +12,7 @@ lazy val siteSettings = Seq(
   micrositeAuthor := "Toby Weston",
   micrositeGithubOwner := "tobyweston",
   micrositeGithubRepo := "temperature-machine",
+  micrositeBaseUrl := "temperature-machine",
   micrositeHighlightTheme := "atom-one-light",
   micrositeDocumentationUrl := "/docs",
 
