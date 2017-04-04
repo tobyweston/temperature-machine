@@ -9,6 +9,7 @@ lazy val siteSettings = Seq(
   micrositeDescription := "The homebrew data logger",
 
   micrositeHomepage := "http://baddotrobot.com",
+  micrositeAuthor := "Toby Weston",
   micrositeGithubOwner := "tobyweston",
   micrositeGithubRepo := "temperature-machine",
   micrositeHighlightTheme := "atom-one-light",
