@@ -1,0 +1,87 @@
+<html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><title>Temperature Machine</title><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="The homebrew data logger" /><meta name="author" content="Toby Weston" /><meta name="og:image" content="/img/poster.png" /><meta name="og:title" content="Temperature Machine" /><meta name="og:site_name" content="Temperature Machine" /><meta name="og:url" content="http://baddotrobot.com" /><meta name="og:type" content="website" /><meta name="og:description" content="The homebrew data logger" /><meta name="twitter:image" content="/img/poster.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="" /><meta name="kazari-dependencies" content="" /><meta name="kazari-resolvers" content="" /><link rel="icon" type="image/png" href="/img/favicon.png" /><link rel="icon" type="image/png" sizes="16x16" href="/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/img/favicon32x32.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/css/style.css" /><link rel="stylesheet" href="/css/palette.css" /><link rel="stylesheet" href="/css/codemirror.css" /><link rel="stylesheet" href="/css/kazari-style.css" /><link rel="stylesheet" href="/css/solarized-dark.css" /><link rel="stylesheet" href="/css/overrides.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/" class="brand"><div class="brand-wrapper"><span>Temperature Machine</span></div></a></li> <li><a href="/docs/index.html" class=" active ">Introduction</a></li> <li><a href="/docs/getting_started.html" class="">Getting Started</a> <ul class="sub_section"> <li><a href="/docs/getting_started/build_from_source.html" class="">Build from Source</a></li> <li><a href="/docs/getting_started/preinstalled_image.html" class="">Pre-installed Image</a></li> <li><a href="/docs/getting_started/download.html" class="">Download Binary</a></li></ul></li> <li><a href="/docs/ds18b20_sensor.html" class="">DS18B20 Sensor</a></li> <li><a href="/docs/add-on_board.html" class="">Add-on Board</a></li> <li><a href="/docs/rrd.html" class="">RRD</a></li> <li><a href="/docs/hacking.html" class="">Hacking</a></li> <li><a href="/docs/resources.html" class="">Resources</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/tobyweston/temperature-machine"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/tobyweston/temperature-machine"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('Temperature Machine The homebrew data logger');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('Temperature Machine The homebrew data logger');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="tobyweston" data-github-repo="temperature-machine"><div class="content-wrapper"><section><h1 id="introduction">Introduction</h1>
+
+<p>The temperature-machine is a low cost, do-it-yourself data logger built around the Raspberry Pi and the <a href="https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf">DS18D20</a> temperature sensor. You can track ambient temperature over days, weeks and months and display some pretty graphs.</p>
+
+<h2 id="distributed-design">Distributed Design</h2>
+
+<p>The temperature-machine can run on one or more Raspberry Pis connected to one or more temperature sensors. One Pi acts as the <em>hub</em> or <em>server</em> whilst additional machines act as <em>clients</em> and upload their temperature data to the hub. The hub itself should be connected to a temperature sensor.</p>
+
+<p>Each Pi can have up to five physical sensors attached. This is so that you can get an average temperature for the room (say, placing one sensor high in the room and another at floor level) or up to five individual temperatures. All temperatures will be graphed.</p>
+
+<p>By convention, each machine will identify itself by it’s hostname. So, if you have a machine in the office, change the hostname (via <code class="highlighter-rouge">raspi-config</code>) to <code class="highlighter-rouge">office</code>.</p>
+
+<p>The server broadcasts it’s address over the network. When clients start up, they wait to hear the broadcast and perform a basic handshake. The server’s broadcast message includes the servers address. So when a client hears it, it knows where to send it’s temperature data.</p>
+
+<h3 id="example-setup">Example Setup</h3>
+
+<p>The following uses three physical Pi Zeros setup in the following configuration. Each has the room name set as the machine’s <code class="highlighter-rouge">hostname</code>.</p>
+
+<ul>
+  <li>Study has the <em>server</em> with one sensor</li>
+  <li>Bedroom 1 has a <em>client</em> with two sensors</li>
+  <li>Kitchen has a <em>client</em> with one sensor</li>
+</ul>
+
+<p><img src="../img/temperature-machine-alt.png" alt="" width="667" height="517" style="max-width:100%;" /></p>
+
+<h2 id="hardware">Hardware</h2>
+
+<p>Build it yourself with the following.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Item</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://shop.pimoroni.com/products/raspberry-pi-zero-w">Raspberry Pi Zero W</a></td>
+      <td>£ 10</td>
+    </tr>
+    <tr>
+      <td><a href="http://amzn.to/1T6zIc9">SanDisk 8GB microSDHC memory card</a></td>
+      <td>£ 4</td>
+    </tr>
+    <tr>
+      <td><a href="http://amzn.to/1pIKZ7m">2.54mm Header strip</a></td>
+      <td>£ 0.89</td>
+    </tr>
+    <tr>
+      <td><a href="http://amzn.to/1RhmOHc">DS18B20 1-Wire temperature sensor</a></td>
+      <td>£ 1.45</td>
+    </tr>
+    <tr>
+      <td>1 x 4.7k Ω resistor</td>
+      <td>£ 0.10</td>
+    </tr>
+    <tr>
+      <td><a href="http://amzn.to/1Rlrbj9">Some jumper wires</a> or otherwise recycled wires with connectors</td>
+      <td>£ 0.97</td>
+    </tr>
+    <tr>
+      <td>Software (you’re looking at it)</td>
+      <td><span style="color:green;"><a href="https://github.com/tobyweston/temperature-machine">FREE</a></span></td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><strong>Total</strong></td>
+      <td><strong>£ 16.44</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Optional extras</strong> You could go for a regular <a href="https://shop.pimoroni.com/products/raspberry-pi-zero">Pi Zero</a> (£ 4) and <a href="http://amzn.to/1RhmTKQ">USB Wifi adapter</a> (about £ 6), a case (I like the one from <a href="https://socomponents.co.uk/shop/black-laser-cut-acrylic-raspberry-pi-zero-case-v2/">Switched On Components</a> at £ 3.80) and a USB to TTL serial connection for headless setup. Something with a PL2302TA chip in it like <a href="http://amzn.to/1ZtRWoA">this module</a> or the <a href="https://www.adafruit.com/product/954">Adafruit console cable</a>. See my post on using a <a href="http://baddotrobot.com/blog/2015/12/28/pi-console-lead/">Pi Console Lead</a>.</p>
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script src="/js/main.js"></script><script src="/js/kazari.js"></script><script>
+$(document).ready(function() {
+	kazari.KazariPlugin().decorateCode('https://scala-evaluator-212.herokuapp.com/eval', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.S2F6YXJp.Jl2eqMfw8IakJF93PjxTbrf-8YUJgX5OoOfy5JHE8Yw', '', 'solarized-dark')
+})
+    </script></body></html>

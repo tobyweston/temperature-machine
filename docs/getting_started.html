@@ -1,0 +1,66 @@
+<html><head><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><title>Temperature Machine</title><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="The homebrew data logger" /><meta name="author" content="Toby Weston" /><meta name="og:image" content="/img/poster.png" /><meta name="og:title" content="Temperature Machine" /><meta name="og:site_name" content="Temperature Machine" /><meta name="og:url" content="http://baddotrobot.com" /><meta name="og:type" content="website" /><meta name="og:description" content="The homebrew data logger" /><meta name="twitter:image" content="/img/poster.png" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:site" content="" /><meta name="kazari-dependencies" content="" /><meta name="kazari-resolvers" content="" /><link rel="icon" type="image/png" href="/img/favicon.png" /><link rel="icon" type="image/png" sizes="16x16" href="/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/img/favicon32x32.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/css/style.css" /><link rel="stylesheet" href="/css/palette.css" /><link rel="stylesheet" href="/css/codemirror.css" /><link rel="stylesheet" href="/css/kazari-style.css" /><link rel="stylesheet" href="/css/solarized-dark.css" /><link rel="stylesheet" href="/css/overrides.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/" class="brand"><div class="brand-wrapper"><span>Temperature Machine</span></div></a></li> <li><a href="/docs/index.html" class="">Introduction</a></li> <li><a href="/docs/getting_started.html" class=" active ">Getting Started</a> <ul class="sub_section"> <li><a href="/docs/getting_started/build_from_source.html" class="">Build from Source</a></li> <li><a href="/docs/getting_started/preinstalled_image.html" class="">Pre-installed Image</a></li> <li><a href="/docs/getting_started/download.html" class="">Download Binary</a></li></ul></li> <li><a href="/docs/ds18b20_sensor.html" class="">DS18B20 Sensor</a></li> <li><a href="/docs/add-on_board.html" class="">Add-on Board</a></li> <li><a href="/docs/rrd.html" class="">RRD</a></li> <li><a href="/docs/hacking.html" class="">Hacking</a></li> <li><a href="/docs/resources.html" class="">Resources</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/tobyweston/temperature-machine"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/tobyweston/temperature-machine"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('Temperature Machine The homebrew data logger');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('Temperature Machine The homebrew data logger');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="tobyweston" data-github-repo="temperature-machine"><div class="content-wrapper"><section><h1 id="getting-started">Getting Started</h1>
+
+<h2 id="setup-the-hardware">Setup the Hardware</h2>
+
+<p>Connecting the temperature sensor to the Pi is straight forward. There a bunch of <a href="https://www.google.co.uk/search?btnG=1&amp;pws=0&amp;q=pi+ds18b20+tutorial">tutorials on the web</a> but you’re looking to connect the following physical pins on the Pi to the following sensor connectors.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Physical Pi Pin</th>
+      <th>Description</th>
+      <th>DS18b20 Connector</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>3.3v Power</td>
+      <td>Power (<span style="color:red;">red</span>)</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>GPIO 4</td>
+      <td>Data (<span style="color:orange;">yellow</span>)</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>Ground</td>
+      <td>Ground (<span style="color:black;">black</span>)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The other thing you’ll need to do is connect the 4.7k Ω resistor between the power and data lines. This acts as a <a href="https://learn.sparkfun.com/tutorials/pull-up-resistors">pull-up resistor</a> to ensure that the Pi knows that the data line starts in a “high” state. Without it, it can’t tell if it should start as high or low; it would be left <em>floating</em>.</p>
+
+<p>Soldering a resistor inline can be a bit tricky, so I build a add-on board to make the whole process simpler. See the <a href="add-on_board.html">Add-on Board</a> section for details.</p>
+
+<h2 id="setup-the-pi">Setup the Pi</h2>
+
+<p>Make sure you have the following line in your <code class="highlighter-rouge">/boot/config.txt</code>. It will load the GPIO <a href="https://pinout.xyz/pinout/1_wire">1-wire</a> driver and any attached temperature sensor should be automatically detected.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>dtoverlay=w1-gpio
+</code></pre>
+</div>
+
+<p>Older tutorials on the web will also say you have to load the <code class="highlighter-rouge">w1-therm</code> module but that seems to load automatically these days.</p>
+
+<h2 id="setup-the-software">Setup the Software</h2>
+
+<p>In terms of deployment (running the temperature-machine software), you have three options here.</p>
+
+<ol>
+  <li>Build and run from source</li>
+  <li>Download a pre-installed Raspian image with the above pre-done</li>
+  <li>Download the binary distribution (<code class="highlighter-rouge">temperature-machine-2.0.jar</code>) and run manually</li>
+</ol>
+
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script src="/js/main.js"></script><script src="/js/kazari.js"></script><script>
+$(document).ready(function() {
+	kazari.KazariPlugin().decorateCode('https://scala-evaluator-212.herokuapp.com/eval', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.S2F6YXJp.Jl2eqMfw8IakJF93PjxTbrf-8YUJgX5OoOfy5JHE8Yw', '', 'solarized-dark')
+})
+    </script></body></html>
