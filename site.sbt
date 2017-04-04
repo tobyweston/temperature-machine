@@ -12,9 +12,9 @@ lazy val siteSettings = Seq(
   micrositeAuthor := "Toby Weston",
   micrositeGithubOwner := "tobyweston",
   micrositeGithubRepo := "temperature-machine",
-  micrositeBaseUrl := "temperature-machine",
+  micrositeBaseUrl := "/temperature-machine",
   micrositeHighlightTheme := "atom-one-light",
-  micrositeDocumentationUrl := "/docs",
+  micrositeDocumentationUrl := "/temperature-machine/docs",
 
   micrositeFavicons := Seq(
     MicrositeFavicon("favicon16x16.png", "16x16"),
