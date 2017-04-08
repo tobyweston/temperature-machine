@@ -8,13 +8,12 @@ lazy val siteSettings = Seq(
   micrositeName := "Temperature Machine",
   micrositeDescription := "The homebrew data logger",
 
-  micrositeHomepage := "http://baddotrobot.com",
+  micrositeHomepage := "http://temperature-machine.com",
   micrositeAuthor := "Toby Weston",
   micrositeGithubOwner := "tobyweston",
   micrositeGithubRepo := "temperature-machine",
-  micrositeBaseUrl := "/temperature-machine",
   micrositeHighlightTheme := "atom-one-light",
-  micrositeDocumentationUrl := "/temperature-machine/docs",
+  micrositeDocumentationUrl := "/docs",
 
   micrositeFavicons := Seq(
     MicrositeFavicon("favicon16x16.png", "16x16"),
