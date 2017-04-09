@@ -9,7 +9,7 @@ if ! git diff-index --quiet HEAD --; then
 fi
 
 UI=target/web-app
-ROOT=`pwd`
+ROOT=$(pwd)
 
 # download latest web-app
 echo "Downloading web-app..."
