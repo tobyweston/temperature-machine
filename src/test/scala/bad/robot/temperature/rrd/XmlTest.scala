@@ -55,7 +55,7 @@ class XmlTest extends Specification {
     val json =
       """[
         |  {
-        |    "label" : "lounge-sensor-2",
+        |    "label" : "bedroom-sensor-1",
         |    "data" : [
         |      {
         |        "x" : 1487582430000,
@@ -63,11 +63,11 @@ class XmlTest extends Specification {
         |      },
         |      {
         |        "x" : 1487582460000,
-        |        "y" : "+4.6282822188E00"
+        |        "y" : "+2.3310391215E01"
         |      },
         |      {
         |        "x" : 1487582490000,
-        |        "y" : "+3.9427807382E00"
+        |        "y" : "+2.2793614109E01"
         |      }
         |    ]
         |  },
@@ -106,7 +106,7 @@ class XmlTest extends Specification {
         |    ]
         |  },
         |  {
-        |    "label" : "bedroom-sensor-1",
+        |    "label" : "lounge-sensor-2",
         |    "data" : [
         |      {
         |        "x" : 1487582430000,
@@ -114,11 +114,11 @@ class XmlTest extends Specification {
         |      },
         |      {
         |        "x" : 1487582460000,
-        |        "y" : "+2.3310391215E01"
+        |        "y" : "+4.6282822188E00"
         |      },
         |      {
         |        "x" : 1487582490000,
-        |        "y" : "+2.2793614109E01"
+        |        "y" : "+3.9427807382E00"
         |      }
         |    ]
         |  }
