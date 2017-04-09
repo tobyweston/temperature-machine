@@ -1,5 +1,6 @@
 package bad.robot.temperature.server
 
+import argonaut.Argonaut._
 import argonaut.EncodeJson
 import bad.robot.temperature._
 import bad.robot.temperature.rrd.Host
@@ -10,9 +11,6 @@ import org.http4s.headers.`X-Forwarded-For`
 object TemperatureEndpoint {
 
   implicit def jsonEncoder: EncodeJson[Map[Host, Measurement]] = {
-    import argonaut._
-    import Argonaut._
-
     EncodeJson((measurements: Map[Host, Measurement]) =>
       argonaut.Json(
         "measurements" := measurements.values.toList

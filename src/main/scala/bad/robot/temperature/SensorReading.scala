@@ -1,8 +1,7 @@
 package bad.robot.temperature
 
-import argonaut.EncodeJson
-import argonaut._
-import Argonaut._
+import argonaut.Argonaut._
+import argonaut.{EncodeJson, _}
 
 object SensorReading {
   implicit def jsonEncoder: EncodeJson[SensorReading] = {

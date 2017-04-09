@@ -1,5 +1,7 @@
 package bad.robot.temperature.rrd
 
+import argonaut.Argonaut._
+import argonaut._
 import bad.robot.temperature.rrd.ChartJson._
 
 import scala.collection.immutable.Seq
@@ -21,7 +23,7 @@ object ChartJson {
     }
 
     val measurements = data.flatMap { case (time, temperatures) =>
-      series.zip(temperatures).map(x => (time, x._1, x._2))
+      series.zip(temperatures).map { case (label, temperature) => (time, label, temperature) }
     }
 
     val bySeries: PartialFunction[(Time, Sensor, Celsius), Sensor] = {
@@ -43,9 +45,6 @@ object ChartJson {
 case class Series(name: Sensor, data: List[(Time, Celsius)])
 
 object Series {
-
-  import argonaut._
-  import Argonaut._
 
   implicit def seriesEncoder: EncodeJson[Series] = {
     EncodeJson((series: Series) =>
