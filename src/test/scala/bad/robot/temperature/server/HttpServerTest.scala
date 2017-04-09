@@ -12,8 +12,7 @@ import org.specs2.mutable.Specification
 import scala.concurrent.duration._
 import scalaz.concurrent.Task
 
-class
-HttpServerTest extends Specification {
+class HttpServerTest extends Specification {
 
   "When the Http server has been started" >> {
     val server = HttpServer(8080, List(Host("example"))).unsafePerformSync
@@ -34,7 +33,7 @@ HttpServerTest extends Specification {
     }
 
     "Some java script can be loaded (note this changes with every UI deployment)" >> {
-      assertOk(Request(GET, path("/static/js/main.a96c7200.js")))
+      assertOk(Request(GET, path("/static/js/main.c5ef1e88.js")))
     }
 
     "Some css can be loaded (note this changes with every UI deployment)" >> {
