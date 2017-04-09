@@ -51,13 +51,13 @@ class ChartJsonTest extends Specification {
     </data>
   </fetch_data>
 
-  "Convert XML to object (NB. ordering of 'datasources' is not preserved. boo! )" >> {
+  "Convert XML to object" >> {
     val actual = ChartJson.parse(xml)
     val expected = List(
-      Series("lounge-sensor-2", List(
+      Series("bedroom-sensor-1", List(
         "1487582430" -> "NaN",
-        "1487582460" -> "+4.6282822188E00",
-        "1487582490" -> "+3.9427807382E00"
+        "1487582460" -> "+2.3310391215E01",
+        "1487582490" -> "+2.2793614109E01"
       )),
       Series("bedroom-sensor-2", List(
         "1487582430" -> "NaN",
@@ -69,10 +69,10 @@ class ChartJsonTest extends Specification {
         "1487582460" -> "+3.3282822188E00",
         "1487582490" -> "+2.6427807382E00"
       )),
-      Series("bedroom-sensor-1", List(
+      Series("lounge-sensor-2", List(
         "1487582430" -> "NaN",
-        "1487582460" -> "+2.3310391215E01",
-        "1487582490" -> "+2.2793614109E01"
+        "1487582460" -> "+4.6282822188E00",
+        "1487582490" -> "+3.9427807382E00"
       ))
     )
     actual must_=== expected

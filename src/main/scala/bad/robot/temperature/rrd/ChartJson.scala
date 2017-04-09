@@ -36,6 +36,7 @@ object ChartJson {
       .groupBy(bySeries)
       .map(toSeries)
       .toList
+      .sortBy(_.name)
   }
 }
 
