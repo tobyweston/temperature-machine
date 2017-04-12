@@ -55,4 +55,9 @@ See [Build Deployment JAR](#build-deployment-jar) section above.
 
 Run `sbt site/makeMicrosite` to create the site you're reading now. Find it in `site/target/jekyll` once built.
 
+You should be able to preview the site using Jekyll to serve it.
+
+    $ cd site/target/jekyll
+    $ jekyll serve
+
 If you're going to publish it (`sbt site/publishMicrosite`), make sure you `site/makeMicrosite` first (otherwise you'll see a commit on the [`gh-pages`](https://github.com/tobyweston/temperature-machine/commit/7aa09f7612f3ff38d86de9ab6ae2fe6ba03223c0) branch with `0 commits`)
