@@ -12,7 +12,7 @@ The `w1-therm` module will output the sensor readings to a file. For example,
 
 
 
-These measurements are stored in an area of sensor's memory called the "scratchpad". It's addressed using the following byte table.
+This file is derived from an area of the sensor's memory called the "scratchpad". The scratchpad is addressed using the following byte table.
 
 Position | Description
 --- | ---
