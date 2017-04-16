@@ -17,8 +17,9 @@ object SensorReader {
   private val toReading: SensorFile => Error \/ SensorReading = file => {
     for {
       source      <- fromTryCatchNonFatal(Source.fromFile(file)).leftMap(FileError)
-      data        <- source.getLines().toList.headOption.toRightDisjunction(UnexpectedError("Problem reading file, is it empty?"))
-      temperature <- Parser.parse(data)
+      content      = source.getLines().toList
+      data        <- content.headOption.toRightDisjunction(UnexpectedError("Problem reading file, is it empty?"))
+      temperature <- Parser.parse(content)
     } yield SensorReading(file.getParentFile.getName, temperature)
   }
 

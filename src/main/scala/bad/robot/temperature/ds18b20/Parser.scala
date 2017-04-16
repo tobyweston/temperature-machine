@@ -2,6 +2,7 @@ package bad.robot.temperature.ds18b20
 
 import bad.robot.temperature._
 
+import scala.util.matching.Regex
 import scalaz.{-\/, \/, \/-}
 
 object Parser {
@@ -15,13 +16,21 @@ object Parser {
   val CrcResult = "(YES|NO)"
   val Rest = """([\s\w=]*)"""
 
-  val SensorOutput = (TempLsb + TempMsb + Hex + Hex + Hex + Hex + Hex + Hex + CrcByte + Crc + CrcResult + Rest).r
+  val SensorOutput: Regex = (TempLsb + TempMsb + Hex + Hex + Hex + Hex + Hex + Hex + CrcByte + Crc + CrcResult + Rest).r
+
+  def parse(content: List[String]): Error \/ Temperature = {
+    parse(content.head)
+  }
 
   def parse(content: String): Error \/ Temperature = {
     content match {
-      case SensorOutput(lsb, msb, _, _, _, _, _, _, _, _, "YES", _) => \/-(Temperature(Integer.parseInt(msb + lsb, 16) / 16.0))
+      case SensorOutput(lsb, msb, _, _, _, _, _, _, _, _, "YES", _) =>
+        val celsius = Integer.parseInt(msb + lsb, 16) / 16.0
+        if (celsius > 50)
+          println("ERROR ----------------" + "\n" + content.mkString("\n"))
+        \/-(Temperature(celsius))
       case SensorOutput(_, _, _, _, _, _, _, _, _, _, "NO", _) => -\/(CrcFailure())
-      case data @ _ => -\/(UnexpectedError(s"Failed to recognise sensor data \n$data"))
+      case data @ _                                            => -\/(UnexpectedError(s"Failed to recognise sensor data \n${content.mkString("\n")}"))
     }
   }
 }
