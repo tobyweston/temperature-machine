@@ -7,7 +7,13 @@ import scala.io.Source
 
 object JsonToCsv extends App {
 
-  val json = Source.fromFile("/Users/toby/Workspace/github/temperature-machine/src/test/resources/examples/bedroom1-sensor-1.json").getLines.mkString("\n")
+  val bedroom = "/Users/toby/Workspace/github/temperature-machine/src/test/resources/examples/bedroom1-sensor-1.json"
+  val kitchen = "/Users/toby/Workspace/github/temperature-machine/src/test/resources/examples/kitchen-sensor-1.json"
+  val study = "/Users/toby/Workspace/github/temperature-machine/src/test/resources/examples/study-sensor-1.json"
+  // 1492020060000 -> (19.25) 3775.9375
+
+  val json = Source.fromFile(kitchen).getLines.mkString("\n")
+
   Parse.decodeEither[Series](json) match {
     case Right(series) =>
       var last = 0.0
@@ -15,7 +21,7 @@ object JsonToCsv extends App {
         if (plot.celsius != "NaN") {
           val celsius = plot.celsius.toDouble
           if (celsius - last > 5 || last - celsius > 5)
-            println(plot.time + " -> " + celsius)
+            println(s"${plot.time} -> ($last) $celsius")
           last = celsius
         }
       }
