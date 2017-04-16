@@ -31,7 +31,7 @@ object ChartJson {
     }
 
     val toSeries: PartialFunction[(Sensor, Seq[(Time, Sensor, Celsius)]), Series] = {
-      case series => Series(series._1, series._2.map { case (time, _, celsius) => (time, celsius) }.toList)
+      case series => Series(series._1, series._2.map { case (time, _, celsius) => Point(time, celsius) }.toList)
     }
 
     measurements
@@ -42,28 +42,46 @@ object ChartJson {
   }
 }
 
-case class Series(name: Sensor, data: List[(Time, Celsius)])
+case class Series(name: Sensor, data: List[Point])
 
 object Series {
 
   implicit def seriesEncoder: EncodeJson[Series] = {
     EncodeJson((series: Series) =>
       Json(
-        "label" -> jString(series.name),
-        "data" -> data(series.data)
+        "label" := jString(series.name),
+        "data"  := series.data
       )
     )
   }
 
-  private def data(measurements: List[(Time, Celsius)]): Json = {
-    Json.array(measurements.map(point): _*)
+  implicit def seriesDecoder: DecodeJson[Series] = {
+    DecodeJson(cursor => for {
+      label <- cursor.get[String]("label")
+      data  <- cursor.get[List[Point]]("data")
+    } yield Series(label, data))
   }
 
-  private def point(measurement: (Time, Celsius)): Json = {
-    Json(
-      "x" -> jNumber(Seconds.secondsToDuration(Seconds(measurement._1.toLong)).toMillis),
-      "y" -> jString(measurement._2)
+}
+
+case class Point(time: String, celsius: String)
+
+object Point {
+  implicit def tupleToPoint(tuple: (String, String)): Point = Point(tuple._1, tuple._2)
+
+  implicit def seriesEncoder: EncodeJson[Point] = {
+    EncodeJson((point: Point) =>
+      Json(
+        "x" -> jNumber(Seconds.secondsToDuration(Seconds(point.time.toLong)).toMillis),
+        "y" -> jString(point.celsius)
+      )
     )
   }
 
+  implicit def seriesDecoder: DecodeJson[Point] = {
+    DecodeJson(cursor => for {
+      x <- cursor.get[Long]("x")
+      y <- cursor.get[String]("y")
+    } yield Point(x.toString, y))
+  }
 }
