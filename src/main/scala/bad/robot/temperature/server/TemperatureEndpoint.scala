@@ -1,5 +1,9 @@
 package bad.robot.temperature.server
 
+import java.time.temporal.ChronoUnit.{MINUTES => minutes}
+import java.time.temporal.TemporalUnit
+import java.time.{Clock, Instant}
+
 import argonaut.Argonaut._
 import argonaut.EncodeJson
 import bad.robot.temperature._
@@ -20,7 +24,7 @@ object TemperatureEndpoint {
 
   private var current: Map[Host, Measurement] = Map()
 
-  def service(sensors: TemperatureReader, writer: TemperatureWriter) = HttpService {
+  def service(sensors: TemperatureReader, writer: TemperatureWriter)(implicit clock: Clock) = HttpService {
     case GET -> Root / "temperature" => {
       sensors.read.toHttpResponse(temperatures => {
         Ok(f"${temperatures.average.temperature.celsius}%.1f °C")
@@ -28,14 +32,14 @@ object TemperatureEndpoint {
     }
 
     case GET -> Root / "temperatures" / "average" => {
-      val average = current.map { case (host, measurement) => {
+      val average = current.filter(within(5, minutes)).map { case (host, measurement) => {
         host -> measurement.copy(temperatures = List(measurement.temperatures.average))
       }}
       Ok(encode(average).spaces2)
     }
 
     case GET -> Root / "temperatures" => {
-      Ok(encode(current).spaces2)
+      Ok(encode(current.filter(within(5, minutes))).spaces2)
     }
 
     case DELETE -> Root / "temperatures" => {
@@ -55,6 +59,10 @@ object TemperatureEndpoint {
         NoContent()
       })
     }
+  }
+
+  private def within(amount: Long, unit: TemporalUnit)(implicit clock: Clock): ((Host, Measurement)) => Boolean = {
+    case (_, measurement) => measurement.time.isAfter(clock.instant().minus(amount, unit))
   }
 
 }

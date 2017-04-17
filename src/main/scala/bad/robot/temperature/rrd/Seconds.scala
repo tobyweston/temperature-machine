@@ -1,5 +1,7 @@
 package bad.robot.temperature.rrd
 
+import java.time.Instant
+
 import scala.concurrent.duration.Duration
 
 object Seconds {
@@ -16,6 +18,8 @@ object Seconds {
 case class Seconds(value: Long) {
   def +(other: Seconds) = Seconds(value + other.value)
   def -(other: Seconds) = Seconds(value - other.value)
+  def toInstant: Instant = Instant.ofEpochSecond(value)
+  def isAfter(instant: Instant) = toInstant.isAfter(instant)
 
   override def toString: String = value + " seconds"
 }

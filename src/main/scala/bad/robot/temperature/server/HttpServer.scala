@@ -43,7 +43,7 @@ class HttpServer(port: Int, monitored: List[Host]) {
 
   private def services() = {
     CORS(
-      TemperatureEndpoint.service(SensorReader(SensorFile.find()), Rrd(monitored)) ||
+      TemperatureEndpoint.service(SensorReader(SensorFile.find()), Rrd(monitored))(Clock.systemDefaultZone) ||
       ConnectionsEndpoint.service(Clock.systemDefaultZone) ||
       StaticFiles.service ||
       StaticResources.service
