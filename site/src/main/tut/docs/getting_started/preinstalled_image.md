@@ -9,7 +9,7 @@ I followed the previous steps to [Build from Source](build_from_source.html) the
 
 1. Download the image from my [Google Drive](https://drive.google.com/open?id=0B-I9xnCr64hFWjBoS0Z6akUwVVU).
 1. On Mac, use [Etcher](https://etcher.io/) to flash a new SD card with the image. Refer to [raspberrypi.org](https://www.raspberrypi.org/documentation/installation/installing-images/) for other platforms.
-1. Setup you're wifi by inserting your new SD card to your machine and creating a file `wpa_supplicant.conf` under `/boot`. Mine looks like this (the `scan_ssid=1` is only needed if you're using a hidden network). 
+1. Setup your wifi by inserting your new SD card to your machine and creating a file `wpa_supplicant.conf` under `/boot`. Mine looks like this (the `scan_ssid=1` is only needed if you're using a hidden network). 
 
     ```
     ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
