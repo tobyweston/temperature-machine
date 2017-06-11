@@ -19,11 +19,21 @@ class ParserTest extends Specification {
   }
 
   "Extract temperature from sensor output" >> {
-    val output =
-      """|a3 01 4b 46 7f ff 0e 10 d8 : crc=d8 YES
-         |a3 01 4b 46 7f ff 0e 10 d8 t=26187
-      """.stripMargin
-    Parser.parse(output) must be_\/-(Temperature(26.1875))
+    "Example 1" >> {
+      val output =
+        """|a3 01 4b 46 7f ff 0e 10 d8 : crc=d8 YES
+           |a3 01 4b 46 7f ff 0e 10 d8 t=26187
+        """.stripMargin
+      Parser.parse(output) must be_\/-(Temperature(26.1875))
+    }
+
+    "Example 2" >> {
+      val output =
+        """|51 01 4b 46 7f ff 0c 10 ab : crc=ab YES
+           |51 01 4b 46 7f ff 0c 10 ab t=21062
+        """.stripMargin
+      Parser.parse(output) must be_\/-(Temperature(21.0625))
+    }
   }
 
   "Crazy strings don't compute" >> {
@@ -49,11 +59,21 @@ class ParserTest extends Specification {
   }
 
   "Negative temperatures" >> {
-    val output =
-      """|7e ff 4b 46 7f ff 0c 10 c2 : crc=c2 YES
-         |7e ff 4b 46 7f ff 0c 10 c2 t=-8125
-      """.stripMargin
-    Parser.parse(output) must be_\/-(Temperature(-8.125))
+    "Example 1" >> {
+      val output =
+        """|7e ff 4b 46 7f ff 0c 10 c2 : crc=c2 YES
+           |7e ff 4b 46 7f ff 0c 10 c2 t=-8125
+        """.stripMargin
+      Parser.parse(output) must be_\/-(Temperature(-8.125))
+    }
+
+    "Example 2" >> {
+      val output =
+        """|53 ff 4b 46 7f ff 0c 10 16 : crc=16 YES
+           |53 ff 4b 46 7f ff 0c 10 16 t=-10812
+        """.stripMargin
+      Parser.parse(output) must be_\/-(Temperature(-10.8125))
+    }
   }
 
   // https://cdn-shop.adafruit.com/datasheets/DS18B20.pdf
