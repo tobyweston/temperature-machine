@@ -1,3 +1,3 @@
 # Developer's README
 
-See [tobyweston.github.io/temperature-machine](tobyweston.github.io/temperature-machine).
+See [Hacking](http://temperature-machine.com/docs/hacking.html).
