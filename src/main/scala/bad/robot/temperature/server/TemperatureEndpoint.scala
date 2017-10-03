@@ -2,7 +2,7 @@ package bad.robot.temperature.server
 
 import java.time.temporal.ChronoUnit.{MINUTES => minutes}
 import java.time.temporal.TemporalUnit
-import java.time.{Clock, Instant}
+import java.time.Clock
 
 import argonaut.Argonaut._
 import argonaut.EncodeJson

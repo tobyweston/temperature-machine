@@ -2,7 +2,7 @@ package bad.robot.temperature.rrd
 
 import java.io.{PrintWriter, StringWriter}
 
-import bad.robot.temperature.{Error, Measurement, RrdError, SensorReading, SensorReading$, Temperature}
+import bad.robot.temperature.{Error, Measurement, RrdError, SensorReading, Temperature}
 import org.rrd4j.core.RrdDb
 
 import scala.{Error => _}

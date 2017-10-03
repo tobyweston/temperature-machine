@@ -4,8 +4,6 @@ import java.time.Instant
 
 import org.specs2.mutable.Specification
 
-import scala.language.postfixOps
-
 class SecondsTest extends Specification {
 
   "Rounding" >> {
