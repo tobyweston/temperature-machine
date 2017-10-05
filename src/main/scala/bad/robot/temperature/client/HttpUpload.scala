@@ -2,15 +2,15 @@ package bad.robot.temperature.client
 
 import java.net.{InetAddress, NetworkInterface}
 
-import bad.robot.temperature.IpAddress.{unapply => _, _}
+import bad.robot.temperature.IpAddress._
 import bad.robot.temperature._
 import bad.robot.temperature.client.HttpUpload.currentIpAddress
 import org.http4s.Method._
-import org.http4s.Status.ResponseClass.Successful
+import org.http4s.Status.Successful
 import org.http4s.Uri.{Authority, IPv4}
 import org.http4s.headers.`X-Forwarded-For`
 import org.http4s.util.NonEmptyList
-import org.http4s.util.string._
+import org.http4s.syntax.string._
 import org.http4s.{Headers, Request, Response, Uri}
 
 import scala.collection.JavaConverters._

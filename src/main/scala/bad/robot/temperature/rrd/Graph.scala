@@ -62,11 +62,11 @@ object Graph {
     graph.hspan(16, 20, transparent(green), "Optimal\\j")
 
     hosts.map(host => host -> sensors.filter(_.contains(host.name))).foreach({
-      case (_, Nil)               => ()
-      case (host, (sensor :: Nil))     =>
+      case (_, Nil)                => ()
+      case (host, (sensor :: Nil)) =>
         graph.gprint(sensor, MIN, s"${host.name} min = %.2f%s °C")
         graph.gprint(sensor, MAX, s"${host.name} max = %.2f%s °C\\j")
-      case (host, sensorsForHost) =>
+      case (host, sensorsForHost)  =>
         graph.datasource(s"${host.name}-max", generateRpn(sensorsForHost, Max))
         graph.datasource(s"${host.name}-min", generateRpn(sensorsForHost, Min))
         graph.gprint(s"${host.name}-min", MIN, s"${host.name} min = %.2f%s °C")

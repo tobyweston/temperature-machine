@@ -21,7 +21,7 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
   "No recent connections" >> {
     val request = Request(GET, Uri.uri("/connections"))
     val service = ConnectionsEndpoint.service(fixedClock())
-    val response = service(request).unsafePerformSync
+    val response = service(request).unsafePerformSync.orNotFound
     response.as[String].unsafePerformSync must_== "[]"
     response.status must_== Ok
   }
@@ -31,7 +31,7 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
 
     val request = Request(GET, Uri.uri("/connections"))
     val service = ConnectionsEndpoint.service(fixedClock())
-    val response = service(request).unsafePerformSync
+    val response = service(request).unsafePerformSync.orNotFound
 
     response.status must_== Ok
     response.as[String].unsafePerformSync must_==
@@ -52,7 +52,7 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
 
     val request = Request(GET, Uri.uri("/connections/active/within/5/mins"))
     ConnectionsEndpoint.update(Host("garage"), Some(xForwardedFor("184.14.23.214")))
-    val response = service(request).unsafePerformSync
+    val response = service(request).unsafePerformSync.orNotFound
 
     response.status must_== Ok
     response.as[String].unsafePerformSync must_== """[
@@ -72,7 +72,7 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
 
     val request = Request(GET, Uri.uri("/connections"))
     val service = ConnectionsEndpoint.service(fixedClock())
-    val response = service(request).unsafePerformSync
+    val response = service(request).unsafePerformSync.orNotFound
 
     response.status must_== Ok
     response.as[String].unsafePerformSync must_==
@@ -93,7 +93,7 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
 
     val request = Request(GET, Uri.uri("/connections/active/within/5/mins"))
     ConnectionsEndpoint.update(Host("garage"), Some(xForwardedFor("162.34.13.113")))
-    val response = service(request).unsafePerformSync
+    val response = service(request).unsafePerformSync.orNotFound
 
     response.status must_== Ok
     response.as[String].unsafePerformSync must_== "[]"

@@ -26,7 +26,7 @@ class TemperatureEndpointTest extends Specification {
     val clock = fixedClock()
     val reader = stubReader(\/-(List(SensorReading("28-0002343fd", Temperature(56.34)))))
     val service = TemperatureEndpoint.service(reader, UnexpectedWriter)(clock)
-    val response = service(request).unsafePerformSync
+    val response = service(request).unsafePerformSync.orNotFound
 
     response.status must_== Ok
     response.as[String].unsafePerformSync must_== "56.3 °C"
@@ -40,7 +40,7 @@ class TemperatureEndpointTest extends Specification {
       SensorReading("28-0000d34c3", Temperature(23.364)),
       SensorReading("28-0000d34c3", Temperature(21.213))
     ))), UnexpectedWriter)(clock)
-    val response = service(request).unsafePerformSync
+    val response = service(request).unsafePerformSync.orNotFound
 
     response.status must_== Ok
     response.as[String].unsafePerformSync must_== "23.3 °C"
@@ -50,7 +50,7 @@ class TemperatureEndpointTest extends Specification {
     val request = Request(GET, Uri.uri("/temperature"))
     val clock = fixedClock()
     val service = TemperatureEndpoint.service(stubReader(-\/(SensorError("An example error"))), UnexpectedWriter)(clock)
-    val response = service(request).unsafePerformSync
+    val response = service(request).unsafePerformSync.orNotFound
 
     response.status must_== InternalServerError
     response.as[String].unsafePerformSync must_== "An example error"
@@ -71,7 +71,7 @@ class TemperatureEndpointTest extends Specification {
                          |     }
                          |   ]
                          |}""".stripMargin
-    val response = service.apply(Put(measurement)).unsafePerformSync
+    val response = service.apply(Put(measurement)).unsafePerformSync.orNotFound
     response must haveStatus(NoContent)
   }
 
@@ -110,7 +110,7 @@ class TemperatureEndpointTest extends Specification {
   "Bad json when writing sensor data" >> {
     val clock = fixedClock()
     val service = TemperatureEndpoint.service(stubReader(\/-(List())), stubWriter(\/-(Unit)))(clock)
-    val response = service.apply(Put("bad json")).unsafePerformSync
+    val response = service.apply(Put("bad json")).unsafePerformSync.orNotFound
     response must haveStatus(BadRequest)
     response.as[String].unsafePerformSync must_== "Unable to parse content as JSON Unexpected content found: bad json"
   }
@@ -162,7 +162,7 @@ class TemperatureEndpointTest extends Specification {
     service.apply(Put(measurement2)).unsafePerformSync
 
     val request = Request(GET, Uri.uri("/temperatures"))
-    val response = service(request).unsafePerformSync
+    val response = service(request).unsafePerformSync.orNotFound
 
     response.status must_== Ok
 
@@ -257,7 +257,7 @@ class TemperatureEndpointTest extends Specification {
     service.apply(Put(measurement2)).unsafePerformSync
 
     val request = Request(GET, Uri.uri("/temperatures/average"))
-    val response = service(request).unsafePerformSync
+    val response = service(request).unsafePerformSync.orNotFound
 
     response.status must_== Ok
     response.as[String].unsafePerformSync must_==
@@ -338,7 +338,7 @@ class TemperatureEndpointTest extends Specification {
     service.apply(Put(measurement2)).unsafePerformSync
 
     val request = Request(GET, Uri.uri("/temperatures"))
-    val response = service(request).unsafePerformSync
+    val response = service(request).unsafePerformSync.orNotFound
 
     response.status must_== Ok
 
@@ -415,7 +415,7 @@ class TemperatureEndpointTest extends Specification {
     service.apply(Put(measurement2)).unsafePerformSync
 
     val request = Request(GET, Uri.uri("/temperatures/average"))
-    val response = service(request).unsafePerformSync
+    val response = service(request).unsafePerformSync.orNotFound
 
     response.status must_== Ok
     response.as[String].unsafePerformSync must_==
