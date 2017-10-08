@@ -27,7 +27,7 @@ object TemperatureEndpoint {
   def service(sensors: TemperatureReader, writer: TemperatureWriter)(implicit clock: Clock) = HttpService {
     case GET -> Root / "temperature" => {
       sensors.read.toHttpResponse(temperatures => {
-        Ok(f"${temperatures.average.temperature.celsius}%.1f °C")
+        Ok(s"${temperatures.average.temperature.asCelsius}")
       })
     }
 

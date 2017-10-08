@@ -24,7 +24,7 @@ class TemperatureTest extends Specification {
   "Decode json" >> {
     val temperature = """{ "celsius" : 99.1 }"""
     val result = decode[Temperature](temperature)
-    result must be_\/- (Temperature(99.1))
+    result must be_\/-(Temperature(99.1))
   }
 
 }

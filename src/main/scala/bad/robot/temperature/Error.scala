@@ -10,3 +10,10 @@ case class FileError(cause: Throwable) extends Error(s"Error loading file; ${cau
 case class Timeout(reason: String) extends Error(s"Timeout; $reason")
 case class ParseError(reason: String) extends Error(s"Unable to parse content as JSON $reason")
 case class RrdError(reason: String) extends Error(s"Error in RRD $reason")
+case class SensorSpikeError(sensors: List[String], previous: List[Temperature], current: List[Temperature]) extends Error(
+  s"""An unexpected spike was encountered on:
+     | sensor(s)             : ${sensors.mkString(", ")}
+     | previous temperatures : ${previous.map(_.asCelsius).mkString(", ")}
+     | spiked temperatures   : ${current.map(_.asCelsius).mkString(", ")}
+     |""".stripMargin
+)

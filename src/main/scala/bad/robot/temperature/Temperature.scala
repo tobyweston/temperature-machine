@@ -22,5 +22,8 @@ case class Temperature(celsius: Double) {
   def fahrenheit: Double = celsius * 9 / 5 + 32
   def +(other: Temperature) = new Temperature(this.celsius + other.celsius)
   def /(divisor: Int) = new Temperature(this.celsius / divisor)
+
+  def asCelsius = f"$celsius%.1f °C"
+  def asFahrenheit = f"$fahrenheit%.1f °F"
 }
 
