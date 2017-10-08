@@ -7,14 +7,15 @@ import scala.collection.concurrent.TrieMap
 object IgnoreTemperatureSpikes {
   type SensorName = String
 
-  private val thirtyPercent = 30
+  private val spikePercentage = 30
 
   // negative numbers would be a decrease, which we'll ignore (use Math.abs if we change our mind later)
   def percentageIncrease(oldValue: Double, newValue: Double): Double = (newValue - oldValue) / oldValue * 100
 }
 
 /**
-  * This isn't atomic in terms of the `get` and `update` calls against the cached values.
+  * This isn't atomic in terms of the `get` and `update` calls against the cached values. An value could be retrieved,
+  * the `spikeBetween` check made whilst the cache contains an updated value.
   *
   * However, the cache structure is thread safe, so at worst, you may get out of date data.
   *
@@ -38,7 +39,7 @@ class IgnoreTemperatureSpikes(delegate: TemperatureWriter) extends TemperatureWr
   }
 
   private def spikeBetween(reading: SensorReading, previous: Temperature) = {
-    percentageIncrease(previous.celsius, reading.temperature.celsius) >= thirtyPercent
+    percentageIncrease(previous.celsius, reading.temperature.celsius) >= spikePercentage
   }
 
 }
