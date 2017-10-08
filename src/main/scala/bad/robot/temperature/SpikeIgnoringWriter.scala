@@ -19,24 +19,14 @@ class SpikeIgnoringWriter(delegate: TemperatureWriter) extends TemperatureWriter
 
   def write(measurement: Measurement) = {
 
-//    val readings = measurement.temperatures.map(current => {
-//      val previous = temperatures.getOrElseUpdate(current.name, current.temperature)
-//      if (spikeBetween(current, previous)) {
-//        current.copy(temperature = previous)  // use old value
-//      } else {
-//        temperatures.update(current.name, current.temperature)
-//        current                               // pass down
-//      }
-//    })
-
-    val readings2 = measurement.temperatures.map(current => {
+    val readings = measurement.temperatures.map(current => {
       temperatures.get(current.name) match {
         case Some(previous) if spikeBetween(current, previous) => current.copy(temperature = previous)
         case _                                                 => temperatures.update(current.name, current.temperature); current
       }
     })
 
-    delegate.write(measurement.copy(temperatures = readings2))
+    delegate.write(measurement.copy(temperatures = readings))
   }
 
   private def spikeBetween(reading: SensorReading, previous: Temperature) = {
