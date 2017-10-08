@@ -5,6 +5,7 @@ import java.time.Clock
 import java.util.concurrent.{CountDownLatch, ExecutorService}
 import java.util.concurrent.Executors._
 
+import bad.robot.temperature.ErrorOnTemperatureSpike
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import bad.robot.temperature.rrd.{Host, Rrd}
 import bad.robot.temperature.task.TemperatureMachineThreadFactory
@@ -43,7 +44,7 @@ class HttpServer(port: Int, monitored: List[Host]) {
 
   private def services() = {
     CORS(
-      TemperatureEndpoint.service(SensorReader(SensorFile.find()), Rrd(monitored))(Clock.systemDefaultZone) ||
+      TemperatureEndpoint.service(SensorReader(SensorFile.find()), ErrorOnTemperatureSpike(Rrd(monitored)))(Clock.systemDefaultZone) ||
       ConnectionsEndpoint.service(Clock.systemDefaultZone) ||
       StaticFiles.service ||
       StaticResources.service
