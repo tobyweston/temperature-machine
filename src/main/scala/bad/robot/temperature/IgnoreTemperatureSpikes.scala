@@ -13,6 +13,14 @@ object IgnoreTemperatureSpikes {
   def percentageIncrease(oldValue: Double, newValue: Double): Double = (newValue - oldValue) / oldValue * 100
 }
 
+/**
+  * This isn't atomic in terms of the `get` and `update` calls against the cached values.
+  *
+  * However, the cache structure is thread safe, so at worst, you may get out of date data.
+  *
+  * However, as we know that for every host, at most one call will be made every 30 seconds, there is no risk on
+  * concurrent access for a particular sensor (the key to the cache).
+  */
 class IgnoreTemperatureSpikes(delegate: TemperatureWriter) extends TemperatureWriter {
 
   private val temperatures: TrieMap[SensorName, Temperature] = TrieMap()
