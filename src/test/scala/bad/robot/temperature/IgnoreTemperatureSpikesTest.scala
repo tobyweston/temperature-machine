@@ -5,11 +5,11 @@ import org.specs2.mutable.Specification
 
 import scalaz.{\/, \/-}
 
-class SpikeIgnoreWriterTest extends Specification {
+class IgnoreTemperatureSpikesTest extends Specification {
 
   "Delegates" >> {
     val delegate = new StubWriter
-    new SpikeIgnoringWriter(delegate).write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))))
+    new IgnoreTemperatureSpikes(delegate).write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))))
     delegate.temperatures must_== List(
       Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1))))
     )
@@ -17,7 +17,7 @@ class SpikeIgnoreWriterTest extends Specification {
 
   "Ignores spiked value (single sensor)" >> {
     val delegate = new StubWriter
-    val writer = new SpikeIgnoringWriter(delegate)
+    val writer = new IgnoreTemperatureSpikes(delegate)
     writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))))
     writer.write(Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(21.4)))))
     writer.write(Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6)))))
@@ -32,7 +32,7 @@ class SpikeIgnoreWriterTest extends Specification {
 
   "Ignore spiked values (multiple sensors)" >> {
     val delegate = new StubWriter
-    val writer = new SpikeIgnoringWriter(delegate)
+    val writer = new IgnoreTemperatureSpikes(delegate)
     writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))))
     writer.write(Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6)))))
     writer.write(Measurement(Host("example"), Seconds(5), List(SensorReading("A", Temperature(21.1)))))
@@ -55,7 +55,7 @@ class SpikeIgnoreWriterTest extends Specification {
 
   "Recovers from spiked value (single sensor)" >> {
     val delegate = new StubWriter
-    val writer = new SpikeIgnoringWriter(delegate)
+    val writer = new IgnoreTemperatureSpikes(delegate)
     writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))))
     writer.write(Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(21.4)))))
     writer.write(Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6)))))
@@ -76,7 +76,7 @@ class SpikeIgnoreWriterTest extends Specification {
 
   "Doesn't ignore negative spiked values (single sensor)" >> {
     val delegate = new StubWriter
-    val writer = new SpikeIgnoringWriter(delegate)
+    val writer = new IgnoreTemperatureSpikes(delegate)
     writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))))
     writer.write(Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(21.4)))))
     writer.write(Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6)))))

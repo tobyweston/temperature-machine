@@ -1,10 +1,10 @@
 package bad.robot.temperature
 
-import bad.robot.temperature.SpikeIgnoringWriter._
+import bad.robot.temperature.IgnoreTemperatureSpikes._
 
 import scala.collection.concurrent.TrieMap
 
-object SpikeIgnoringWriter {
+object IgnoreTemperatureSpikes {
   type SensorName = String
 
   private val thirtyPercent = 30
@@ -13,7 +13,7 @@ object SpikeIgnoringWriter {
   def percentageIncrease(oldValue: Double, newValue: Double): Double = (newValue - oldValue) / oldValue * 100
 }
 
-class SpikeIgnoringWriter(delegate: TemperatureWriter) extends TemperatureWriter {
+class IgnoreTemperatureSpikes(delegate: TemperatureWriter) extends TemperatureWriter {
 
   private val temperatures: TrieMap[SensorName, Temperature] = TrieMap()
 
