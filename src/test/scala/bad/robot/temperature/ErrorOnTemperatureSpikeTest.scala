@@ -1,7 +1,7 @@
 package bad.robot.temperature
 
 import bad.robot.temperature.rrd.{Host, Seconds}
-import org.specs2.matcher.DisjunctionMatchers.be_-\/
+import org.specs2.matcher.DisjunctionMatchers._
 import org.specs2.matcher.MatchResult
 import org.specs2.mutable.Specification
 
@@ -35,22 +35,7 @@ class ErrorOnTemperatureSpikeTest extends Specification {
     )
   }
 
-  "Error message on a spiked value (single sensor)" >> {
-    val delegate = new StubWriter
-    val writer = new ErrorOnTemperatureSpike(delegate)
-    writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))))
-    writer.write(Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6)))))
-    writer.write(Measurement(Host("example"), Seconds(4), List(SensorReading("A", Temperature(51.1))))) must be_-\/.like {
-      case e: SensorSpikeError => e.message must_==
-        """An unexpected spike was encountered on:
-          | sensor(s)             : A
-          | previous temperatures : 51.1 °C
-          | spiked temperatures   :
-          |""".stripMargin
-    }
-  }
-
-  "Ignore spiked values (multiple sensors)" >> {
+  "Error on spiked values (multiple sensors)" >> {
     val delegate = new StubWriter
     val writer = new ErrorOnTemperatureSpike(delegate)
     writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))))
@@ -89,13 +74,13 @@ class ErrorOnTemperatureSpikeTest extends Specification {
     )
   }
 
-  "Doesn't ignore negative spiked values (single sensor)" >> {
+  "Doesn't error on negative spiked values (single sensor)" >> {
     val delegate = new StubWriter
     val writer = new ErrorOnTemperatureSpike(delegate)
     writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))))
     writer.write(Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(21.4)))))
     writer.write(Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6)))))
-    writer.write(Measurement(Host("example"), Seconds(4), List(SensorReading("A", Temperature(1.1)))))
+    writer.write(Measurement(Host("example"), Seconds(4), List(SensorReading("A", Temperature(1.1))))) must be_\/-
     delegate.temperatures must_== List(
       Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))),
       Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(21.4)))),
@@ -103,6 +88,22 @@ class ErrorOnTemperatureSpikeTest extends Specification {
       Measurement(Host("example"), Seconds(4), List(SensorReading("A", Temperature(1.1))))
     )
   }
+
+  "Error message on a spiked value (single sensor)" >> {
+    val delegate = new StubWriter
+    val writer = new ErrorOnTemperatureSpike(delegate)
+    writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))))
+    writer.write(Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6)))))
+    writer.write(Measurement(Host("example"), Seconds(4), List(SensorReading("A", Temperature(51.1))))) must be_-\/.like {
+      case e: SensorSpikeError => e.message must_==
+        """An unexpected spike was encountered on:
+          | sensor(s)             : A
+          | previous temperatures : 51.1 °C
+          | spiked temperatures   :
+          |""".stripMargin
+    }
+  }
+
 
   class StubWriter extends TemperatureWriter {
     var temperatures: List[Measurement] = List()
