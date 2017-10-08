@@ -99,7 +99,22 @@ class ErrorOnTemperatureSpikeTest extends Specification {
         """An unexpected spike was encountered on:
           | sensor(s)             : A
           | previous temperatures : 51.1 °C
-          | spiked temperatures   :
+          | spiked temperatures   : 
+          |""".stripMargin
+    }
+  }
+
+  "Error message on a spiked value (multiple sensors)" >> {
+    val delegate = new StubWriter
+    val writer = new ErrorOnTemperatureSpike(delegate)
+    writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A1", Temperature(21.1)), SensorReading("A2", Temperature(21.3)))))
+    writer.write(Measurement(Host("example"), Seconds(2), List(SensorReading("B1", Temperature(21.6)), SensorReading("B2", Temperature(21.8)))))
+    writer.write(Measurement(Host("example"), Seconds(3), List(SensorReading("A1", Temperature(51.4)), SensorReading("A2", Temperature(51.1))))) must be_-\/.like {
+      case e: SensorSpikeError => e.message must_==
+        """An unexpected spike was encountered on:
+          | sensor(s)             : A1, A2
+          | previous temperatures : 51.4 °C, 51.1 °C
+          | spiked temperatures   : 
           |""".stripMargin
     }
   }
