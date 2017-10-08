@@ -118,6 +118,12 @@ class ErrorOnTemperatureSpikeTest extends Specification {
           |""".stripMargin
     }
   }
+  
+  "Toggle the use based on system property" >> {
+    ErrorOnTemperatureSpike(new StubWriter()) must haveClass[StubWriter]
+    sys.props += ("avoid.spikes" -> "true")
+    ErrorOnTemperatureSpike(new StubWriter()) must haveClass[ErrorOnTemperatureSpike]
+  }
 
 
   class StubWriter extends TemperatureWriter {

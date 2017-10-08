@@ -11,6 +11,15 @@ object ErrorOnTemperatureSpike {
 
   // negative numbers would be a decrease, which we'll ignore (use Math.abs if we change our mind later)
   def percentageIncrease(oldValue: Double, newValue: Double): Double = (newValue - oldValue) / oldValue * 100
+
+  /**
+    * @param delegate delegate writer
+    * @return a [[TemperatureWriter]] that will produce an error (left disjunction) when a spike over [[spikePercentage]]
+    *         is detected or pass through to the delegate if the system property `avoid.spikes` is not set.
+    */
+  def apply(delegate: TemperatureWriter): TemperatureWriter = {
+    sys.props.get("avoid.spikes").map(_ => new ErrorOnTemperatureSpike(delegate)).getOrElse(delegate)
+  }
 }
 
 /**
