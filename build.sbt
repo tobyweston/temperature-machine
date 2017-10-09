@@ -8,7 +8,6 @@ organization := "bad.robot"
 assemblyJarName in assembly := s"${name.value}-${version.value}.jar"
 
 scalaVersion := "2.12.3"
-sbtVersion := "1.0.2"
 
 mainClass in Compile := Some("bad.robot.temperature.Main")
 
