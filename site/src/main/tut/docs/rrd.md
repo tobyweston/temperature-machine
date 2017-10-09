@@ -14,7 +14,7 @@ A round robin database is a fixed size database meaning you can leave the data l
 
 Because we have to define what's in the RRD upfront, you'll have to delete the `~/.temperature/temperature.rdd` if the configuration changes. Starting the server for the first time will initialise the RRD; it will create "archives" for every machine it's expecting to monitor. These are passed in as command line arguments when you start up the server (for example `kitchen`, `garage` and `bedroom`).
 
-    $ java -jar temperature-machine-2.0.jar bad.robot.temperature.server.Server kitchen garage bedroom
+    $ java -jar temperature-machine-2.1.jar bad.robot.temperature.server.Server kitchen garage bedroom
 
 > Don't forget to set the hostname of each machine to match. So for the above, the server might be named `kitchen` and a RRD "archive" will be created along with `garage` and `kitchen`. If a client with a hostname of `outside` connects, it won't have an archive to write data to and you won't be able to log it's temperatures.
 

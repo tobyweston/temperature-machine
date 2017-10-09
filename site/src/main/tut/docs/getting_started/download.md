@@ -9,11 +9,11 @@ If you already have Java and SBT setup, you can run download the binary from the
 
 Just run the following to start the server up.
 
-    java -jar temperature-machine-2.0.jar bad.robot.temperature.server.Server garage bedroom
+    java -jar temperature-machine-2.1.jar bad.robot.temperature.server.Server garage bedroom
     
 or
 
-    java -jar temperature-machine-2.0.jar bad.robot.temperature.client.Client
+    java -jar temperature-machine-2.1.jar bad.robot.temperature.client.Client
 
 
 to start up the client.
