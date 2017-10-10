@@ -18,6 +18,8 @@ class HttpServerTest extends Specification {
     val server = HttpServer(8080, List(Host("example"))).unsafePerformSync
     val client = SimpleHttp1Client(defaultConfig.copy(idleTimeout = 30 minutes, responseHeaderTimeout = 30 minutes))
 
+    // todo wait for server to startup, not sure how.
+    
     "index.html can be loaded" >> {
       assertOk(Request(GET, path("")))
     }
@@ -58,7 +60,7 @@ class HttpServerTest extends Specification {
 
     def assertOk(request: Request) = {
       val response = client.fetch(request)(Task.delay(_)).unsafePerformSync
-      response.status must_== Status.Ok
+      response.status must be_==(Status.Ok).eventually(40, 5 minutes)
     }
 
     def path(url: String): Uri = Uri.fromString(s"http://localhost:8080$url").getOrElse(throw new Exception(s"bad url $url"))
