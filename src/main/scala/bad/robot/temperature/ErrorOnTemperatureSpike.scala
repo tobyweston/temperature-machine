@@ -18,7 +18,10 @@ object ErrorOnTemperatureSpike {
     *         is detected or pass through to the delegate if the system property `avoid.spikes` is not set.
     */
   def apply(delegate: TemperatureWriter): TemperatureWriter = {
-    sys.props.get("avoid.spikes").map(_ => new ErrorOnTemperatureSpike(delegate)).getOrElse(delegate)
+    sys.props.get("avoid.spikes").map(_ => {
+      println(s"Temperature spikes greater than $spikePercentage% will not be recorded")
+      new ErrorOnTemperatureSpike(delegate)
+    }).getOrElse(delegate)
   }
 }
 
