@@ -6,7 +6,7 @@ technologies:
  - rrd: ["RRD", "A fixed size (round robin) database stores and averages the temperature data over one, seven and thirty days"]
 ---
 
-The temperature-machine is a low cost, do-it-yourself data logger built around the Raspberry Pi and the [DS18D20](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf) temperature sensor. You can track ambient temperature over days, weeks and months and display some pretty graphs.
+The temperature-machine is a low cost, do-it-yourself data logger built around the Raspberry Pi and the [DS18D20](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf) temperature sensor. You can track ambient temperature over days, weeks and months and display some pretty graphs. Read the [Documentation](docs) to find out more.
 
 <img src="img/temperature-machine.png" alt="" width="889" height="689" style="max-width:100%;">
 
