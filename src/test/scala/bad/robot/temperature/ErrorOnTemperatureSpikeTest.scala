@@ -98,8 +98,8 @@ class ErrorOnTemperatureSpikeTest extends Specification {
       case e: SensorSpikeError => e.message must_==
         """An unexpected spike was encountered on:
           | sensor(s)             : A
-          | previous temperatures : 51.1 °C
-          | spiked temperatures   : 
+          | previous temperatures : 21.6 °C
+          | spiked temperatures   : 51.1 °C
           |""".stripMargin
     }
   }
@@ -113,8 +113,8 @@ class ErrorOnTemperatureSpikeTest extends Specification {
       case e: SensorSpikeError => e.message must_==
         """An unexpected spike was encountered on:
           | sensor(s)             : A1, A2
-          | previous temperatures : 51.4 °C, 51.1 °C
-          | spiked temperatures   : 
+          | previous temperatures : 21.1 °C, 21.3 °C
+          | spiked temperatures   : 51.4 °C, 51.1 °C
           |""".stripMargin
     }
   }

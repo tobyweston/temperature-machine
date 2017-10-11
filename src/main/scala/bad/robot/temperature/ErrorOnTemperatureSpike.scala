@@ -40,15 +40,15 @@ class ErrorOnTemperatureSpike(delegate: TemperatureWriter) extends TemperatureWr
 
   def write(measurement: Measurement): Error \/ Unit = {
 
-    val spiked = measurement.temperatures.filter(current => {
+    val spiked = measurement.temperatures.flatMap(current => {
       temperatures.get(current.name) match {
-        case Some(previous) if spikeBetween(current, previous) => true
-        case _                                                 => false
+        case Some(previous) if spikeBetween(current, previous) => List((current.name, previous, current.temperature))
+        case _                                                 => Nil
       }
     })
 
     if (spiked.nonEmpty) {
-      -\/(SensorSpikeError(spiked.map(_.name), spiked.map(_.temperature), List()))
+      -\/(SensorSpikeError(spiked.map(_._1), previous = spiked.map(_._2), current = spiked.map(_._3)))
     } else {
       measurement.temperatures.foreach(current => temperatures.update(current.name, current.temperature))
       delegate.write(measurement)
