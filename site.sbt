@@ -14,7 +14,8 @@ lazy val siteSettings = Seq(
   micrositeGithubRepo := "temperature-machine",
   micrositeHighlightTheme := "atom-one-light",
   micrositeDocumentationUrl := "/docs",
-
+  micrositeGitterChannel := false,
+    
   micrositeFavicons := Seq(
     MicrositeFavicon("favicon16x16.png", "16x16"),
     MicrositeFavicon("favicon24x24.png", "24x24"),
