@@ -42,13 +42,13 @@ class ErrorOnTemperatureSpike(delegate: TemperatureWriter) extends TemperatureWr
 
     val spiked = measurement.temperatures.flatMap(current => {
       temperatures.get(current.name) match {
-        case Some(previous) if spikeBetween(current, previous) => List((current.name, previous, current.temperature))
-        case _                                                 => Nil
+        case Some(previous) if spikeBetween(current, previous) => Some(Spike(current.name, previous, current.temperature))
+        case _                                                 => None
       }
     })
 
     if (spiked.nonEmpty) {
-      -\/(SensorSpikeError(spiked.map(_._1), previous = spiked.map(_._2), current = spiked.map(_._3)))
+      -\/(SensorSpikeError(spiked))
     } else {
       measurement.temperatures.foreach(current => temperatures.update(current.name, current.temperature))
       delegate.write(measurement)
@@ -60,3 +60,5 @@ class ErrorOnTemperatureSpike(delegate: TemperatureWriter) extends TemperatureWr
   }
 
 }
+
+case class Spike(sensor: String, previous: Temperature, current: Temperature)
