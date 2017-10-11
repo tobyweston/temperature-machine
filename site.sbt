@@ -15,8 +15,9 @@ lazy val siteSettings = Seq(
   micrositeHighlightTheme := "atom-one-light",
   micrositeDocumentationUrl := "/docs",
   micrositeGitterChannel := false,
-    
-  micrositeFavicons := Seq(
+  micrositeAnalyticsToken := "UA-3327317-12",
+
+    micrositeFavicons := Seq(
     MicrositeFavicon("favicon16x16.png", "16x16"),
     MicrositeFavicon("favicon24x24.png", "24x24"),
     MicrositeFavicon("favicon32x32.png", "32x32")
