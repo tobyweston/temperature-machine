@@ -63,7 +63,18 @@ object ConvertJsonToCsv extends App {
     }
 
     def toCsv(rows: List[(String, Instant, Double)]): List[String] = {
-      rows.map(row => s"$quote${row._1}$quote,$quote${formatter.format(row._2)}$quote,$quote${row._3}$quote")
+      val enquote: String => String = value => s"$quote$value$quote"
+      val heading = List(
+        enquote("Sensor"), 
+        enquote("Time"), 
+        enquote("Temperature")
+      ).mkString(",")
+      
+      heading :: rows.map(row => List(
+        enquote(row._1),
+        enquote(formatter.format(row._2)),
+        enquote(row._3.toString)
+      ).mkString(","))
     }
     
     def write(rows: List[String]) = {
