@@ -78,6 +78,9 @@ object ConvertJsonToCsv extends App {
         enquote("%Difference")
       ).mkString(",")
       
+      if (rows.isEmpty)
+        return Nil
+      
       val tuples = rows.map(x => (x._1, x._2, x._3, 0D))
       val rowsWithPercentageDifference = tuples.drop(1).scan(tuples.head) {
         case (previous, current) => (current._1, current._2, current._3, percentageDifference(previous._3, current._3)) 
