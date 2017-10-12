@@ -9,8 +9,7 @@ object ErrorOnTemperatureSpike {
 
   private val spikePercentage = 30
 
-  // negative numbers would be a decrease, which we'll ignore (use Math.abs if we change our mind later)
-  def percentageIncrease(oldValue: Double, newValue: Double): Double = (newValue - oldValue) / oldValue * 100
+  def percentageIncrease(oldValue: Double, newValue: Double): Double = Math.abs((newValue - oldValue) / oldValue * 100)
 
   /**
     * @param delegate delegate writer

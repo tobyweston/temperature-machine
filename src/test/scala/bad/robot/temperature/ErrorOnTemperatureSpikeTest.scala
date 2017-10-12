@@ -74,18 +74,17 @@ class ErrorOnTemperatureSpikeTest extends Specification {
     )
   }
 
-  "Doesn't error on negative spiked values (single sensor)" >> {
+  "Negative spikes values (single sensor)" >> {
     val delegate = new StubWriter
     val writer = new ErrorOnTemperatureSpike(delegate)
     writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))))
     writer.write(Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(21.4)))))
     writer.write(Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6)))))
-    writer.write(Measurement(Host("example"), Seconds(4), List(SensorReading("A", Temperature(1.1))))) must be_\/-
+    writer.write(Measurement(Host("example"), Seconds(4), List(SensorReading("A", Temperature(1.1))))) must be_-\/.like(SensorError)
     delegate.temperatures must_== List(
       Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))),
       Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(21.4)))),
       Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6)))),
-      Measurement(Host("example"), Seconds(4), List(SensorReading("A", Temperature(1.1))))
     )
   }
 
