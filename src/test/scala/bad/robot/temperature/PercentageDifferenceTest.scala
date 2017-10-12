@@ -23,7 +23,7 @@ class PercentageDifferenceTest extends Specification {
     percentageDifference(oldValue = 34.76785714, newValue = 14.42934783) must_== -58.5
   }
   
-  "Not a number doesn't blow up" >> {
+  "Not a number / infinity doesn't blow up" >> {
     percentageDifference(oldValue = 22.0, newValue = NaN).isNaN must_== true
     percentageDifference(oldValue = NaN, newValue = 22.0).isNaN must_== true
 
@@ -33,6 +33,12 @@ class PercentageDifferenceTest extends Specification {
       percentageDifference(oldValue = NaN, newValue = NaN)  >= 30 must_== false
       abs(percentageDifference(oldValue = NaN, newValue = NaN)) >= 30 must_== false
     }
+
+    percentageDifference(oldValue = 22.0, newValue = PositiveInfinity).isNaN must_== true
+    percentageDifference(oldValue = PositiveInfinity, newValue = 22.0).isNaN must_== true
+
+    percentageDifference(oldValue = 22.0, newValue = NegativeInfinity).isNaN must_== true
+    percentageDifference(oldValue = NegativeInfinity, newValue = 22.0).isNaN must_== true
   }
 
 }

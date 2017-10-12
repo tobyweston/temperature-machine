@@ -14,6 +14,9 @@ object PercentageDifference {
     round(result)
   }
 
-  def round(value: Double) = if (value.isNaN) NaN else BigDecimal(value).setScale(2, RoundingMode.HALF_UP).toDouble
+  def round(value: Double) = value match {
+    case _ if value.isNaN || value.isInfinity => NaN
+    case _                                    => BigDecimal(value).setScale(2, RoundingMode.HALF_UP).toDouble
+  }
 
 }
