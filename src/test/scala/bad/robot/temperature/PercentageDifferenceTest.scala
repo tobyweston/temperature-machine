@@ -1,5 +1,7 @@
 package bad.robot.temperature
 
+import java.lang.Math._
+
 import bad.robot.temperature.PercentageDifference.percentageDifference
 import org.specs2.mutable.Specification
 
@@ -24,6 +26,13 @@ class PercentageDifferenceTest extends Specification {
   "Not a number doesn't blow up" >> {
     percentageDifference(oldValue = 22.0, newValue = NaN).isNaN must_== true
     percentageDifference(oldValue = NaN, newValue = 22.0).isNaN must_== true
+
+    "Sense check that nothing weird happens if we try to make comparisons against NaN" >> {
+      percentageDifference(oldValue = 22.0, newValue = NaN) >= 30 must_== false
+      percentageDifference(oldValue = NaN, newValue = 22.0) >= 30 must_== false
+      percentageDifference(oldValue = NaN, newValue = NaN)  >= 30 must_== false
+      abs(percentageDifference(oldValue = NaN, newValue = NaN)) >= 30 must_== false
+    }
   }
-  
+
 }
