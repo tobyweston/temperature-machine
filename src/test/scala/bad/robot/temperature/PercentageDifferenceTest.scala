@@ -14,9 +14,9 @@ class PercentageDifferenceTest extends Specification {
   
   "Decrease as a percentage (and rounding)" >> {
     percentageDifference(oldValue = 23.0, newValue = 23.0) must_== 0
-    percentageDifference(oldValue = 24.0, newValue = 23.0) must_== 4.17
-    percentageDifference(oldValue = 39.0, newValue = 23.0) must_== 41.03
-    percentageDifference(oldValue = 34.76785714, newValue = 14.42934783) must_== 58.5
+    percentageDifference(oldValue = 24.0, newValue = 23.0) must_== -4.17
+    percentageDifference(oldValue = 39.0, newValue = 23.0) must_== -41.03
+    percentageDifference(oldValue = 34.76785714, newValue = 14.42934783) must_== -58.5
   }
   
 }

@@ -8,7 +8,7 @@ object PercentageDifference {
     def percentageIncrease = (newValue - oldValue) / oldValue * 100
     def percentageDecrease = (oldValue - newValue) / oldValue * 100
     
-    val result = if (newValue > oldValue) percentageIncrease else percentageDecrease
+    val result = if (newValue > oldValue) percentageIncrease else -percentageDecrease
     
     round(result)
   }

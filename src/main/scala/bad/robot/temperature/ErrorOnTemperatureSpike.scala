@@ -1,5 +1,7 @@
 package bad.robot.temperature
 
+import java.lang.Math._
+
 import bad.robot.temperature.ErrorOnTemperatureSpike._
 import bad.robot.temperature.PercentageDifference.percentageDifference
 
@@ -54,7 +56,7 @@ class ErrorOnTemperatureSpike(delegate: TemperatureWriter) extends TemperatureWr
   }
 
   private def spikeBetween(reading: SensorReading, previous: Temperature) = {
-    percentageDifference(previous.celsius, reading.temperature.celsius) >= spikePercentage
+    abs(percentageDifference(previous.celsius, reading.temperature.celsius)) >= spikePercentage
   }
 
 }
