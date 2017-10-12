@@ -19,7 +19,7 @@ object ErrorOnTemperatureSpike {
     */
   def apply(delegate: TemperatureWriter): TemperatureWriter = {
     sys.props.get("avoid.spikes").map(_ => {
-      println(s"Temperature spikes greater than $spikePercentage% will not be recorded")
+      println(s"Temperature spikes greater than +/-$spikePercentage% will not be recorded")
       new ErrorOnTemperatureSpike(delegate)
     }).getOrElse(delegate)
   }
