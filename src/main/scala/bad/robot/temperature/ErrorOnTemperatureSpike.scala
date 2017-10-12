@@ -1,6 +1,7 @@
 package bad.robot.temperature
 
 import bad.robot.temperature.ErrorOnTemperatureSpike._
+import bad.robot.temperature.PercentageDifference.percentageDifference
 
 import scalaz.{-\/, \/}
 import scala.collection.concurrent.TrieMap
@@ -8,8 +9,6 @@ import scala.collection.concurrent.TrieMap
 object ErrorOnTemperatureSpike {
 
   private val spikePercentage = 30
-
-  def percentageIncrease(oldValue: Double, newValue: Double): Double = Math.abs((newValue - oldValue) / oldValue * 100)
 
   /**
     * @param delegate delegate writer
@@ -55,7 +54,7 @@ class ErrorOnTemperatureSpike(delegate: TemperatureWriter) extends TemperatureWr
   }
 
   private def spikeBetween(reading: SensorReading, previous: Temperature) = {
-    percentageIncrease(previous.celsius, reading.temperature.celsius) >= spikePercentage
+    percentageDifference(previous.celsius, reading.temperature.celsius) >= spikePercentage
   }
 
 }
