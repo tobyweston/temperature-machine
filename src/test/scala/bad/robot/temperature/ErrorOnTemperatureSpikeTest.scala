@@ -84,7 +84,7 @@ class ErrorOnTemperatureSpikeTest extends Specification {
     delegate.temperatures must_== List(
       Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))),
       Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(21.4)))),
-      Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6)))),
+      Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6))))
     )
   }
 
