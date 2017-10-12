@@ -23,6 +23,10 @@ class PercentageDifferenceTest extends Specification {
     percentageDifference(oldValue = 34.76785714, newValue = 14.42934783) must_== -58.5
   }
   
+  "What's the percentage increase of zero" >> {
+    percentageDifference(oldValue = 0, newValue = 100).isNaN must_== true
+  }
+  
   "Not a number / infinity doesn't blow up" >> {
     percentageDifference(oldValue = 22.0, newValue = NaN).isNaN must_== true
     percentageDifference(oldValue = NaN, newValue = 22.0).isNaN must_== true
