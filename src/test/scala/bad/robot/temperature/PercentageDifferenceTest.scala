@@ -3,6 +3,8 @@ package bad.robot.temperature
 import bad.robot.temperature.PercentageDifference.percentageDifference
 import org.specs2.mutable.Specification
 
+import scala.Double._
+
 class PercentageDifferenceTest extends Specification {
 
   "Increase as a percentage (and rounding)" >> {
@@ -17,6 +19,11 @@ class PercentageDifferenceTest extends Specification {
     percentageDifference(oldValue = 24.0, newValue = 23.0) must_== -4.17
     percentageDifference(oldValue = 39.0, newValue = 23.0) must_== -41.03
     percentageDifference(oldValue = 34.76785714, newValue = 14.42934783) must_== -58.5
+  }
+  
+  "Not a number doesn't blow up" >> {
+    percentageDifference(oldValue = 22.0, newValue = NaN).isNaN must_== true
+    percentageDifference(oldValue = NaN, newValue = 22.0).isNaN must_== true
   }
   
 }

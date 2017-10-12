@@ -1,6 +1,7 @@
 package bad.robot.temperature
 
 import scala.BigDecimal._
+import scala.Double._
 
 object PercentageDifference {
   
@@ -13,6 +14,6 @@ object PercentageDifference {
     round(result)
   }
 
-  private def round(value: Double) = BigDecimal(value).setScale(2, RoundingMode.HALF_UP).toDouble
+  def round(value: Double) = if (value.isNaN) NaN else BigDecimal(value).setScale(2, RoundingMode.HALF_UP).toDouble
 
 }
