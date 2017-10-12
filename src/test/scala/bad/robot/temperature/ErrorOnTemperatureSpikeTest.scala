@@ -5,6 +5,7 @@ import org.specs2.matcher.DisjunctionMatchers._
 import org.specs2.matcher.MatchResult
 import org.specs2.mutable.Specification
 
+import scala.Double._
 import scalaz.{\/, \/-}
 
 class ErrorOnTemperatureSpikeTest extends Specification {
@@ -115,6 +116,39 @@ class ErrorOnTemperatureSpikeTest extends Specification {
           | previous temperatures : 21.1 °C, 21.3 °C
           | spiked temperatures   : 51.4 °C, 51.1 °C
           |""".stripMargin
+    }
+  }
+  
+  "What happens with NaN" >> {
+    val delegate = new StubWriter
+    val writer = new ErrorOnTemperatureSpike(delegate)
+    writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))))
+    writer.write(Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(21.6)))))
+    writer.write(Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(NaN))))) must be_\/-
+    writer.write(Measurement(Host("example"), Seconds(4), List(SensorReading("A", Temperature(21.8)))))
+    delegate.temperatures must containAllOf(List(
+      Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))),
+      Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(21.6)))),
+      // NaN assertion below
+      Measurement(Host("example"), Seconds(4), List(SensorReading("A", Temperature(21.8))))
+    ))
+    delegate.temperatures(2).temperatures.head.temperature.celsius.isNaN must_== true
+  }
+  
+  "Examples from production" >> {
+    "NaN -> 0 should probably be an error" >> {
+      val delegate = new StubWriter
+      val writer = new ErrorOnTemperatureSpike(delegate)
+      writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(NaN))))) must be_\/-
+      writer.write(Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(0))))) must be_\/-
+      writer.write(Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6))))) must be_\/-
+      writer.write(Measurement(Host("example"), Seconds(4), List(SensorReading("A", Temperature(NaN))))) must be_\/-
+      delegate.temperatures must containAllOf(List(
+        Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(0)))),
+        Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6))))
+      ))
+      delegate.temperatures(0).temperatures.head.temperature.celsius.isNaN must_== true
+      delegate.temperatures(3).temperatures.head.temperature.celsius.isNaN must_== true
     }
   }
   
