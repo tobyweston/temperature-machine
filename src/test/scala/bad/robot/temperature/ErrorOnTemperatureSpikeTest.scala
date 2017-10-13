@@ -154,7 +154,7 @@ class ErrorOnTemperatureSpikeTest extends Specification {
   
   "Toggle the use based on system property" >> {
     ErrorOnTemperatureSpike(new StubWriter()) must haveClass[StubWriter]
-    sys.props += ("avoid.spikes" -> "true")
+    sys.props += ("avoid.spikes" -> "30")
     ErrorOnTemperatureSpike(new StubWriter()) must haveClass[ErrorOnTemperatureSpike]
   }
 
