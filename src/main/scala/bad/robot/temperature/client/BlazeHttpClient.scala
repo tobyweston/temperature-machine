@@ -5,11 +5,10 @@ import java.util.concurrent._
 
 import bad.robot.temperature.task.TemperatureMachineThreadFactory
 import org.http4s.client.blaze.BlazeClientConfig._
-import org.http4s.client.blaze.SimpleHttp1Client
+import org.http4s.client.blaze.PooledHttp1Client
 
 import scala.concurrent.duration._
 
-// TODO consider using the PooledHttp1Client
 object BlazeHttpClient {
 
   private val DefaultTimeout: Duration = 5.minutes
@@ -17,5 +16,7 @@ object BlazeHttpClient {
     new ThreadPoolExecutor(1, getRuntime.availableProcessors() * 6, 60L, SECONDS, new LinkedBlockingQueue[Runnable](), TemperatureMachineThreadFactory("client"))
   }
 
-  def apply() = SimpleHttp1Client(defaultConfig.copy(idleTimeout = DefaultTimeout, customExecutor = Some(DefaultExecutor)))
+  def apply() = PooledHttp1Client(
+    config = defaultConfig.copy(idleTimeout = DefaultTimeout, customExecutor = Some(DefaultExecutor)
+  ))
 }
