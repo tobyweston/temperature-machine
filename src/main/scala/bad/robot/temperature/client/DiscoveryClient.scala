@@ -2,9 +2,11 @@ package bad.robot.temperature.client
 
 import java.net.{DatagramPacket, DatagramSocket, InetAddress, NetworkInterface, Socket => _}
 
+import bad.robot.temperature.Log
+import bad.robot.temperature.server.DatagramPacketOps
 import bad.robot.temperature.server.DiscoveryServer._
 import bad.robot.temperature.server.Socket._
-import bad.robot.temperature.server.DatagramPacketOps
+
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -17,9 +19,9 @@ object DiscoveryClient {
 
     allBroadcastAddresses.foreach(ping(_, socket))
 
-    println("Awaiting discovery server...")
+    Log.info("Awaiting discovery server...")
     socket.await(30 seconds).fold(error => {
-      println(error)
+      Log.error(error.message)
       retry
     }, sender => {
       sender.payload match {
@@ -53,10 +55,10 @@ object DiscoveryClient {
   def ping: (InetAddress, DatagramSocket) => Unit = (address, socket) => {
     try {
       val data = ServerAddressRequestMessage.getBytes
-      println(s"Sending ping request to $address")
+      Log.info(s"Sending ping request to $address")
       socket.send(new DatagramPacket(data, data.length, address, ServerPort))
     } catch {
-      case e: Throwable => System.err.println(s"An error occurred pinging server. ${e.getMessage}")
+      case e: Throwable => Log.error(s"An error occurred pinging server. ${e.getMessage}")
     }
   }
 }

@@ -2,6 +2,7 @@ package bad.robot.temperature.server
 
 import java.io.{BufferedWriter, File, FileWriter}
 
+import bad.robot.temperature.Log
 import bad.robot.temperature.rrd.{Host, RrdFile}
 import org.http4s.Method.GET
 import org.http4s.client.blaze.BlazeClientConfig._
@@ -74,7 +75,7 @@ class HttpServerTest extends Specification {
     step {
       val shutdown = for {
         _ <- server.shutdown()
-        _ <- Task.delay(println(s"HTTP Server shutting down"))
+        _ <- Task.delay(Log.info(s"HTTP Server shutting down"))
       } yield ()
       shutdown.unsafePerformSync
     }

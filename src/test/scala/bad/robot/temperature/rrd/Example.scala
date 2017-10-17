@@ -62,7 +62,7 @@ object Example extends App {
     def handleError(f: => Error \/ Unit): Unit = {
       f match {
         case -\/(error) => println(error)
-        case _ => ()
+        case _          => ()
       }
     }
   }

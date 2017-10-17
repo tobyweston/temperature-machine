@@ -2,6 +2,7 @@ package bad.robot.temperature.client
 
 import java.util.concurrent.CountDownLatch
 
+import bad.robot.temperature.Log
 import bad.robot.temperature.ds18b20.SensorFile
 import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.rrd.Host
@@ -16,9 +17,9 @@ object Client extends App {
 
   private val client: List[SensorFile] => Task[Unit] = sensors => {
     for {
-      _      <- Task.delay(println(s"Initialising client '${Host.local.name}' (with ${sensors.size} of a maximum of $MaxSensors sensors)..."))
+      _      <- Task.delay(Log.info(s"Initialising client '${Host.local.name}' (with ${sensors.size} of a maximum of $MaxSensors sensors)..."))
       server <- Task.delay(DiscoveryClient.discover)
-      _      <- Task.delay(println(s"Server discovered on ${server.getHostAddress}, monitoring temperatures..."))
+      _      <- Task.delay(Log.info(s"Server discovered on ${server.getHostAddress}, monitoring temperatures..."))
       _      <- Tasks.record(Host.local.trim, sensors, HttpUpload(server))
       _      <- awaitShutdown()
     } yield ()
@@ -26,6 +27,6 @@ object Client extends App {
 
   private def awaitShutdown(): Task[Unit] = Task.delay(latch.await())
 
-  findSensorsAndExecute(client).leftMap(error => println(error.message))
+  findSensorsAndExecute(client).leftMap(error => Log.error(error.message))
 
 }

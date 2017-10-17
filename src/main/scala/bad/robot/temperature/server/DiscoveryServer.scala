@@ -2,6 +2,7 @@ package bad.robot.temperature.server
 
 import java.net._
 
+import bad.robot.temperature.Log
 import bad.robot.temperature.server.DiscoveryServer._
 import bad.robot.temperature.server.Socket._
 
@@ -23,7 +24,7 @@ class DiscoveryServer extends Runnable {
       socket.setBroadcast(true)
 
       while (!Thread.currentThread().isInterrupted) {
-        println("Listening for broadcast messages...")
+        Log.info("Listening for broadcast messages...")
 
         socket.await().fold(error => {
           sys.error(error.message)
@@ -37,9 +38,9 @@ class DiscoveryServer extends Runnable {
         })
       }
     } catch {
-      case e: Throwable => System.err.println(s"An error occurred listening for server discovery messages. Remote machines may not be able to publish their data to the server. ${e.getMessage}")
+      case e: Throwable => Log.error(s"An error occurred listening for server discovery messages. Remote machines may not be able to publish their data to the server. ${e.getMessage}")
     }
 
-    println("Discovery server shutdown")
+    Log.info("Discovery server shutdown")
   }
 }
