@@ -33,7 +33,7 @@ git commit -m "removing old version of web-app during deployment of new version"
 mkdir -p ${ROOT}/src/main/resources
 cp -R ${ROOT}/target/web-app/temperature-machine-ui/build/ ${ROOT}/src/main/resources/
 git add ${ROOT}/src/main/resources/
-git commit -m "adding latest version of the web-app (from http://github.com/tobyweston/temperature-machine-ui)"
+git commit -m "adding latest version of the web-app (from http://github.com/tobyweston/temperature-machine-ui) $@"
 
 cd ${ROOT}
 echo "Ok"
