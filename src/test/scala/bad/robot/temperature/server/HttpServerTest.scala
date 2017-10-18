@@ -17,7 +17,7 @@ class HttpServerTest extends Specification {
 
   "When the Http server has been started" >> {
     val server = HttpServer(8080, List(Host("example"))).unsafePerformSync
-    val client = SimpleHttp1Client(defaultConfig.copy(idleTimeout = 30 minutes, responseHeaderTimeout = 30 minutes))
+    val client = PooledHttp1Client(config = defaultConfig.copy(idleTimeout = 30 minutes, responseHeaderTimeout = 30 minutes))
 
     // todo wait for server to startup, not sure how.
     
@@ -36,11 +36,11 @@ class HttpServerTest extends Specification {
     }
 
     "Some java script can be loaded (note this changes with every UI deployment)" >> {
-      assertOk(Request(GET, path("/static/js/main.b14fff8a.js")))
+      assertOk(Request(GET, path("/static/js/main.1e8d4b36.js")))
     }
 
     "Some css can be loaded (note this changes with every UI deployment)" >> {
-      assertOk(Request(GET, path("/static/css/main.4c084a76.css")))
+      assertOk(Request(GET, path("/static/css/main.378d6756.css")))
     }
 
     "image can be loaded" >> {
