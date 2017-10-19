@@ -9,10 +9,12 @@ import scalaz.syntax.either.ToEitherOps
 
 package object temperature {
 
-//  sys.props += 
-//    ("org.slf4j.simpleLogger.showShortLogName" -> "true") +=
-//    ("org.slf4j.simpleLogger.dateTimeFormat=" -> "yyyy-MM-dd HH:mm:ss") +=
-//  ("org.slf4j.simpleLogger.showDateTime" -> "true")
+  sys.props += 
+    ("org.slf4j.simpleLogger.showDateTime"      -> "true") +=
+    ("org.slf4j.simpleLogger.dateTimeFormat"    -> "yyyy-MM-dd HH:mm:ss:SSS") +=
+    ("org.slf4j.simpleLogger.showThreadName"    -> "true") +=
+    ("org.slf4j.simpleLogger.showLogName"       -> "false") +=
+    ("org.slf4j.simpleLogger.showShortLogName"  -> "false")
 
   val Log = LoggerFactory.getLogger("bad.robot.temperature")
   
