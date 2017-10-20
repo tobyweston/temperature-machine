@@ -4,7 +4,7 @@ import java.io.{OutputStream, PrintStream}
 
 import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.rrd.Seconds.now
-import bad.robot.temperature.{Measurement, ParseError, TemperatureReader, TemperatureWriter}
+import bad.robot.temperature.{Measurement, TemperatureReader, TemperatureWriter}
 import org.slf4j.Logger
 
 case class RecordTemperature(host: Host, input: TemperatureReader, output: TemperatureWriter, error: PrintStream = System.err) extends Runnable {
@@ -17,12 +17,7 @@ case class RecordTemperature(host: Host, input: TemperatureReader, output: Tempe
 
 import java.io.ByteArrayOutputStream
 
-object ErrorLogger extends App {
-  
-  ErrorLogger().println(ParseError("I'm a teapot"))
-  bad.robot.temperature.Log.info("me too!")
-  println("Hello there")
-  System.err.println("How do you do?")
+object ErrorLogger {
   
   def apply(log: Logger = bad.robot.temperature.Log): PrintStream = new PrintStream(new OutputStream {
 

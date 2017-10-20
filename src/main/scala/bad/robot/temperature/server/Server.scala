@@ -12,9 +12,7 @@ import bad.robot.temperature.task.{Tasks, TemperatureMachineThreadFactory}
 import scalaz.concurrent.Task
 
 object Server extends App {
-
-  sys.props += ("org.slf4j.simpleLogger.defaultLogLevel" -> "error")
-
+  
   def discovery = {
     for {
       _        <- Task.delay(Log.info(s"Starting Discovery Server, listening for ${hosts.map(_.name).mkString("'", "', '", "'")}..."))
