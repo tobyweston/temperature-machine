@@ -20,6 +20,7 @@ libraryDependencies ++= Seq(
   "org.http4s" %% "http4s-blaze-client" % "0.16.3a",
   "io.argonaut" %% "argonaut" % "6.2",
   "org.slf4j" % "slf4j-simple" % "1.7.25",
+  "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.6",
   "org.specs2" %% "specs2-core" % "3.9.5" % "test"
 )
 
