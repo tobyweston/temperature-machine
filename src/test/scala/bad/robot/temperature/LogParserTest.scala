@@ -31,6 +31,7 @@ class LogParserTest extends Specification {
     assertSuccess("2017-10-20 10:57:14:560 [temperature-reading-thread-1] ERROR UnexpectedError(Failed to PUT temperature data to http://127.0.1.1:11900/temperature, response was 502 Bad Gateway: Error in RRD Bad sample time: 1508497034. Last update time was 1508497034, at least one second step is required)")
   }
   
+
   def assert(input: String, expected: LogMessage) = {
     LogParser.parseAll(LogParser.log, input) match {
       case LogParser.Success(result, _) => result must_== expected

@@ -2,6 +2,8 @@ package bad.robot
 
 import argonaut.Argonaut._
 import argonaut._
+import bad.robot.temperature.rrd.RrdFile
+import bad.robot.temperature.rrd._
 import org.slf4j.LoggerFactory
 
 import scalaz.\/
@@ -10,6 +12,7 @@ import scalaz.syntax.either.ToEitherOps
 package object temperature {
 
   sys.props +=
+    ("org.slf4j.simpleLogger.logFile"                   ->  RrdFile.path / "temperature-machine.log") +=
     ("org.slf4j.simpleLogger.defaultLogLevel"           -> "error") +=
     ("org.slf4j.simpleLogger.log.bad.robot.temperature" -> "info") +=
     ("org.slf4j.simpleLogger.showDateTime"              -> "true") +=

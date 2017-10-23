@@ -5,9 +5,17 @@ import java.time.ZoneId.systemDefault
 import java.time.format.DateTimeFormatterBuilder
 
 import scala.util.parsing.combinator.RegexParsers
+import scalaz.{-\/, \/-}
 
 object LogParser extends RegexParsers {
 
+  implicit class ParserResultOps(result: LogParser.ParseResult[LogMessage]) {
+    def toDisjunction() = result match {
+      case Success(log, _)  => \/-(log)
+      case error: NoSuccess => -\/(ParseError(error.toString))
+    }
+  }
+  
   private val formatter = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd HH:mm:ss:SSS").toFormatter.withZone(systemDefault())
 
   private def digits2: Parser[Int] ="""\d{2}""".r ^^ {_.toInt}

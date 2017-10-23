@@ -46,6 +46,7 @@ class HttpServer(port: Int, monitored: List[Host]) {
     CORS(
       TemperatureEndpoint.service(SensorReader(SensorFile.find()), ErrorOnTemperatureSpike(Rrd(monitored)))(Clock.systemDefaultZone) ||
       ConnectionsEndpoint.service(Clock.systemDefaultZone) ||
+      LogEndpoint.service() ||
       StaticFiles.service ||
       StaticResources.service
     )
