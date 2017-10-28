@@ -1,8 +1,8 @@
 package bad.robot.temperature.server
 
+import java.time.Clock
 import java.time.temporal.ChronoUnit.{MINUTES => minutes}
 import java.time.temporal.TemporalUnit
-import java.time.Clock
 
 import argonaut.Argonaut._
 import argonaut.EncodeJson
@@ -35,11 +35,11 @@ object TemperatureEndpoint {
       val average = current.filter(within(5, minutes)).map { case (host, measurement) => {
         host -> measurement.copy(temperatures = List(measurement.temperatures.average))
       }}
-      Ok(encode(average).spaces2)
+      Ok(average)
     }
 
     case GET -> Root / "temperatures" => {
-      Ok(encode(current.filter(within(5, minutes))).spaces2)
+      Ok(current.filter(within(5, minutes)))
     }
 
     case DELETE -> Root / "temperatures" => {

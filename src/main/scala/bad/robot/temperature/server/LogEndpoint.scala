@@ -1,10 +1,9 @@
 package bad.robot.temperature.server
 
-import bad.robot.temperature.encode
 import bad.robot.temperature.rrd.{RrdFile, _}
 import bad.robot.temperature.{Error, FileError, LogMessage, LogParser}
+import org.http4s.HttpService
 import org.http4s.dsl.{->, /, GET, Ok, Root, _}
-import org.http4s.{HttpService, _}
 
 import scala.io.Source
 import scala.{Error => _}
@@ -25,9 +24,7 @@ object LogEndpoint {
         messages <- lines.filterNot(_.trim.isEmpty).map(toLogMessage).toList.sequenceU
       } yield messages
 
-      messages.toHttpResponse(log => {
-        Ok(encode(log).spaces2).withContentType(Some(MediaType.`application/json`))  
-      })
+      messages.toHttpResponse(Ok(_))
     }
   }
 
