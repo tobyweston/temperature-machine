@@ -1,9 +1,12 @@
 package bad.robot
 
+import java.io.{PrintWriter, StringWriter}
+
 import argonaut.Argonaut._
 import argonaut._
-import bad.robot.temperature.rrd.RrdFile
-import bad.robot.temperature.rrd._
+import bad.robot.temperature.rrd.{RrdFile, _}
+import org.http4s.argonaut.{jsonEncoderWithPrinterOf, jsonOf}
+import org.http4s.{EntityDecoder, EntityEncoder}
 import org.slf4j.LoggerFactory
 
 import scalaz.\/
@@ -23,6 +26,10 @@ package object temperature {
 
   val Log = LoggerFactory.getLogger("bad.robot.temperature")
   
+  implicit def http4sArgonautDecoder[A: DecodeJson]: EntityDecoder[A] = jsonOf[A]
+  
+  implicit def http4sArgonautEncoder[A: EncodeJson]: EntityEncoder[A] = jsonEncoderWithPrinterOf[A](PrettyParams.spaces2)
+  
   def encode[A: EncodeJson](a: A): Json = a.jencode
 
   def decode[A: DecodeJson](value: String): Error \/ A = {
@@ -37,4 +44,9 @@ package object temperature {
       })
   }
 
+  def stackTraceOf(error: Throwable): String = {
+    val writer = new StringWriter()
+    error.printStackTrace(new PrintWriter(writer))
+    writer.toString
+  }
 }
