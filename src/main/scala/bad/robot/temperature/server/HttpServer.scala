@@ -2,8 +2,8 @@ package bad.robot.temperature.server
 
 import java.lang.Math._
 import java.time.Clock
-import java.util.concurrent.{CountDownLatch, ExecutorService}
 import java.util.concurrent.Executors._
+import java.util.concurrent.{CountDownLatch, ExecutorService}
 
 import bad.robot.temperature.ErrorOnTemperatureSpike
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
