@@ -14,6 +14,7 @@ import bad.robot.temperature.server.LogEndpoint
 import bad.robot.temperature.task.{Tasks, TemperatureMachineThreadFactory}
 import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.server.{Server => Http4sServer}
+import org.http4s.server.middleware.CORS
 
 import scalaz.concurrent.Task
 
@@ -60,7 +61,7 @@ class ClientsLogHttpServer(port: Int) {
   private def build(): Task[Http4sServer] = BlazeBuilder
     .withServiceExecutor(DefaultExecutorService)
     .bindHttp(port, "0.0.0.0")
-    .mountService(LogEndpoint.service(), "/")
+    .mountService(CORS(LogEndpoint.service()), "/")
     .start
 
 }
