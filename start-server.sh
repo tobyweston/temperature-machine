@@ -4,7 +4,7 @@ args=("$@")
 
 TEMPERATURE_HOME=~/.temperature
 LOG_FILE=${TEMPERATURE_HOME}/temperature-machine.log
-IP=$( ifconfig wlan0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}' )
+IP=$( ip -f inet addr show wlan0 | grep -Po 'inet \K[\d.]+' )
 
 mkdir ${TEMPERATURE_HOME} -p
 
