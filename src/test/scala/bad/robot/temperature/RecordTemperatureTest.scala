@@ -10,6 +10,8 @@ import scalaz.{-\/, \/-}
 
 class RecordTemperatureTest extends Specification {
 
+  val EndOfLine = "\u0000"
+
   "Take a measurement and write it out" >> {
     val input = new TemperatureReader {
       def read = \/-(List(SensorReading("example", Temperature(69.9))))
@@ -35,7 +37,7 @@ class RecordTemperatureTest extends Specification {
     val log = new ByteArrayOutputStream()
     val error = new PrintStream(log)
     RecordTemperature(Host("example"), input, output, error).run()
-    log.toString must contain("UnexpectedError(whatever)")
+    log.toString must_== s"UnexpectedError(whatever)$EndOfLine"
   }
 
   "Take a measurement but fail to write it" >> {
@@ -48,7 +50,7 @@ class RecordTemperatureTest extends Specification {
     val log = new ByteArrayOutputStream()
     val error = new PrintStream(log)
     RecordTemperature(Host("example"), input, output, error).run()
-    log.toString must contain("UnexpectedError(whatever)")
+    log.toString must_== s"UnexpectedError(whatever)$EndOfLine"
   }
 
 }

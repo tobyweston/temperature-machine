@@ -19,7 +19,7 @@ package object temperature {
     ("org.slf4j.simpleLogger.defaultLogLevel"           -> "error") +=
     ("org.slf4j.simpleLogger.log.bad.robot.temperature" -> "info") +=
     ("org.slf4j.simpleLogger.showDateTime"              -> "true") +=
-    ("org.slf4j.simpleLogger.dateTimeFormat"            -> "yyyy-MM-dd HH:mm:ss:SSS") +=
+    ("org.slf4j.simpleLogger.dateTimeFormat"            -> "\u0000yyyy-MM-dd HH:mm:ss:SSS") +=
     ("org.slf4j.simpleLogger.showThreadName"            -> "true") +=
     ("org.slf4j.simpleLogger.showLogName"               -> "false") +=
     ("org.slf4j.simpleLogger.showShortLogName"          -> "false")

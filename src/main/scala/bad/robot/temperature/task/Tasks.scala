@@ -25,7 +25,7 @@ object Tasks {
   def record(source: Host, sensors: List[SensorFile], destination: TemperatureWriter) = {
     val executor = newSingleThreadScheduledExecutor(TemperatureMachineThreadFactory("reading-thread"))
     for {
-      _     <- Task.delay(sensors.foreach(sensor => Log.info(s"Monitoring sensor file: $sensor on '${source.name}'")))
+      _     <- Task.delay(Log.info(s"Monitoring sensor file(s) on '${source.name}' ${sensors.mkString("\n\t", "\n\t", "\n")}"))
       tasks <- Task.delay(executor.schedule(30 seconds, RecordTemperature(source, SensorReader(sensors), destination, ErrorLogger())))
     } yield tasks
   }
