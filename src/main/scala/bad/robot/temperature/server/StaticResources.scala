@@ -9,7 +9,7 @@ import org.http4s.{HttpService, Service}
 import scala.concurrent.duration.Duration._
 
 object StaticResources {
-  def service: HttpService = Service.lift(request => {
+  def apply(): HttpService = Service.lift(request => {
     val resources = resourceService(ResourceService.Config(""))
 
     val response = if (request.uri.path.endsWith("/"))

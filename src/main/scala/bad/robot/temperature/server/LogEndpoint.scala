@@ -17,7 +17,7 @@ object LogEndpoint {
   
   private val toLogMessage: String => Error \/ LogMessage = line => LogParser.parseAll(LogParser.log, line).toDisjunction()
   
-  def service() = HttpService {
+  def apply() = HttpService {
     case GET -> Root / "log" => {
       val log = RrdFile.path / "temperature-machine.log"
       

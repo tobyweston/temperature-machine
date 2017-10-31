@@ -22,7 +22,7 @@ object ConnectionsEndpoint {
 
   def reset() = connections.clear()
 
-  def service(implicit clock: Clock) = HttpService {
+  def apply(implicit clock: Clock) = HttpService {
     case GET -> Root / "connections" => {
       Ok(connections.keys.toList)
     }

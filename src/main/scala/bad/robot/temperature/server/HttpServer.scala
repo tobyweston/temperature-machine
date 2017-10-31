@@ -44,11 +44,11 @@ class HttpServer(port: Int, monitored: List[Host]) {
 
   private def services() = {
     CORS(
-      TemperatureEndpoint.service(SensorReader(SensorFile.find()), ErrorOnTemperatureSpike(Rrd(monitored)))(Clock.systemDefaultZone) ||
-      ConnectionsEndpoint.service(Clock.systemDefaultZone) ||
-      LogEndpoint.service() ||
-      StaticFiles.service ||
-      StaticResources.service
+      TemperatureEndpoint(SensorReader(SensorFile.find()), ErrorOnTemperatureSpike(Rrd(monitored)))(Clock.systemDefaultZone) ||
+      ConnectionsEndpoint(Clock.systemDefaultZone) ||
+      LogEndpoint() ||
+      StaticFiles() ||
+      StaticResources()
     )
   }
 }

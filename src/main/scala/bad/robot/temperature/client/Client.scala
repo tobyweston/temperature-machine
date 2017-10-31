@@ -61,7 +61,7 @@ class ClientsLogHttpServer(port: Int) {
   private def build(): Task[Http4sServer] = BlazeBuilder
     .withServiceExecutor(DefaultExecutorService)
     .bindHttp(port, "0.0.0.0")
-    .mountService(CORS(LogEndpoint.service()), "/")
+    .mountService(CORS(LogEndpoint()), "/")
     .start
 
 }

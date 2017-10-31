@@ -24,7 +24,7 @@ object TemperatureEndpoint {
 
   private var current: Map[Host, Measurement] = Map()
 
-  def service(sensors: TemperatureReader, writer: TemperatureWriter)(implicit clock: Clock) = HttpService {
+  def apply(sensors: TemperatureReader, writer: TemperatureWriter)(implicit clock: Clock) = HttpService {
     case GET -> Root / "temperature" => {
       sensors.read.toHttpResponse(temperatures => {
         Ok(s"${temperatures.average.temperature.asCelsius}")
