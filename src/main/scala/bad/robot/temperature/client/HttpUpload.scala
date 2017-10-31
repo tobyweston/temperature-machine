@@ -34,7 +34,7 @@ case class HttpUpload(address: InetAddress) extends TemperatureWriter {
       case Successful(_)   => Task.now(\/-(()))
       case Error(response) => Task.now(-\/(UnexpectedError(s"Failed to PUT temperature data to ${request.uri.renderString}, response was ${response.status}: ${response.as[String].unsafePerformSync}")))
     }.handleWith({
-      case t: Throwable    => Task.now(-\/(UnexpectedError(s"Failed attempting to connect to $address to send $measurement\n\nError was $t\n${stackTraceOf(t)}")))
+      case t: Throwable    => Task.now(-\/(UnexpectedError(s"Failed attempting to connect to $address to send $measurement\n\nError was $t\nPayload was ${encode(measurement).spaces2}")))
     }).unsafePerformSync
   }
 
