@@ -2,7 +2,14 @@
 
 TEMPERATURE_HOME=~/.temperature
 LOG_FILE=${TEMPERATURE_HOME}/temperature-machine.log
-IP=$( ip -f inet addr show wlan0 | grep -Po 'inet \K[\d.]+' )
+
+ETH0=`grep "eth0" /proc/net/dev`
+if  [ -n "$ETH0" ] ; then
+   LAN="eth0"
+else
+   LAN="wlan0"
+fi
+IP=$( ip -f inet addr show ${LAN} | grep -Po 'inet \K[\d.]+' )
 
 mkdir ${TEMPERATURE_HOME} -p
 
@@ -15,3 +22,4 @@ echo "$!" > temperature-machine.pid
 echo "Started your temperature-machine (server mode), monitoring default RRD;"
 echo "   Redirecting output to ${LOG_FILE}"
 echo "   PID stored in temperature-machine.pid"
+echo "   JMX enabled, discovered `${LAN}` on ${IP}" >> ${LOG_FILE}
