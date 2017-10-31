@@ -24,4 +24,4 @@ echo "$!" > temperature-machine.pid
 echo "Started your temperature-machine (server-mode), monitoring $@;"
 echo "   Redirecting output to ${LOG_FILE}"
 echo "   PID stored in temperature-machine.pid"
-echo "   JMX enabled, discovered `${LAN}` on ${IP}" >> ${LOG_FILE}
+echo "   JMX enabled, discovered ${LAN} on ${IP}"
