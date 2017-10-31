@@ -1,5 +1,6 @@
 package bad.robot.temperature.server
 
+import bad.robot.temperature.AutoClosing.closingAfterUse
 import bad.robot.temperature.rrd.{RrdFile, _}
 import bad.robot.temperature.{Error, FileError, LogMessage, LogParser}
 import org.http4s.HttpService
@@ -20,7 +21,7 @@ object LogEndpoint {
       val log = RrdFile.path / "temperature-machine.log"
       
       val messages = for {
-        lines    <- fromTryCatchNonFatal(Source.fromFile(log).getLines()).leftMap(FileError)
+        lines    <- fromTryCatchNonFatal(closingAfterUse(Source.fromFile(log))(_.getLines())).leftMap(FileError)
         messages <- lines.filterNot(_.trim.isEmpty).map(toLogMessage).toList.sequenceU
       } yield messages
 
