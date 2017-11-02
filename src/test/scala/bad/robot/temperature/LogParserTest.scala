@@ -31,6 +31,59 @@ class LogParserTest extends Specification {
     assertSuccess("2017-10-31 10:57:14:560 [temperature-reading-thread-1] ERROR UnexpectedError(Failed to PUT temperature data to http://127.0.1.1:11900/temperature, response was 502 Bad Gateway: Error in RRD Bad sample time: 1508497034. Last update time was 1508497034, at least one second step is required)")
   }
   
+  "Minimal example that would cause stack overflow (against (.|\\s)*" >> {
+    assertSuccess(
+      """2017-11-01 19:33:48:270 [blaze-nio-fixed-selector-pool-0] ERROR error in requestLoop()
+        |java.lang.NullPointerException
+        |        at org.http4s.internal.parboiled2.ParserInput$StringBasedParserInput.length(ParserInput.scala:97)
+        |        at org.http4s.internal.parboiled2.Parser.__advance(Parser.scala:228)
+        |        at org.http4s.internal.parboiled2.Parser.runRule$1(Parser.scala:140)
+        |        at org.http4s.internal.parboiled2.Parser.phase0_initialRun$1(Parser.scala:150)
+        |        at org.http4s.internal.parboiled2.Parser.__run(Parser.scala:203)
+        |        at org.http4s.parser.Rfc2616BasicRules$.token(Rfc2616BasicRules.scala:84)
+        |        at org.http4s.Method$.$anonfun$fromString$1(Method.scala:47)
+        |        at scala.collection.MapLike.getOrElse(MapLike.scala:128)
+        |        at scala.collection.MapLike.getOrElse$(MapLike.scala:126)
+        |        at scala.collection.concurrent.TrieMap.getOrElse(TrieMap.scala:631)
+        |        at org.http4s.Method$.fromString(Method.scala:47)
+        |        at org.http4s.server.blaze.Http1ServerParser.collectMessage(Http1ServerParser.scala:48)
+        |        at org.http4s.server.blaze.Http1ServerStage.runRequest(Http1ServerStage.scala:111)
+        |        at org.http4s.server.blaze.Http1ServerStage.reqLoopCallback(Http1ServerStage.scala:97)
+        |        at org.http4s.server.blaze.Http1ServerStage.$anonfun$requestLoop$1(Http1ServerStage.scala:74)
+        |        at org.http4s.server.blaze.Http1ServerStage.$anonfun$requestLoop$1$adapted(Http1ServerStage.scala:74)
+      """.stripMargin)
+  }
+  
+  "Larger example that would cause stack overflow (against (.|\\s)*" >> {
+    assertSuccess("""2017-11-01 19:33:48:270 [blaze-nio-fixed-selector-pool-0] ERROR error in requestLoop()
+                    |java.lang.NullPointerException
+                    |        at org.http4s.internal.parboiled2.ParserInput$StringBasedParserInput.length(ParserInput.scala:97)
+                    |        at org.http4s.internal.parboiled2.Parser.__advance(Parser.scala:228)
+                    |        at org.http4s.internal.parboiled2.Parser.runRule$1(Parser.scala:140)
+                    |        at org.http4s.internal.parboiled2.Parser.phase0_initialRun$1(Parser.scala:150)
+                    |        at org.http4s.internal.parboiled2.Parser.__run(Parser.scala:203)
+                    |        at org.http4s.parser.Rfc2616BasicRules$.token(Rfc2616BasicRules.scala:84)
+                    |        at org.http4s.Method$.$anonfun$fromString$1(Method.scala:47)
+                    |        at scala.collection.MapLike.getOrElse(MapLike.scala:128)
+                    |        at scala.collection.MapLike.getOrElse$(MapLike.scala:126)
+                    |        at scala.collection.concurrent.TrieMap.getOrElse(TrieMap.scala:631)
+                    |        at org.http4s.Method$.fromString(Method.scala:47)
+                    |        at org.http4s.server.blaze.Http1ServerParser.collectMessage(Http1ServerParser.scala:48)
+                    |        at org.http4s.server.blaze.Http1ServerStage.runRequest(Http1ServerStage.scala:111)
+                    |        at org.http4s.server.blaze.Http1ServerStage.reqLoopCallback(Http1ServerStage.scala:97)
+                    |        at org.http4s.server.blaze.Http1ServerStage.$anonfun$requestLoop$1(Http1ServerStage.scala:74)
+                    |        at org.http4s.server.blaze.Http1ServerStage.$anonfun$requestLoop$1$adapted(Http1ServerStage.scala:74)
+                    |        at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:60)
+                    |        at org.http4s.blaze.util.Execution$$anon$1.execute(Executor.scala:27)
+                    |        at scala.concurrent.impl.CallbackRunnable.executeWithValue(Promise.scala:68)
+                    |        at scala.concurrent.impl.Promise$DefaultPromise.$anonfun$tryComplete$1(Promise.scala:284)
+                    |        at scala.concurrent.impl.Promise$DefaultPromise.$anonfun$tryComplete$1$adapted(Promise.scala:284)
+                    |        at scala.concurrent.impl.Promise$DefaultPromise.tryComplete(Promise.scala:284)
+                    |        at org.http4s.blaze.channel.nio1.NIO1HeadStage.readReady(NIO1HeadStage.scala:61)
+                    |        at org.http4s.blaze.channel.nio1.SelectorLoop.run(SelectorLoop.scala:134)
+                    |""".stripMargin)
+  }
+  
 
   def assert(input: String, expected: LogMessage) = {
     LogParser.parseAll(LogParser.log, input) match {

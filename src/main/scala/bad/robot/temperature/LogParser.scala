@@ -23,7 +23,7 @@ object LogParser extends RegexParsers {
   private def digits4: Parser[Int] ="""\d{4}""".r ^^ {_.toInt}
   private def thread: Parser[String] = """\[(.*?)\]""".r
   private def level: Parser[String] = """INFO|WARN|ERROR|TRACE|DEBUG""".r
-  private def words: Parser[String] = """(.|\n)*""".r
+  private def words: Parser[String] = """(?s:.*)""".r
     private def instant: Parser[Instant] = {
     val constituents = digits4 ~ ("-" ~> digits2) ~ ("-" ~> digits2) ~ digits2 ~ (":" ~> digits2) ~ (":" ~> digits2) ~ (":" ~> digits3)
 
