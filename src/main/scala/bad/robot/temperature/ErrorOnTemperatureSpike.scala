@@ -67,7 +67,8 @@ class ErrorOnTemperatureSpike(delegate: TemperatureWriter, percentageSpike: Int 
   }
 
   private def spikeBetween(reading: SensorReading, previous: Temperature) = {
-    abs(percentageDifference(previous.celsius, reading.temperature.celsius)) >= percentageSpike
+    val difference = percentageDifference(previous.celsius, reading.temperature.celsius)
+    abs(difference) >= percentageSpike || difference.isNaN
   }
 
 }

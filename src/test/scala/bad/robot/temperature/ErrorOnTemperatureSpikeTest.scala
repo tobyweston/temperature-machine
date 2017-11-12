@@ -88,13 +88,33 @@ class ErrorOnTemperatureSpikeTest extends Specification {
       Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6))))
     )
   }
+  
+  "NaN (32.625 - 0.0 / 0.0 * 100 is NaN)" >> {
+    val delegate = new StubWriter
+    val writer = new ErrorOnTemperatureSpike(delegate)
+    writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(0.0)))))
+    writer.write(Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(32.625))))) must be_-\/.like(SensorError)
+    delegate.temperatures must_== List(
+      Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(0.0))))
+    )
+  }
+
+  "Infinity (0.0 - 32.625 / 0.0 * 100 is -Infinity)" >> {
+    val delegate = new StubWriter
+    val writer = new ErrorOnTemperatureSpike(delegate)
+    writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(32.625)))))
+    writer.write(Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(0.0))))) must be_-\/.like(SensorError)
+    delegate.temperatures must_== List(
+      Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(32.625))))
+    )
+  }
 
   "Error message on a spiked value (single sensor)" >> {
     val delegate = new StubWriter
     val writer = new ErrorOnTemperatureSpike(delegate)
     writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))))
-    writer.write(Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6)))))
-    writer.write(Measurement(Host("example"), Seconds(4), List(SensorReading("A", Temperature(51.1))))) must be_-\/.like {
+    writer.write(Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(21.6)))))
+    writer.write(Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(51.1))))) must be_-\/.like {
       case e: SensorSpikeError => e.message must_==
         """An unexpected spike was encountered on:
           | sensor(s)             : A
@@ -124,32 +144,20 @@ class ErrorOnTemperatureSpikeTest extends Specification {
     val writer = new ErrorOnTemperatureSpike(delegate)
     writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))))
     writer.write(Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(21.6)))))
-    writer.write(Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(NaN))))) must be_\/-
+    writer.write(Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(NaN))))) must be_-\/.like {
+      case e: SensorSpikeError => e.message must_==
+        """An unexpected spike was encountered on:
+          | sensor(s)             : A
+          | previous temperatures : 21.6 °C
+          | spiked temperatures   : NaN °C
+          |""".stripMargin
+    }
     writer.write(Measurement(Host("example"), Seconds(4), List(SensorReading("A", Temperature(21.8)))))
     delegate.temperatures must containAllOf(List(
       Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(21.1)))),
       Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(21.6)))),
-      // NaN assertion below
       Measurement(Host("example"), Seconds(4), List(SensorReading("A", Temperature(21.8))))
     ))
-    delegate.temperatures(2).temperatures.head.temperature.celsius.isNaN must_== true
-  }
-  
-  "Examples from production" >> {
-    "NaN -> 0 should probably be an error" >> {
-      val delegate = new StubWriter
-      val writer = new ErrorOnTemperatureSpike(delegate)
-      writer.write(Measurement(Host("example"), Seconds(1), List(SensorReading("A", Temperature(NaN))))) must be_\/-
-      writer.write(Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(0))))) must be_\/-
-      writer.write(Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6))))) must be_\/-
-      writer.write(Measurement(Host("example"), Seconds(4), List(SensorReading("A", Temperature(NaN))))) must be_\/-
-      delegate.temperatures must containAllOf(List(
-        Measurement(Host("example"), Seconds(2), List(SensorReading("A", Temperature(0)))),
-        Measurement(Host("example"), Seconds(3), List(SensorReading("A", Temperature(21.6))))
-      ))
-      delegate.temperatures(0).temperatures.head.temperature.celsius.isNaN must_== true
-      delegate.temperatures(3).temperatures.head.temperature.celsius.isNaN must_== true
-    }
   }
   
   "Toggle the use based on system property" >> {
