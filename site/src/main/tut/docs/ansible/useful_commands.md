@@ -4,6 +4,14 @@ title: Useful Ad-hoc Commands
 ---
 
 # Useful Ad-hoc Commands
+
+Note:
+
+| Option | Description  |
+|---|---|
+| `-m` | module |
+| `-a` | command |
+| `-u` | user |
       
 ### Copy Binary JAR to all machines
 
@@ -23,4 +31,14 @@ Then copy the artifact into each machines `target` folder (and avoid having to c
 
 ### Update Sources
 
-    $ ansible -i ansible/inventory temperatures -m git -a "repo=https://github.com/tobyweston/temperature-machine.git dest=home/pi/code update=yes" -u pi
+Well, this doesn't work but it'd be nice if it did!
+
+    $ ansible -i ansible/inventory temperatures -m git -a "repo=https://github.com/tobyweston/temperature-machine.git dest=/home/pi/code update=yes clone=no" -u pi
+
+
+### Config Git 
+
+I have a standard set of configs I like to apply on all boxes (notice the single quotes around the `value` arguments):
+
+    $ ansible -i ansible/inventory temperatures -m git_config -a "name=alias.st scope=global value='status -sb'" -u pi
+    $ ansible -i ansible/inventory temperatures -m git_config -a "name=alias.last scope=global value='log -1 HEAD'" -u pi
