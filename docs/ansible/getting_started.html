@@ -1,0 +1,104 @@
+<html><head><title>Temperature Machine</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Toby Weston" /><meta name="description" content="The homebrew data logger" /><meta name="og:image" content="/img/poster.png" /><meta name="og:title" content="Temperature Machine" /><meta name="og:site_name" content="Temperature Machine" /><meta name="og:url" content="http://temperature-machine.com" /><meta name="og:type" content="website" /><meta name="og:description" content="The homebrew data logger" /><link rel="icon" type="image/png" href="/img/favicon.png" /><meta name="twitter:title" content="Temperature Machine" /><meta name="twitter:image" content="http://temperature-machine.comimg/poster.png" /><meta name="twitter:description" content="The homebrew data logger" /><meta name="twitter:card" content="summary_large_image" /><script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-3327317-12' , 'auto');
+ga('send', 'pageview');
+      </script><link rel="icon" type="image/png" sizes="16x16" href="/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/img/favicon32x32.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/css/style.css" /><link rel="stylesheet" href="/css/palette.css" /><link rel="stylesheet" href="/css/codemirror.css" /><link rel="stylesheet" href="/css/kazari-style.css" /><link rel="stylesheet" href="/css/monokai.css" /><link rel="stylesheet" href="/css/overrides.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/" class="brand"><div class="brand-wrapper"><span>Temperature Machine</span></div></a></li> <li><a href="/docs/index.html" class="">Introduction</a></li> <li><a href="/docs/getting_started.html" class="">Getting Started</a> <ul class="sub_section"> <li><a href="/docs/getting_started/build_from_source.html" class="">Build from Source</a></li> <li><a href="/docs/getting_started/preinstalled_image.html" class="">Pre-installed Image</a></li> <li><a href="/docs/getting_started/download.html" class="">Download Binary</a></li></ul></li> <li><a href="/docs/ds18b20_sensor.html" class="">DS18B20 Sensor</a></li> <li><a href="/docs/add-on_board.html" class="">Add-on Board</a></li> <li><a href="/docs/rrd.html" class="">RRD</a></li> <li><a href="/docs/hacking.html" class="">Hacking</a></li> <li><a href="/docs/ansible.html" class="">Ansible Automation</a> <ul class="sub_section"> <li><a href="/docs/ansible/getting_started.html" class="">Getting Started</a></li> <li><a href="/docs/ansible/useful_commands.html" class="">Useful Ad-hoc Commands</a></li></ul></li> <li><a href="/docs/resources.html" class="">Resources</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/tobyweston/temperature-machine"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/tobyweston/temperature-machine"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('Temperature Machine The homebrew data logger');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('Temperature Machine The homebrew data logger');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="tobyweston" data-github-repo="temperature-machine"><div class="content-wrapper"><section><h1 id="getting-started">Getting Started</h1>
+
+<h2 id="installing">Installing</h2>
+
+<p>On Mac, it’s probably easiest to install via Homebrew.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$ brew install ansible
+</code></pre>
+</div>
+
+<p>You only need to do this on the <strong>control node</strong>, most likely your laptop.</p>
+
+<h2 id="defining-your-inventory">Defining your Inventory</h2>
+
+<p>Create a file to list all of your Raspberry Pis.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$ cd~
+$ mkdir ansible
+$ touch inventory
+</code></pre>
+</div>
+
+<p>Mine looks like this:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>[temperatures]
+study.local
+kitchen.local
+garage.local
+bedroom1.local    
+</code></pre>
+</div>
+
+<h2 id="setup-ssh-keys">Setup SSH Keys</h2>
+
+<p>On the control node, create a key if you don’t already have one.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$ ssh-keygen -t rsa -C "my key"
+</code></pre>
+</div>
+
+<p>Copy the key onto the target inventory. Ensure you include the user before the host name (<code class="highlighter-rouge">pi</code> in my case). The <code class="highlighter-rouge">ssh-copy-id</code> command copies your public key to <code class="highlighter-rouge">~/.ssh/authorized_keys</code> file on the target machine.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$ ssh-copy-id -i id_rsa.pub pi@study.local
+
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "id_rsa.pub"
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+pi@study.local's password: 
+
+Number of key(s) added:        1
+
+Now try logging into the machine, with:   "ssh 'pi@study.local'"
+and check to make sure that only the key(s) you wanted were added.     
+</code></pre>
+</div>
+
+<p>As it says, try <code class="highlighter-rouge">ssh</code>ing into the box. You shouldn’t need to type a passphrase. If you do, you <a href="https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/#adding-your-ssh-key-to-the-ssh-agent">may need to update your config</a>.</p>
+
+<h2 id="test">Test</h2>
+
+<p>Try pinging all the machines with the following (<code class="highlighter-rouge">-i</code> specifies the inventory file):</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$ ansible -i ansible/inventory all -m ping -u pi
+</code></pre>
+</div>
+
+<p>Don’t forget to set the user with <code class="highlighter-rouge">-u pi</code>.</p>
+
+<p>You’ll see something like this.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>bedroom1.local | SUCCESS =&gt; {
+    "changed": false, 
+    "failed": false, 
+    "ping": "pong"
+}
+kitchen.local | SUCCESS =&gt; {
+    "changed": false, 
+    "failed": false, 
+    "ping": "pong"
+}
+study.local | UNREACHABLE! =&gt; {
+    "changed": false, 
+    "msg": "Failed to connect to the host via ssh: ssh: Could not resolve hostname study.local: nodename nor servname provided, or not known\r\n", 
+    "unreachable": true
+}
+</code></pre>
+</div>
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script src="/js/main.js"></script><script src="/js/kazari.js"></script><script>
+$(document).ready(function() {
+	kazari.KazariPlugin().decorateCode('https://scala-evaluator-212.herokuapp.com/eval', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.S2F6YXJp.Jl2eqMfw8IakJF93PjxTbrf-8YUJgX5OoOfy5JHE8Yw', '', 'monokai')
+})
+    </script></body></html>
