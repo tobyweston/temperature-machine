@@ -16,3 +16,12 @@ You can also read my [blog post](http://baddotrobot.com/blog/2016/03/23/homebrew
 Don't forget to `git pull` the latest version every so often.
 
 > Don't forget to enable 1-wire support by adding `dtoverlay=w1-gpio` to `/boot/config.txt`
+
+## Troubleshooting
+
+SBT will often fail when running on the Pi. Generally, I have to run it twice.
+
+Move this out to it's own file...
+
+### Unable to access jarfile
+

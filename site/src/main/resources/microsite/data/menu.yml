@@ -26,5 +26,15 @@ options:
   - title: Hacking
     url: docs/hacking.html
 
+  - title: Ansible Automation
+    url: docs/ansible.html
+    section: ansible
+    
+    nested_options:
+     - title: Getting Started
+       url: docs/ansible/getting_started.html
+     - title: Useful Ad-hoc Commands
+       url: docs/ansible/useful_commands.html
+
   - title: Resources
     url: docs/resources.html
