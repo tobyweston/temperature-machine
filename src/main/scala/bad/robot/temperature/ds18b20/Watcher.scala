@@ -20,7 +20,7 @@ class Watcher {
 
   val register: SensorFile => WatchKey = file => {
     println(s"listening for changes to ${file.getParent}")
-    file.toPath.getParent.register(watcher, ENTRY_MODIFY)
+    file.toPath.getParent.register(watcher, ENTRY_MODIFY, ENTRY_DELETE, ENTRY_CREATE, OVERFLOW)
   }
   
   def listen() = {
@@ -38,6 +38,7 @@ class Watcher {
               val reading = SensorReader(List(new File(path.toFile, "w1_slave"))).read
               println(s"reading = ${reading}")
             }
+          case e @ _ => println(s"Event ${e.`type`()} ${e.name()}") 
         }
         val valid = key.reset()
         println(s"valid reset = ${valid}")
