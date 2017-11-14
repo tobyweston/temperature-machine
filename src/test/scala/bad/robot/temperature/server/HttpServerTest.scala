@@ -36,11 +36,11 @@ class HttpServerTest extends Specification {
     }
 
     "Some java script can be loaded (note this changes with every UI deployment)" >> {
-      assertOk(Request(GET, path("/static/js/main.2f239d9a.js")))
+      assertOk(Request(GET, path("/static/js/main.dab8bbcd.js")))
     }
 
     "Some css can be loaded (note this changes with every UI deployment)" >> {
-      assertOk(Request(GET, path("/static/css/main.89f5aefd.css")))
+      assertOk(Request(GET, path("/static/css/main.9ff982bd.css")))
     }
 
     "image can be loaded" >> {
