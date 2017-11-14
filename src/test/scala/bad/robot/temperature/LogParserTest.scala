@@ -83,7 +83,14 @@ class LogParserTest extends Specification {
                     |        at org.http4s.blaze.channel.nio1.SelectorLoop.run(SelectorLoop.scala:134)
                     |""".stripMargin)
   }
-  
+
+  "Error on spike message parses" >> {
+    assertSuccess("""2017-11-13 21:53:33:010 [temperature-http-server-1] WARN An unexpected spike was encountered on:
+                   | sensor(s)             : 28-0115735605ff
+                   | previous temperatures : 20.1 °C
+                   | spiked temperatures   : 29.4 °C
+                   |""".stripMargin) 
+  }
 
   def assert(input: String, expected: LogMessage) = {
     LogParser.parseAll(LogParser.log, input) match {
