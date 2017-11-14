@@ -6,7 +6,7 @@ import org.http4s._
 
 object StaticFiles {
 
-  def service: HttpService = Service.lift(request => {
+  def apply(): HttpService = Service.lift(request => {
     val file = RrdFile.path + request.uri.path
     StaticFile.fromString(file).fold {
       Pass.now  // aka fallthrough

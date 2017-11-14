@@ -28,13 +28,13 @@ case class HttpUpload(address: InetAddress) extends TemperatureWriter {
       authority = Some(Authority(host = IPv4(address.getHostAddress), port = Some(11900))),
       path = "/temperature"),
       headers = Headers(`X-Forwarded-For`(currentIpAddress))
-    ).withBody(encode(measurement).spaces2).unsafePerformSync
+    ).withBody(measurement).unsafePerformSync
 
     blaze.fetch(request) {
       case Successful(_)   => Task.now(\/-(()))
       case Error(response) => Task.now(-\/(UnexpectedError(s"Failed to PUT temperature data to ${request.uri.renderString}, response was ${response.status}: ${response.as[String].unsafePerformSync}")))
     }.handleWith({
-      case t: Throwable    => Task.now(-\/(UnexpectedError(s"Failed to connect to $address\n\nError was $t")))
+      case t: Throwable    => Task.now(-\/(UnexpectedError(s"Failed attempting to connect to $address to send $measurement\n\nError was: $t\nPayload was: '${encode(measurement).spaces2}'\n")))
     }).unsafePerformSync
   }
 

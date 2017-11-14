@@ -2,6 +2,8 @@ package bad.robot.temperature.task
 
 import java.util.concurrent.{ScheduledExecutorService, ScheduledFuture}
 
+import bad.robot.temperature.Log
+
 import scala.concurrent.duration.Duration
 
 object Scheduler {
@@ -27,6 +29,6 @@ object Scheduler {
   }
 
   private def printError(e: Throwable): Runnable => Unit = {
-    task => System.err.println(s"An error occurred executed a scheduled task ($task) ${e.getMessage}")
+    task => Log.error(s"An error occurred executed a scheduled task ($task) ${e.getMessage}")
   }
 }

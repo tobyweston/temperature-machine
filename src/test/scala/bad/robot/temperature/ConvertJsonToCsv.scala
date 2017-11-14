@@ -54,7 +54,7 @@ object ConvertJsonToCsv extends App {
   implicit val dataCodec: CodecJson[Series] = CodecJson.derive[Series]
   
   Parse.decodeEither[List[Series]](json) match {
-    case Left(error)  => println(error)
+    case Left(error)   => Log.error(error)
     case Right(series) => toCsv(series)
   }
   

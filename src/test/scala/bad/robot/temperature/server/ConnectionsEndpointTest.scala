@@ -20,7 +20,7 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
 
   "No recent connections" >> {
     val request = Request(GET, Uri.uri("/connections"))
-    val service = ConnectionsEndpoint.service(fixedClock())
+    val service = ConnectionsEndpoint(fixedClock())
     val response = service(request).unsafePerformSync.orNotFound
     response.as[String].unsafePerformSync must_== "[]"
     response.status must_== Ok
@@ -30,7 +30,7 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
     ConnectionsEndpoint.update(Host("garage"), Some(xForwardedFor("84.12.43.124")))
 
     val request = Request(GET, Uri.uri("/connections"))
-    val service = ConnectionsEndpoint.service(fixedClock())
+    val service = ConnectionsEndpoint(fixedClock())
     val response = service(request).unsafePerformSync.orNotFound
 
     response.status must_== Ok
@@ -48,7 +48,7 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
   }
 
   "Recent connections show up" >> {
-    val service = ConnectionsEndpoint.service(fixedClock(Instant.now.plus(4, minutes)))
+    val service = ConnectionsEndpoint(fixedClock(Instant.now.plus(4, minutes)))
 
     val request = Request(GET, Uri.uri("/connections/active/within/5/mins"))
     ConnectionsEndpoint.update(Host("garage"), Some(xForwardedFor("184.14.23.214")))
@@ -71,7 +71,7 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
     ConnectionsEndpoint.update(Host("garage"), Some(xForwardedFor("84.12.43.124", "10.0.1.12")))
 
     val request = Request(GET, Uri.uri("/connections"))
-    val service = ConnectionsEndpoint.service(fixedClock())
+    val service = ConnectionsEndpoint(fixedClock())
     val response = service(request).unsafePerformSync.orNotFound
 
     response.status must_== Ok
@@ -89,7 +89,7 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
   }
 
   "Connections expire / only recent connections show up" >> {
-    val service = ConnectionsEndpoint.service(fixedClock(Instant.now.plus(6, minutes)))
+    val service = ConnectionsEndpoint(fixedClock(Instant.now.plus(6, minutes)))
 
     val request = Request(GET, Uri.uri("/connections/active/within/5/mins"))
     ConnectionsEndpoint.update(Host("garage"), Some(xForwardedFor("162.34.13.113")))

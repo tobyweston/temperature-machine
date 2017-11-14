@@ -23,7 +23,7 @@ object ErrorOnTemperatureSpike {
   def apply(delegate: TemperatureWriter): TemperatureWriter = {
     sys.props.get("avoid.spikes").map(spike => {
       val percentage = toInt(spike).getOrElse(DefaultSpikePercentage)
-      println(s"Temperature spikes greater than +/-$percentage% will not be recorded")
+      Log.info(s"Temperature spikes greater than +/-$percentage% will not be recorded")
       new ErrorOnTemperatureSpike(delegate, percentage)
     }).getOrElse(delegate)
   }
@@ -67,7 +67,8 @@ class ErrorOnTemperatureSpike(delegate: TemperatureWriter, percentageSpike: Int 
   }
 
   private def spikeBetween(reading: SensorReading, previous: Temperature) = {
-    abs(percentageDifference(previous.celsius, reading.temperature.celsius)) >= percentageSpike
+    val difference = percentageDifference(previous.celsius, reading.temperature.celsius)
+    abs(difference) >= percentageSpike || difference.isNaN
   }
 
 }

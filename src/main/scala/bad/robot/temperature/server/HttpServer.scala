@@ -2,8 +2,8 @@ package bad.robot.temperature.server
 
 import java.lang.Math._
 import java.time.Clock
-import java.util.concurrent.{CountDownLatch, ExecutorService}
 import java.util.concurrent.Executors._
+import java.util.concurrent.{CountDownLatch, ExecutorService}
 
 import bad.robot.temperature.ErrorOnTemperatureSpike
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
@@ -44,10 +44,11 @@ class HttpServer(port: Int, monitored: List[Host]) {
 
   private def services() = {
     CORS(
-      TemperatureEndpoint.service(SensorReader(SensorFile.find()), ErrorOnTemperatureSpike(Rrd(monitored)))(Clock.systemDefaultZone) ||
-      ConnectionsEndpoint.service(Clock.systemDefaultZone) ||
-      StaticFiles.service ||
-      StaticResources.service
+      TemperatureEndpoint(SensorReader(SensorFile.find()), ErrorOnTemperatureSpike(Rrd(monitored)))(Clock.systemDefaultZone) ||
+      ConnectionsEndpoint(Clock.systemDefaultZone) ||
+      LogEndpoint() ||
+      StaticFiles() ||
+      StaticResources()
     )
   }
 }

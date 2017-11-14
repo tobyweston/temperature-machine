@@ -2,6 +2,7 @@ package bad.robot.temperature.server
 
 import java.io.{BufferedWriter, File, FileWriter}
 
+import bad.robot.temperature.Log
 import bad.robot.temperature.rrd.{Host, RrdFile}
 import org.http4s.Method.GET
 import org.http4s.client.blaze.BlazeClientConfig._
@@ -16,7 +17,7 @@ class HttpServerTest extends Specification {
 
   "When the Http server has been started" >> {
     val server = HttpServer(8080, List(Host("example"))).unsafePerformSync
-    val client = SimpleHttp1Client(defaultConfig.copy(idleTimeout = 30 minutes, responseHeaderTimeout = 30 minutes))
+    val client = PooledHttp1Client(config = defaultConfig.copy(idleTimeout = 30 minutes, responseHeaderTimeout = 30 minutes))
 
     // todo wait for server to startup, not sure how.
     
@@ -35,11 +36,11 @@ class HttpServerTest extends Specification {
     }
 
     "Some java script can be loaded (note this changes with every UI deployment)" >> {
-      assertOk(Request(GET, path("/static/js/main.b14fff8a.js")))
+      assertOk(Request(GET, path("/static/js/main.2f239d9a.js")))
     }
 
     "Some css can be loaded (note this changes with every UI deployment)" >> {
-      assertOk(Request(GET, path("/static/css/main.4c084a76.css")))
+      assertOk(Request(GET, path("/static/css/main.89f5aefd.css")))
     }
 
     "image can be loaded" >> {
@@ -74,7 +75,7 @@ class HttpServerTest extends Specification {
     step {
       val shutdown = for {
         _ <- server.shutdown()
-        _ <- Task.delay(println(s"HTTP Server shutting down"))
+        _ <- Task.delay(Log.info(s"HTTP Server shutting down"))
       } yield ()
       shutdown.unsafePerformSync
     }

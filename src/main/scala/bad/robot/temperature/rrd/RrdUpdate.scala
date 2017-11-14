@@ -1,8 +1,6 @@
 package bad.robot.temperature.rrd
 
-import java.io.{PrintWriter, StringWriter}
-
-import bad.robot.temperature.{Error, Measurement, RrdError, SensorReading, Temperature}
+import bad.robot.temperature.{Error, Measurement, RrdError, SensorReading, Temperature, _}
 import org.rrd4j.core.RrdDb
 
 import scala.{Error => _}
@@ -26,10 +24,6 @@ case class RrdUpdate(monitored: List[Host], measurement: Measurement) {
   }
 
   def messageOrStackTrace(error: Throwable): String = {
-    Option(error.getMessage).getOrElse {
-      val writer = new StringWriter()
-      error.printStackTrace(new PrintWriter(writer))
-      writer.toString
-    }
+    Option(error.getMessage).getOrElse(stackTraceOf(error)) 
   }
 }

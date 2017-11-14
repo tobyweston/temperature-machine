@@ -1,5 +1,6 @@
 package bad.robot.temperature.ds18b20
 
+import bad.robot.temperature.AutoClosing._
 import bad.robot.temperature._
 import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.ds18b20.SensorReader._
@@ -17,7 +18,7 @@ object SensorReader {
   private val toReading: SensorFile => Error \/ SensorReading = file => {
     for {
       source      <- fromTryCatchNonFatal(Source.fromFile(file)).leftMap(FileError)
-      data        <- source.getLines().toList.headOption.toRightDisjunction(UnexpectedError("Problem reading file, is it empty?"))
+      data        <- closingAfterUse(source)(_.getLines().toList).headOption.toRightDisjunction(UnexpectedError("Problem reading file, is it empty?"))
       temperature <- Parser.parse(data)
     } yield SensorReading(file.getParentFile.getName, temperature)
   }
