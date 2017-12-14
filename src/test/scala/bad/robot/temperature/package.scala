@@ -10,17 +10,17 @@ package object test {
       e.value.status == status,
       s"""Status of [${e.value.status}]
           |
-         |is
+          |is
           |
-         |$status""".stripMargin,
+          |$status""".stripMargin,
       s"""Status of
           |[${e.value.status}]
           |
-         |is not
+          |is not
           |
-         |[$status]
+          |[$status]
           |
-         |(${e.value.as[String].unsafePerformSync})""".stripMargin,
+          |(${e.value.as[String].unsafePerformSync})""".stripMargin,
       e)
   }
 
@@ -28,15 +28,15 @@ package object test {
     def apply[S <: Response](e: Expectable[S]): MatchResult[S] = result(
       e.value.headers.toList.map(_.toRaw) contains Header(name, value),
       s"""${e.value.headers}
-         |
-         |contains
-         |
-         |$name""".stripMargin,
+          |
+          |contains
+          |
+          |$name""".stripMargin,
       s"""The response headers '${e.value.headers.toList.mkString("\n")}'
           |
-         |do not contain
+          |do not contain
           |
-         |[$name: $value]
+          |[$name: $value]
           |""".stripMargin,
       e)
   }
