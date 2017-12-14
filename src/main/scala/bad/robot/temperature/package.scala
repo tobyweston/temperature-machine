@@ -14,7 +14,7 @@ package object temperature {
 
   implicit def http4sArgonautDecoder[A: DecodeJson]: EntityDecoder[A] = jsonOf[A]
   
-  implicit def http4sArgonautEncoder[A: EncodeJson]: EntityEncoder[A] = jsonEncoderWithPrinterOf[A](PrettyParams.spaces2)
+  implicit def http4sArgonautEncoder[A: EncodeJson]: EntityEncoder[A] = jsonEncoderWithPrinterOf[A](spaces2PlatformSpecific)
   
   def encode[A: EncodeJson](a: A): Json = a.jencode
 
@@ -34,5 +34,32 @@ package object temperature {
     val writer = new StringWriter()
     error.printStackTrace(new PrintWriter(writer))
     writer.toString
+  }
+
+  private val eol = sys.props("line.separator")
+  val spaces2PlatformSpecific = PrettyParams(
+    indent = "  "
+    , lbraceLeft = ""
+    , lbraceRight = eol
+    , rbraceLeft = eol
+    , rbraceRight = ""
+    , lbracketLeft = ""
+    , lbracketRight = eol
+    , rbracketLeft = eol
+    , rbracketRight = ""
+    , lrbracketsEmpty = ""
+    , arrayCommaLeft = ""
+    , arrayCommaRight = eol
+    , objectCommaLeft = ""
+    , objectCommaRight = eol
+    , colonLeft = " "
+    , colonRight = " "
+    , preserveOrder = false
+    , dropNullKeys = false
+  )
+
+  implicit class JsonOps(json: Json) {
+    /** Pretty print with platform specific line endings, see [[https://github.com/argonaut-io/argonaut/issues/268]] **/
+    def spaces2ps: String = spaces2PlatformSpecific.pretty(json)
   }
 }

@@ -18,7 +18,7 @@ class TemperatureTest extends Specification {
       """{
         |  "celsius" : 66.99
         |}""".stripMargin
-    encode(Temperature(66.99)).spaces2 must_== expected
+    encode(Temperature(66.99)).spaces2ps must_== expected
   }
 
   "Decode json" >> {

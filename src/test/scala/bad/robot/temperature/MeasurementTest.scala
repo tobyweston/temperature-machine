@@ -1,8 +1,8 @@
 package bad.robot.temperature
 
 import bad.robot.temperature.rrd.{Host, Seconds}
-import org.specs2.mutable.Specification
 import org.specs2.matcher.DisjunctionMatchers._
+import org.specs2.mutable.Specification
 
 class MeasurementTest extends Specification {
 
@@ -28,7 +28,7 @@ class MeasurementTest extends Specification {
     val json = encode(Measurement(Host("localhost"), Seconds(1000), List(
       SensorReading("28-00000f33fdc3", Temperature(32.1)),
       SensorReading("28-00000dfg34ca", Temperature(32.8)))
-    )).spaces2
+    )).spaces2ps
     json must_== expected
   }
 

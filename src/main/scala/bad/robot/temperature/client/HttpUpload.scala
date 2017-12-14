@@ -3,14 +3,14 @@ package bad.robot.temperature.client
 import java.net.{InetAddress, NetworkInterface}
 
 import bad.robot.temperature.IpAddress._
-import bad.robot.temperature._
+import bad.robot.temperature.{JsonOps, _}
 import bad.robot.temperature.client.HttpUpload.currentIpAddress
 import org.http4s.Method._
 import org.http4s.Status.Successful
 import org.http4s.Uri.{Authority, IPv4}
 import org.http4s.headers.`X-Forwarded-For`
-import org.http4s.util.NonEmptyList
 import org.http4s.syntax.string._
+import org.http4s.util.NonEmptyList
 import org.http4s.{Headers, Request, Response, Uri}
 
 import scala.collection.JavaConverters._
@@ -34,7 +34,7 @@ case class HttpUpload(address: InetAddress) extends TemperatureWriter {
       case Successful(_)   => Task.now(\/-(()))
       case Error(response) => Task.now(-\/(UnexpectedError(s"Failed to PUT temperature data to ${request.uri.renderString}, response was ${response.status}: ${response.as[String].unsafePerformSync}")))
     }.handleWith({
-      case t: Throwable    => Task.now(-\/(UnexpectedError(s"Failed attempting to connect to $address to send $measurement\n\nError was: $t\nPayload was: '${encode(measurement).spaces2}'\n")))
+      case t: Throwable    => Task.now(-\/(UnexpectedError(s"Failed attempting to connect to $address to send $measurement\n\nError was: $t\nPayload was: '${encode(measurement).spaces2ps}'\n")))
     }).unsafePerformSync
   }
 

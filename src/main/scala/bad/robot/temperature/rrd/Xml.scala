@@ -9,6 +9,7 @@ import org.rrd4j.core.RrdDb
 
 import scala.collection.JavaConverters._
 import scala.xml.{Elem, XML}
+import bad.robot.temperature.JsonOps
 
 case class Xml(xml: Elem) {
   def exportXml(filename: String) = {
@@ -24,7 +25,7 @@ case class Xml(xml: Elem) {
 
   def toJson(): String = {
     val series = parse(xml)
-    encode(series).spaces2
+    encode(series).spaces2ps
   }
 
 }
