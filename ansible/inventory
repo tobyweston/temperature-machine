@@ -1,0 +1,12 @@
+[temperatures]
+study.local
+kitchen.local
+bedroom1.local
+bedroom2.local
+
+[misc]
+unicorn-mini.local
+unicorn.local
+
+[retro-pi]
+retropi.local
