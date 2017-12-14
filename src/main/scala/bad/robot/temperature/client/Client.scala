@@ -5,7 +5,7 @@ import java.net.InetAddress
 import java.util.concurrent.Executors.newFixedThreadPool
 import java.util.concurrent.{CountDownLatch, ExecutorService}
 
-import bad.robot.temperature.Log
+import bad.robot.logging._
 import bad.robot.temperature.ds18b20.SensorFile
 import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.rrd.Host
@@ -13,8 +13,8 @@ import bad.robot.temperature.rrd.RrdFile._
 import bad.robot.temperature.server.LogEndpoint
 import bad.robot.temperature.task.{Tasks, TemperatureMachineThreadFactory}
 import org.http4s.server.blaze.BlazeBuilder
-import org.http4s.server.{Server => Http4sServer}
 import org.http4s.server.middleware.CORS
+import org.http4s.server.{Server => Http4sServer}
 
 import scalaz.concurrent.Task
 

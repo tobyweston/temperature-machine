@@ -9,6 +9,7 @@ import java.time.format.FormatStyle._
 import java.util.Locale._
 
 import argonaut._
+import bad.robot.logging._
 import bad.robot.temperature.PercentageDifference.percentageDifference
 
 import scala.io.Source

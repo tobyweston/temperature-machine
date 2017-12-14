@@ -6,8 +6,8 @@ import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import bad.robot.temperature.rrd.RrdFile.MaxSensors
 import bad.robot.temperature.rrd.{Host, RrdFile}
 import bad.robot.temperature.task.Scheduler.ScheduledExecutorServiceOps
-import bad.robot.temperature.{JsonExport, Log, TemperatureWriter, XmlExport}
-
+import bad.robot.temperature.{JsonExport, TemperatureWriter, XmlExport}
+import bad.robot.logging._
 import scala.concurrent.duration._
 import scala.language.postfixOps
 import scalaz.concurrent.Task

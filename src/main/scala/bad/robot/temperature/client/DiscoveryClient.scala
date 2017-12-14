@@ -2,7 +2,7 @@ package bad.robot.temperature.client
 
 import java.net.{DatagramPacket, DatagramSocket, InetAddress, NetworkInterface, Socket => _}
 
-import bad.robot.temperature.Log
+import bad.robot.logging._
 import bad.robot.temperature.server.DatagramPacketOps
 import bad.robot.temperature.server.DiscoveryServer._
 import bad.robot.temperature.server.Socket._

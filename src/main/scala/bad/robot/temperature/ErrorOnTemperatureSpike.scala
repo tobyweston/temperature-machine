@@ -4,6 +4,7 @@ import java.lang.Math._
 
 import bad.robot.temperature.ErrorOnTemperatureSpike.DefaultSpikePercentage
 import bad.robot.temperature.PercentageDifference.percentageDifference
+import bad.robot.logging._
 
 import scala.collection.concurrent.TrieMap
 import scala.util.{Failure, Success, Try}

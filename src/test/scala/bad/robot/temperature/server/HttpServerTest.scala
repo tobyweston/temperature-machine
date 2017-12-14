@@ -2,7 +2,7 @@ package bad.robot.temperature.server
 
 import java.io.{BufferedWriter, File, FileWriter}
 
-import bad.robot.temperature.Log
+import bad.robot.logging._
 import bad.robot.temperature.rrd.{Host, RrdFile}
 import org.http4s.Method.GET
 import org.http4s.client.blaze.BlazeClientConfig._

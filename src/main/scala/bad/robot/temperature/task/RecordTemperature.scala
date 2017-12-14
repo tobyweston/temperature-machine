@@ -21,7 +21,7 @@ import java.io.ByteArrayOutputStream
 
 object ErrorLogger {
   
-  def apply(log: Logger = bad.robot.temperature.Log): PrintStream = new PrintStream(new OutputStream {
+  def apply(log: Logger = bad.robot.logging.Log): PrintStream = new PrintStream(new OutputStream {
 
     private val stream = new ByteArrayOutputStream(1000)
 

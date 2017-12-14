@@ -2,7 +2,7 @@ package bad.robot.temperature.server
 
 import java.net.InetAddress
 
-import bad.robot.temperature.Log
+import bad.robot.logging._
 import bad.robot.temperature.client.HttpUpload
 import bad.robot.temperature.ds18b20.SensorFile
 import bad.robot.temperature.ds18b20.SensorFile._

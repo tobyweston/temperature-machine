@@ -2,7 +2,7 @@ package bad.robot.temperature.task
 
 import java.util.concurrent.{ScheduledExecutorService, ScheduledFuture}
 
-import bad.robot.temperature.Log
+import bad.robot.logging._
 
 import scala.concurrent.duration.Duration
 
