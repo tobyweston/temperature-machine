@@ -1,7 +1,7 @@
 package bad.robot
 
 import bad.robot.temperature.rrd.{RrdFile, _}
-import org.slf4j.LoggerFactory
+import org.apache.logging.log4j.LogManager
 
 package object logging {
 
@@ -15,6 +15,9 @@ package object logging {
     ("org.slf4j.simpleLogger.showLogName"               -> "false") +=
     ("org.slf4j.simpleLogger.showShortLogName"          -> "false")
 
-  val Log = LoggerFactory.getLogger("bad.robot.temperature")
+  sys.props +=
+    ("log.location"                                     -> RrdFile.path / "temperature-machine.log")
+  
+  val Log = LogManager.getLogger("bad.robot.temperature")
 
 }

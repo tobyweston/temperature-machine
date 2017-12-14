@@ -2,10 +2,10 @@ package bad.robot.logging
 
 import java.io.{ByteArrayOutputStream, OutputStream, PrintStream}
 
-import org.slf4j.Logger
+import org.apache.logging.log4j.Logger
 
 /**
-  * Convert a [[org.slf4j.Logger]] to a [[java.io.PrintStream]].
+  * Convert a [[org.apache.logging.log4j.Logger]] to a [[java.io.PrintStream]].
   */
 object ErrorLogger {
 
