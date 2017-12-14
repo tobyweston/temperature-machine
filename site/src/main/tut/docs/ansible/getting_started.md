@@ -17,9 +17,8 @@ You only need to do this on the **control node**, most likely your laptop.
 
 Create a file to list all of your Raspberry Pis.
 
-    $ cd~
     $ mkdir ansible
-    $ touch inventory
+    $ touch ansible/inventory
     
 Mine looks like this:
 
