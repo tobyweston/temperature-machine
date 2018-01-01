@@ -27,3 +27,11 @@ libraryDependencies ++= Seq(
 )
 
 scalacOptions := Seq("-Xlint", "-Xfatal-warnings", "-deprecation", "-feature", "-language:implicitConversions,reflectiveCalls,higherKinds")
+
+// fixes https://github.com/tobyweston/temperature-machine/issues/39
+assemblyMergeStrategy in assembly := {
+  case PathList(xs @ _*) if xs.last == "module-info.class" => MergeStrategy.first
+  case x =>
+    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    oldStrategy(x)
+}
