@@ -26,7 +26,11 @@ npm run build
 
 # remove old version
 cd ${ROOT}
-git rm -r src/main/resources
+git rm -r src/main/resources/images
+git rm -r src/main/resources/static
+git rm -r src/main/resources/asset-manifest.json
+git rm -r src/main/resources/favicon.png
+git rm -r src/main/resources/index.html
 git commit -m "removing old version of web-app during deployment of new version"
 
 # copy into resources folder and sort git out
