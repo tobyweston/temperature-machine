@@ -1,7 +1,5 @@
 package bad.robot.temperature
 
-import java.io._
-import java.net.URL
 import java.time.Instant
 import java.time.ZoneId._
 import java.time.format.DateTimeFormatter._
@@ -9,57 +7,22 @@ import java.time.format.FormatStyle._
 import java.util.Locale._
 
 import argonaut._
-import bad.robot.logging._
 import bad.robot.temperature.PercentageDifference.percentageDifference
 
-import scala.io.Source
+import scalaz.{-\/, \/, \/-}
 
-object ConvertJsonToCsv extends App {
+object JsonToCsv {
 
   type Row = (String, Instant, Double)
-  
-  case class Series(label: String, data: List[Data])
-  case class Data(x: Long, y: String) {
-    def time: Instant = Instant.ofEpochMilli(x)
-    def temperature: Temperature = Temperature(y.toDouble)
-  }
-
-  val exampleJson =
-    """
-      |[
-      |  {
-      |    "label": "bedroom1-sensor-1",
-      |    "data": [
-      |      {
-      |        "x": 1507709610000,
-      |        "y": "NaN"
-      |      },
-      |      {
-      |        "x": 1507709640000,
-      |        "y": "+2.2062500000E01"
-      |      },
-      |      {
-      |        "x": 1507709680000,
-      |        "y": "+2.2262500000E01"
-      |      }
-      |    ]
-      |  }
-      |]
-    """.stripMargin
-  
-  val serverAddress = "study.local"
-  
-  val json = Source.fromURL(new URL(s"http://$serverAddress:11900/temperature.json")).getLines().mkString
-
-  implicit val seriesCodec: CodecJson[Data] = CodecJson.derive[Data]
-  implicit val dataCodec: CodecJson[Series] = CodecJson.derive[Series]
-  
-  Parse.decodeEither[List[Series]](json) match {
-    case Left(error)   => Log.error(error)
-    case Right(series) => toCsv(series)
+ 
+  def convert(json: String): Error \/ String = {
+    Parse.decodeEither[List[Series]](json) match {
+      case Left(error)   => -\/(UnexpectedError(error))
+      case Right(series) => \/-(toCsv(series))
+    }
   }
   
-  def toCsv(series: List[Series]) = {
+  private def toCsv(series: List[Series]) = {
     val quote = "\""
     val formatter = ofLocalizedDateTime(SHORT).withLocale(UK).withZone(systemDefault())
     
@@ -95,13 +58,19 @@ object ConvertJsonToCsv extends App {
       ).mkString(","))
     }
     
-    def write(rows: List[String]) = {
-      val writer = new PrintWriter(new File("temperatures.csv"))
-      writer.write(rows.mkString("\n"))
-      writer.close()
-    }
-
-    write(toCsv(toRows))
+    toCsv(toRows).mkString("\n")
   }
 }
 
+object Series {
+  implicit val dataCodec: CodecJson[Series] = CodecJson.derive[Series]
+}
+case class Series(label: String, data: List[Data])
+
+object Data {
+  implicit val seriesCodec: CodecJson[Data] = CodecJson.derive[Data]
+}
+case class Data(x: Long, y: String) {
+  def time: Instant = Instant.ofEpochMilli(x)
+  def temperature: Temperature = Temperature(y.toDouble)
+}

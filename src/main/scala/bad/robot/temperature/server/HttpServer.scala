@@ -47,6 +47,7 @@ class HttpServer(port: Int, monitored: List[Host]) {
       TemperatureEndpoint(SensorReader(SensorFile.find()), ErrorOnTemperatureSpike(Rrd(monitored)))(Clock.systemDefaultZone) ||
       ConnectionsEndpoint(Clock.systemDefaultZone) ||
       LogEndpoint() ||
+      ExportEndpoint() ||
       StaticFiles() ||
       StaticResources()
     )
