@@ -18,6 +18,8 @@ libraryDependencies ++= Seq(
   "org.http4s" %% "http4s-argonaut" % "0.16.6a",
   "org.http4s" %% "http4s-blaze-server" % "0.16.6a",
   "org.http4s" %% "http4s-blaze-client" % "0.16.6a",
+  "org.http4s" %% "http4s-jetty" % "0.16.6a",
+  "org.http4s" %% "http4s-async-http-client" % "0.16.6a",
   "io.argonaut" %% "argonaut" % "6.2",
   "org.apache.logging.log4j" % "log4j-api" % "2.10.0",
   "org.apache.logging.log4j" % "log4j-core" % "2.10.0",
@@ -31,6 +33,7 @@ scalacOptions := Seq("-Xlint", "-Xfatal-warnings", "-deprecation", "-feature", "
 // fixes https://github.com/tobyweston/temperature-machine/issues/39
 assemblyMergeStrategy in assembly := {
   case PathList(xs @ _*) if xs.last == "module-info.class" => MergeStrategy.first
+  case PathList(xs @ _*) if xs.last == "io.netty.versions.properties" => MergeStrategy.discard
   case x =>
     val oldStrategy = (assemblyMergeStrategy in assembly).value
     oldStrategy(x)

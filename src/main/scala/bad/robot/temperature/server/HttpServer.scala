@@ -9,7 +9,7 @@ import bad.robot.temperature.ErrorOnTemperatureSpike
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import bad.robot.temperature.rrd.{Host, Rrd}
 import bad.robot.temperature.task.TemperatureMachineThreadFactory
-import org.http4s.server.blaze.BlazeBuilder
+import org.http4s.server.jetty.JettyBuilder
 import org.http4s.server.middleware.CORS
 import org.http4s.server.syntax.ServiceOps
 import org.http4s.server.{Server => Http4sServer}
@@ -36,7 +36,7 @@ class HttpServer(port: Int, monitored: List[Host]) {
     newFixedThreadPool(max(4, Runtime.getRuntime.availableProcessors), TemperatureMachineThreadFactory("http-server"))
   }
 
-  private def build(): Task[Http4sServer] = BlazeBuilder
+  private def build(): Task[Http4sServer] = JettyBuilder
     .withServiceExecutor(DefaultExecutorService)
     .bindHttp(port, "0.0.0.0")
     .mountService(services(), "/")
