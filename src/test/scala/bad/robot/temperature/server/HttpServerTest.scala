@@ -26,8 +26,13 @@ class HttpServerTest extends Specification {
     }
 
     "temperature.json can be loaded" >> {
-      createFile("temperature.json")
+      createJsonFile()
       assertOk(Request(GET, path("/temperature.json")))
+    }
+
+    "temperature.csv can be loaded" >> {
+      createJsonFile()
+      assertOk(Request(GET, path("/temperatures.csv")))
     }
 
     "RRD chart / image can be loaded" >> {
@@ -61,11 +66,40 @@ class HttpServerTest extends Specification {
 
     def assertOk(request: Request) = {
       val response = client.fetch(request)(Task.delay(_)).unsafePerformSync
-      response.status must be_==(Status.Ok).eventually(40, 5 minutes)
+      response.status must be_==(Status.Ok).eventually(10, 500 milliseconds)
     }
 
     def path(url: String): Uri = Uri.fromString(s"http://localhost:8080$url").getOrElse(throw new Exception(s"bad url $url"))
 
+    def createJsonFile() = {
+      val exampleJson =
+        """
+          |[
+          |  {
+          |    "label": "bedroom1-sensor-1",
+          |    "data": [
+          |      {
+          |        "x": 1507709610000,
+          |        "y": "NaN"
+          |      },
+          |      {
+          |        "x": 1507709640000,
+          |        "y": "+2.2062500000E01"
+          |      },
+          |      {
+          |        "x": 1507709680000,
+          |        "y": "+2.2262500000E01"
+          |      }
+          |    ]
+          |  }
+          |]
+        """.stripMargin
+
+      val writer = new BufferedWriter(new FileWriter(JsonFile.file))
+      writer.write(exampleJson)
+      writer.close()
+    }
+    
     def createFile(filename: String) = {
       val file = new File(s"${RrdFile.path}/$filename")
       val writer = new BufferedWriter(new FileWriter(file))

@@ -1,6 +1,7 @@
 package bad.robot.temperature.rrd
 
 import bad.robot.temperature.rrd.Seconds.{now, secondsToLong}
+import bad.robot.temperature.server.JsonFile
 import bad.robot.temperature.{Error, Measurement, SensorReading, Temperature}
 
 import scala.concurrent.duration.Duration
@@ -28,7 +29,7 @@ object Example extends App {
   populateRrd(hosts)
 
   val xml = Xml(start, start + aDay, hosts)
-  xml.exportJson("temperature.json")
+  xml.exportJson(JsonFile.file)
   xml.exportXml("temperature.xml")
 
   Graph.create(start, start + aDay, hosts)

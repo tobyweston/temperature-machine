@@ -5,6 +5,7 @@ import java.awt.Color._
 
 import bad.robot.temperature.rrd.RpnGenerator._
 import bad.robot.temperature.rrd.RrdFile.MaxSensors
+import bad.robot.temperature.FileOps
 import org.rrd4j.ConsolFun._
 import org.rrd4j.core.RrdDb
 import org.rrd4j.graph.{RrdGraph, RrdGraphDef}

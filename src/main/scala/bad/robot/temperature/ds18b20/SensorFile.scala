@@ -2,7 +2,7 @@ package bad.robot.temperature.ds18b20
 
 import java.io.{File, FileFilter}
 
-import bad.robot.temperature.rrd._
+import bad.robot.temperature.FileOps
 import bad.robot.temperature.{Error, FailedToFindFile}
 
 import scala.{Error => _}

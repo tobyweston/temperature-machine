@@ -9,16 +9,19 @@ import java.util.Locale._
 import argonaut._
 import bad.robot.temperature.PercentageDifference.percentageDifference
 
-import scalaz.{-\/, \/, \/-}
+import scalaz.\/
+import scalaz.syntax.std.either._
 
 object JsonToCsv {
 
   type Row = (String, Instant, Double)
  
-  def convert(json: String): Error \/ String = {
-    Parse.decodeEither[List[Series]](json) match {
-      case Left(error)   => -\/(UnexpectedError(error))
-      case Right(series) => \/-(toCsv(series))
+  def convert(json: => Error \/ String): Error \/ String = {
+    for {
+      string <- json
+      series <- Parse.decodeEither[List[Series]](string).disjunction.leftMap(ParseError)
+    } yield {
+      toCsv(series)
     }
   }
   

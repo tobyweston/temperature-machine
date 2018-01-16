@@ -1,6 +1,6 @@
 package bad.robot
 
-import java.io.{PrintWriter, StringWriter}
+import java.io.{File, PrintWriter, StringWriter}
 
 import argonaut.Argonaut._
 import argonaut._
@@ -62,4 +62,9 @@ package object temperature {
     /** Pretty print with platform specific line endings, see [[https://github.com/argonaut-io/argonaut/issues/268]] **/
     def spaces2ps: String = spaces2PlatformSpecific.pretty(json)
   }
+
+  implicit class FileOps(file: File) {
+    def /(child: String): File = new File(file, child)
+  }
+
 }
