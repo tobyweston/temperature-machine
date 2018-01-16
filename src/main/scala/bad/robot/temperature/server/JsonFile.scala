@@ -12,8 +12,9 @@ import scalaz.\/.fromTryCatchNonFatal
 object JsonFile {
 
   val path = new File(sys.props("user.home")) / ".temperature"
-  val file = path / "temperature.json"
-
+  val filename = "temperature.json"
+  val file = path / filename
+  
   path.mkdirs()
 
   

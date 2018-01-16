@@ -29,7 +29,7 @@ object Example extends App {
   populateRrd(hosts)
 
   val xml = Xml(start, start + aDay, hosts)
-  xml.exportJson(JsonFile.file)
+  xml.exportJson(JsonFile.filename)
   xml.exportXml("temperature.xml")
 
   Graph.create(start, start + aDay, hosts)

@@ -39,7 +39,6 @@ class JsonFileTest extends Specification {
     val writer = new BufferedWriter(new FileWriter(JsonFile.file))
     writer.write(exampleJson)
     writer.close()
-    JsonFile.exists must_== true
   }
 
 }
