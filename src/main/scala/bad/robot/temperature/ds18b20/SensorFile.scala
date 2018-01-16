@@ -5,7 +5,6 @@ import java.io.{File, FileFilter}
 import bad.robot.temperature.FileOps
 import bad.robot.temperature.{Error, FailedToFindFile}
 
-import scala.{Error => _}
 import scalaz.\/
 import scalaz.concurrent.Task
 import scalaz.syntax.either.ToEitherOps

@@ -31,11 +31,11 @@ class JsonFileTest extends Specification {
     """.stripMargin
 
   "Load a file" >> {
-    createFile
+    createFile()
     JsonFile.load must be_\/-(exampleJson)
   }
   
-  private def createFile = {
+  private def createFile() = {
     val writer = new BufferedWriter(new FileWriter(JsonFile.file))
     writer.write(exampleJson)
     writer.close()

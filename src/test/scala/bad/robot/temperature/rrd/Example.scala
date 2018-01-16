@@ -6,7 +6,6 @@ import bad.robot.temperature.{Error, Measurement, SensorReading, Temperature}
 
 import scala.concurrent.duration.Duration
 import scala.util.Random
-import scala.{Error => _}
 import scalaz.{-\/, \/}
 
 object Example extends App {

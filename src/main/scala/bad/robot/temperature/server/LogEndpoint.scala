@@ -8,7 +8,6 @@ import org.http4s.HttpService
 import org.http4s.dsl.{->, /, GET, Ok, Root, _}
 
 import scala.collection.JavaConverters._
-import scala.{Error => _}
 import scalaz.Scalaz._
 import scalaz.\/.{fromTryCatchNonFatal, _}
 import scalaz.{\/, \/-}

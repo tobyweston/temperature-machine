@@ -1,6 +1,5 @@
 package bad.robot.temperature
 
-import java.lang.{Error => _}
 import java.net.DatagramPacket
 
 import org.http4s.Response

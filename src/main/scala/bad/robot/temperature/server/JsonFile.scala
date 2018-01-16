@@ -5,7 +5,6 @@ import java.io.File
 import bad.robot.temperature.{Error, FileError, FileOps}
 
 import scala.io.Source
-import scala.{Error => _}
 import scalaz.\/
 import scalaz.\/.fromTryCatchNonFatal
 
@@ -17,8 +16,6 @@ object JsonFile {
   
   path.mkdirs()
 
-  
-  def exists = file.exists()
 
   def load: Error \/ String = {
     fromTryCatchNonFatal(Source.fromFile(file).getLines().mkString("\n")).leftMap(FileError)

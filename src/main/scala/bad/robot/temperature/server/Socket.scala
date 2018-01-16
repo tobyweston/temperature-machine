@@ -6,7 +6,6 @@ import bad.robot.temperature.server.DiscoveryServer._
 import bad.robot.temperature.{Error, Timeout, UnexpectedError}
 
 import scala.concurrent.duration.Duration
-import scala.{Error => _}
 import scalaz.\/
 
 object Socket {
