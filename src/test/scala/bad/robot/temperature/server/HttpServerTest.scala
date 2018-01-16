@@ -64,6 +64,10 @@ class HttpServerTest extends Specification {
       assertOk(Request(GET, path("/connections/active/within/5/mins")))
     }
 
+    "get the local machines log over http" >> {
+      assertOk(Request(GET, path("/log")))
+    }
+    
     def assertOk(request: Request) = {
       val response = client.fetch(request)(Task.delay(_)).unsafePerformSync
       response.status must be_==(Status.Ok).eventually(10, 500 milliseconds)
