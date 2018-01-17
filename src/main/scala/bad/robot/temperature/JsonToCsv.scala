@@ -2,7 +2,7 @@ package bad.robot.temperature
 
 import java.time.Instant
 import java.time.ZoneId._
-import java.time.format.DateTimeFormatter._
+import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle._
 import java.util.Locale
 
@@ -16,18 +16,19 @@ object JsonToCsv {
 
   type Row = (String, Instant, Double)
  
-  def convert(json: => Error \/ String): Error \/ String = {
+  val DefaultTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(SHORT).withLocale(Locale.getDefault).withZone(systemDefault())
+  
+  def convert(json: => Error \/ String, formatter: DateTimeFormatter): Error \/ String = {
     for {
       string <- json
       series <- Parse.decodeEither[List[Series]](string).disjunction.leftMap(ParseError)
     } yield {
-      toCsv(series)
+      toCsv(series, formatter)
     }
   }
   
-  private def toCsv(series: List[Series]) = {
+  private def toCsv(series: List[Series], formatter: DateTimeFormatter) = {
     val quote = "\""
-    val formatter = ofLocalizedDateTime(SHORT).withLocale(Locale.getDefault).withZone(systemDefault())
     
     def toRows: List[Row] = for {
       reading     <- series

@@ -1,10 +1,16 @@
 package bad.robot.temperature.server
 
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle.SHORT
+import java.util.Locale._
+
 import org.http4s.Method.GET
 import org.http4s.Status.Ok
 import org.http4s.dsl._
 import org.http4s.{Request, Uri}
 import org.specs2.mutable.Specification
+
 import scalaz.syntax.either._
 
 class ExportEndpointTest extends Specification {
@@ -36,12 +42,14 @@ class ExportEndpointTest extends Specification {
       """.stripMargin
     
     val expectedCsv = """"Sensor","Time","Temperature","%Difference"
-                        |"bedroom1-sensor-1","11/10/17 09:13","NaN","0.0"
-                        |"bedroom1-sensor-1","11/10/17 09:14","22.0625","NaN"
-                        |"bedroom1-sensor-1","11/10/17 09:14","22.2625","0.91"""".stripMargin
+                        |"bedroom1-sensor-1","11/10/17 08:13","NaN","0.0"
+                        |"bedroom1-sensor-1","11/10/17 08:14","22.0625","NaN"
+                        |"bedroom1-sensor-1","11/10/17 08:14","22.2625","0.91"""".stripMargin
+
+    val UkDateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(SHORT).withLocale(UK).withZone(ZoneId.of("GMT"))
     
     val request = Request(GET, Uri.uri("/temperatures.csv"))
-    val service = ExportEndpoint(exampleJson.right)
+    val service = ExportEndpoint(exampleJson.right, UkDateTimeFormatter)
     val response = service(request).unsafePerformSync.orNotFound
     response.as[String].unsafePerformSync must_== expectedCsv
     response.status must_== Ok

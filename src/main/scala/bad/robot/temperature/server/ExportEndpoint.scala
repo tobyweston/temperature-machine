@@ -1,5 +1,7 @@
 package bad.robot.temperature.server
 
+import java.time.format.DateTimeFormatter
+
 import bad.robot.temperature.Error
 import bad.robot.temperature.JsonToCsv
 import org.http4s.HttpService
@@ -11,10 +13,10 @@ import scalaz.\/
 
 object ExportEndpoint {
   
-  def apply(json: => Error \/ String) = HttpService {
+  def apply(json: => Error \/ String, formatter: DateTimeFormatter) = HttpService {
     
     case GET -> Root / "temperatures.csv" => {
-      val csv = JsonToCsv.convert(json)
+      val csv = JsonToCsv.convert(json, formatter)
       csv.toHttpResponse(Ok(_).putHeaders(
         `Content-Type`(`text/csv`),
         `Content-Disposition`("attachment", Map("filename" -> "temperatures.csv"))
