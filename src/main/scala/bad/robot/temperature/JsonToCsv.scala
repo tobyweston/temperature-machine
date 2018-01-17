@@ -4,7 +4,7 @@ import java.time.Instant
 import java.time.ZoneId._
 import java.time.format.DateTimeFormatter._
 import java.time.format.FormatStyle._
-import java.util.Locale._
+import java.util.Locale
 
 import argonaut._
 import bad.robot.temperature.PercentageDifference.percentageDifference
@@ -27,7 +27,7 @@ object JsonToCsv {
   
   private def toCsv(series: List[Series]) = {
     val quote = "\""
-    val formatter = ofLocalizedDateTime(SHORT).withLocale(UK).withZone(systemDefault())
+    val formatter = ofLocalizedDateTime(SHORT).withLocale(Locale.getDefault).withZone(systemDefault())
     
     def toRows: List[Row] = for {
       reading     <- series
