@@ -21,8 +21,8 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
   "No recent connections" >> {
     val request = Request(GET, Uri.uri("/connections"))
     val service = ConnectionsEndpoint(fixedClock())
-    val response = service(request).unsafePerformSync.orNotFound
-    response.as[String].unsafePerformSync must_== "[]"
+    val response = service(request).unsafeRunSync.orNotFound
+    response.as[String].unsafeRunSync must_== "[]"
     response.status must_== Ok
   }
 
@@ -31,10 +31,10 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
 
     val request = Request(GET, Uri.uri("/connections"))
     val service = ConnectionsEndpoint(fixedClock())
-    val response = service(request).unsafePerformSync.orNotFound
+    val response = service(request).unsafeRunSync.orNotFound
 
     response.status must_== Ok
-    response.as[String].unsafePerformSync must_==
+    response.as[String].unsafeRunSync must_==
       """[
         |  {
         |    "host" : {
@@ -52,10 +52,10 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
 
     val request = Request(GET, Uri.uri("/connections/active/within/5/mins"))
     ConnectionsEndpoint.update(Host("garage"), Some(xForwardedFor("184.14.23.214")))
-    val response = service(request).unsafePerformSync.orNotFound
+    val response = service(request).unsafeRunSync.orNotFound
 
     response.status must_== Ok
-    response.as[String].unsafePerformSync must_== """[
+    response.as[String].unsafeRunSync must_== """[
                                                     |  {
                                                     |    "host" : {
                                                     |      "name" : "garage"
@@ -72,10 +72,10 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
 
     val request = Request(GET, Uri.uri("/connections"))
     val service = ConnectionsEndpoint(fixedClock())
-    val response = service(request).unsafePerformSync.orNotFound
+    val response = service(request).unsafeRunSync.orNotFound
 
     response.status must_== Ok
-    response.as[String].unsafePerformSync must_==
+    response.as[String].unsafeRunSync must_==
       """[
         |  {
         |    "host" : {
@@ -93,10 +93,10 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
 
     val request = Request(GET, Uri.uri("/connections/active/within/5/mins"))
     ConnectionsEndpoint.update(Host("garage"), Some(xForwardedFor("162.34.13.113")))
-    val response = service(request).unsafePerformSync.orNotFound
+    val response = service(request).unsafeRunSync.orNotFound
 
     response.status must_== Ok
-    response.as[String].unsafePerformSync must_== "[]"
+    response.as[String].unsafeRunSync must_== "[]"
   }
 
   def fixedClock(instant: Instant = Instant.now) = Clock.fixed(instant, ZoneId.systemDefault())

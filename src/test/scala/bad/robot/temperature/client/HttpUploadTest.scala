@@ -16,7 +16,7 @@ class HttpUploadTest extends Specification {
 
     def encodeMessageViaEntityEncoder[T](thing: T)(implicit encoder: EntityEncoder[T]) = {
       val request = Request(PUT).withBody(thing)
-      EntityDecoder.decodeString(request.unsafePerformSync).unsafePerformSync
+      EntityDecoder.decodeString(request.unsafeRunSync).unsafeRunSync
     }
 
     val measurement = Measurement(Host("example"), Seconds(1509221361), List(SensorReading("28-0115910f5eff", Temperature(19.75))))

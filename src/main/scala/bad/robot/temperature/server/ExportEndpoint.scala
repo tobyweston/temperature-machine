@@ -1,12 +1,12 @@
 package bad.robot.temperature.server
 
 import bad.robot.temperature.JsonToCsv
-import org.http4s.HttpService
-import org.http4s.dsl._
-
+import cats.effect.IO
+import org.http4s._
+import org.http4s.dsl.io._
 object ExportEndpoint {
   
-  def apply() = HttpService {
+  def apply() = HttpService[IO] {
     case GET -> Root / "temperatures" / "csv" => {
       val exampleJson =
         """

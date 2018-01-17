@@ -20,7 +20,7 @@ package object test {
           |
           |[$status]
           |
-          |(${e.value.as[String].unsafePerformSync})""".stripMargin,
+          |(${e.value.as[String].unsafeRunSync})""".stripMargin,
       e)
   }
 

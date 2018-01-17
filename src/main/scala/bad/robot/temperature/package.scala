@@ -4,6 +4,7 @@ import java.io.{PrintWriter, StringWriter}
 
 import argonaut.Argonaut._
 import argonaut._
+import cats.effect.IO
 import org.http4s.argonaut.{jsonEncoderWithPrinterOf, jsonOf}
 import org.http4s.{EntityDecoder, EntityEncoder}
 
@@ -12,9 +13,9 @@ import scalaz.syntax.either.ToEitherOps
 
 package object temperature {
 
-  implicit def http4sArgonautDecoder[A: DecodeJson]: EntityDecoder[A] = jsonOf[A]
+  implicit def http4sArgonautDecoder[A: DecodeJson]: EntityDecoder[IO, A] = jsonOf[IO, A]
   
-  implicit def http4sArgonautEncoder[A: EncodeJson]: EntityEncoder[A] = jsonEncoderWithPrinterOf[A](spaces2PlatformSpecific)
+  implicit def http4sArgonautEncoder[A: EncodeJson]: EntityEncoder[IO, A] = jsonEncoderWithPrinterOf[IO, A](spaces2PlatformSpecific)
   
   def encode[A: EncodeJson](a: A): Json = a.jencode
 

@@ -8,9 +8,11 @@ import argonaut.Argonaut._
 import argonaut.EncodeJson
 import bad.robot.temperature._
 import bad.robot.temperature.rrd.Host
-import org.http4s.HttpService
-import org.http4s.dsl._
+import cats.Monad
+import cats.effect.IO
+import org.http4s.dsl.io._
 import org.http4s.headers.`X-Forwarded-For`
+import org.http4s.HttpService
 
 object TemperatureEndpoint {
 
@@ -24,10 +26,10 @@ object TemperatureEndpoint {
 
   private var current: Map[Host, Measurement] = Map()
 
-  def apply(sensors: TemperatureReader, writer: TemperatureWriter)(implicit clock: Clock) = HttpService {
+  def apply(sensors: TemperatureReader, writer: TemperatureWriter)(implicit clock: Clock) = HttpService[IO] {
     case GET -> Root / "temperature" => {
       sensors.read.toHttpResponse(temperatures => {
-        Ok(s"${temperatures.average.temperature.asCelsius}")
+        Ok.apply(s"${temperatures.average.temperature.asCelsius}")(implicitly[Monad[IO]], null)
       })
     }
 
@@ -48,7 +50,7 @@ object TemperatureEndpoint {
     }
 
     case request @ PUT -> Root / "temperature" => {
-      val json = request.as[String].unsafePerformSync
+      val json = request.as[String].unsafeRunSync
       val result = for {
         measurement <- decode[Measurement](json)
         _           <- writer.write(measurement)
