@@ -2,6 +2,9 @@ options:
   - title: Introduction
     url: docs/index.html
 
+  - title: Getting Help
+    url: docs/getting_help.html
+
   - title: Getting Started
     url: docs/getting_started.html
     section: getting_started
