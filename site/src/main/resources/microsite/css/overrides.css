@@ -15,3 +15,8 @@ table {
     -webkit-transition: none;
     transition: none;
 }
+
+#wrapper {
+    -webkit-transition: none;
+    transition: none;
+}
