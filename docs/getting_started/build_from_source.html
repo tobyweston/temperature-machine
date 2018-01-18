@@ -6,31 +6,114 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 
 ga('create', 'UA-3327317-12' , 'auto');
 ga('send', 'pageview');
-      </script></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/" class="brand"><div class="brand-wrapper"><span>Temperature Machine</span></div></a></li> <li><a href="/docs/index.html" class="">Introduction</a></li> <li><a href="/docs/getting_help.html" class="">Getting Help</a></li> <li><a href="/docs/getting_started.html" class="">Getting Started</a> <ul class="sub_section"> <li><a href="/docs/getting_started/build_from_source.html" class="">Build from Source</a></li> <li><a href="/docs/getting_started/preinstalled_image.html" class="">Pre-installed Image</a></li> <li><a href="/docs/getting_started/download.html" class="">Download Binary</a></li></ul></li> <li><a href="/docs/ds18b20_sensor.html" class="">DS18B20 Sensor</a></li> <li><a href="/docs/add-on_board.html" class="">Add-on Board</a></li> <li><a href="/docs/rrd.html" class="">RRD</a></li> <li><a href="/docs/hacking.html" class="">Hacking</a></li> <li><a href="/docs/ansible.html" class="">Ansible Automation</a> <ul class="sub_section"> <li><a href="/docs/ansible/getting_started.html" class="">Getting Started</a></li> <li><a href="/docs/ansible/useful_commands.html" class="">Useful Ad-hoc Commands</a></li></ul></li> <li><a href="/docs/resources.html" class="">Resources</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/tobyweston/temperature-machine"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/tobyweston/temperature-machine"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('Temperature Machine The homebrew data logger');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('Temperature Machine The homebrew data logger');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="tobyweston" data-github-repo="temperature-machine"><div class="content-wrapper"><section><h1 id="build-from-source">Build From Source</h1>
+      </script></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/" class="brand"><div class="brand-wrapper"><span>Temperature Machine</span></div></a></li> <li><a href="/docs/index.html" class="">Introduction</a></li> <li><a href="/docs/getting_started.html" class="">Getting Started</a> <ul class="sub_section"> <li><a href="/docs/getting_started/build_from_source.html" class="">Build from Source</a></li> <li><a href="/docs/getting_started/preinstalled_image.html" class="">Pre-installed Image</a></li> <li><a href="/docs/getting_started/download.html" class="">Download Binary</a></li></ul></li> <li><a href="/docs/getting_help.html" class="">Getting Help</a></li> <li><a href="/docs/ds18b20_sensor.html" class="">DS18B20 Sensor</a></li> <li><a href="/docs/add-on_board.html" class="">Add-on Board</a></li> <li><a href="/docs/rrd.html" class="">RRD</a></li> <li><a href="/docs/hacking.html" class="">Hacking</a></li> <li><a href="/docs/ansible.html" class="">Ansible Automation</a> <ul class="sub_section"> <li><a href="/docs/ansible/getting_started.html" class="">Getting Started</a></li> <li><a href="/docs/ansible/useful_commands.html" class="">Useful Ad-hoc Commands</a></li></ul></li> <li><a href="/docs/resources.html" class="">Resources</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/tobyweston/temperature-machine"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/tobyweston/temperature-machine"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('Temperature Machine The homebrew data logger');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('Temperature Machine The homebrew data logger');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="tobyweston" data-github-repo="temperature-machine"><div class="content-wrapper"><section><h1 id="build-from-source-">Build From Source <img src="https://travis-ci.org/tobyweston/temperature-machine.svg?branch=master" alt="" /></h1>
 
-<p>To get the software on the box, I tend to do the following;</p>
+<p>To get the software on the box, I tend to do the following (having setup Java and SBT on the box);</p>
 
 <ol>
   <li>Clone the repository on the Pi</li>
+  <li>(Recommended) increase your swap file size (see <a href="build_from_source.html#increase-swap-file-size">below</a>)</li>
   <li>Run <code class="highlighter-rouge">sbt -J-Xmx512m -J-Xms512m assembly</code> from a terminal (memory set low for the Pi Zero). This might take around 30m on the Pi Zero.</li>
   <li>Run <code class="highlighter-rouge">./start.sh &amp;</code>, <code class="highlighter-rouge">./start-server.sh room1 room2 room3</code> or <code class="highlighter-rouge">./start-client.sh</code> from the checked out folder</li>
 </ol>
-
-<p>You can also read my <a href="http://baddotrobot.com/blog/2016/03/23/homebrew-temperature-logger/">blog post</a> for more detailed instructions (including automatically logging temperatures on reboot).</p>
-
-<p>Don’t forget to <code class="highlighter-rouge">git pull</code> the latest version every so often.</p>
 
 <blockquote>
   <p>Don’t forget to enable 1-wire support by adding <code class="highlighter-rouge">dtoverlay=w1-gpio</code> to <code class="highlighter-rouge">/boot/config.txt</code></p>
 </blockquote>
 
-<h2 id="troubleshooting">Troubleshooting</h2>
+<p>You can also read my <a href="http://baddotrobot.com/blog/2016/03/23/homebrew-temperature-logger/">blog post</a> for more detailed instructions (including automatically logging temperatures on reboot).</p>
 
-<p>SBT will often fail when running on the Pi. Generally, I have to run it twice.</p>
+<h2 id="keep-up-to-date">Keep up to Date</h2>
 
-<p>Move this out to it’s own file…</p>
+<p>Keep your source up to date by getting the latest from Git (<code class="highlighter-rouge">git pull</code>) and compiling with <code class="highlighter-rouge">sbt assembly</code>.</p>
 
-<h3 id="unable-to-access-jarfile">Unable to access jarfile</h3>
+<ol>
+  <li><code class="highlighter-rouge">cd ~/code/temperature-machine</code></li>
+  <li><code class="highlighter-rouge">git pull</code></li>
+  <li><code class="highlighter-rouge">sbt -J-Xmx512m -J-Xms512m assembly</code></li>
+</ol>
+
+<p>This is the “in-development” version of the software. It may have partially implemented features or be broken completely. Check that the build is at least passing (below) before you update and if you prefer, stick to <a href="download.html">downloading</a> the <a href="https://github.com/tobyweston/temperature-machine/releases">official releases</a> as an alternative.</p>
+
+<h2 id="tips-and-troubleshooting">Tips and Troubleshooting</h2>
+
+<h3 id="always-run-as-pi">Always run as <code class="highlighter-rouge">pi</code></h3>
+
+<p>All the steps assume you’re running as the <code class="highlighter-rouge">pi</code> user. <strong>Never run anthing todo with temperature-machine as root</strong>.</p>
+
+<h2 id="increase-swap-file-size">Increase Swap File Size</h2>
+
+<p>SBT seems to struggle on the Pi and <code class="highlighter-rouge">assembly</code> will frequently fail. It uses incremental compilation so running a second time after a failure picks up from where it left off and will generally succeed.</p>
+
+<p>However, if you increase the swap size on the Pi (especially effective on the Pi Zero), you should have fewer problems.</p>
+
+<p>Edit <code class="highlighter-rouge">/etc/dphys-swapfile</code> to increase the swap file size:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$ sudo nano /etc/dphys-swapfile
+</code></pre>
+</div>
+
+<p>Replace:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>CONF_SWAPSIZE=100
+</code></pre>
+</div>
+
+<p>with…</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>CONF_SWAPSIZE=512
+</code></pre>
+</div>
+
+<p>Recreate the swap file with the following.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>sudo /etc/init.d/dphys-swapfile restart
+</code></pre>
+</div>
+
+<p>Check by running <code class="highlighter-rouge">free -m</code>. The total value for swap should be <code class="highlighter-rouge">512</code> (ish) (and not <code class="highlighter-rouge">99</code>).</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$ free -m
+              total        used        free      shared  buff/cache   available
+Mem:            434          98         174           3         161         285
+Swap:           511           0          511
+</code></pre>
+</div>
+
+<p>Thanks to Cristian Arezzini for this tip.</p>
+
+<h3 id="failing-build">Failing Build</h3>
+
+<p>An SBT build should end with a success message. Something like this.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>...
+[warn] Strategy 'discard' was applied to 11 files
+[info] SHA-1: 5f0a3316b670b1249256892d76322b0ddec9e47a
+[info] Packaging /home/pi/code/temperature-machine/target/scala-2.12/temperature-machine-2.1.jar ...
+[info] Done packaging.
+[success] Total time: 1688 s, completed 18-Jan-2018 19:29:18
+</code></pre>
+</div>
+
+<p>Anything else is a failure.</p>
+
+<p>Failures will be either environmental (problems with the Pi like memory or general flakeyness) or problems with the code (doesn’t compile or tests fail). If it’s environmental, follow the steps above: rerun and/or increase the swap file size. Here’s an example of a environmental failure during compilation.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>...
+Compiling 29 Scala sources to /home/pi/code/temperature-machine/target/scala-2.12/test-classes...
+/usr/local/bin/sbt: line 3:  6014 Killed                  java $SBT_OPTS -jar `dirname $0`/sbt-launch.jar "$@"
+</code></pre>
+</div>
+
+<p>If it’s a compilation or test failure, you’ll need to reach out (see the <a href="../getting_help.html">Getting Help</a> section).</p>
+
+<h3 id="skipping-tests">Skipping Tests</h3>
+
+<p>If you want to skip running the tests as part of the assembly process, use the following command:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>sbt 'set test in assembly := {}' assembly 
+</code></pre>
+</div>
 
 </section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({
 languages:['scala','java','bash']
