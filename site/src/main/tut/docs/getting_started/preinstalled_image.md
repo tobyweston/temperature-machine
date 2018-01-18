@@ -7,7 +7,7 @@ title: Download Pre-installed Image
 
 I followed the previous steps to [Build from Source](build_from_source.html) then ran `sudo dd if=/dev/rdisk3 of=2017-03-02-raspbian-temperature-machine.img bs=1m` to create an image file based Raspian Jessie Lite (4.9.y). 
 
-1. Download the image from my [Google Drive](https://drive.google.com/open?id=0B-I9xnCr64hFWjBoS0Z6akUwVVU).
+1. Download the image from my [Google Drive](https://drive.google.com/file/d/13mrmYviFIXdaKUU9EF5_7l38QV3jqRFM/view?usp=sharing).
 1. On Mac, use [Etcher](https://etcher.io/) to flash a new SD card with the image. Refer to [raspberrypi.org](https://www.raspberrypi.org/documentation/installation/installing-images/) for other platforms.
 1. Setup your wifi by inserting your new SD card to your machine and creating a file `wpa_supplicant.conf` under `/boot`. Mine looks like this (the `scan_ssid=1` is only needed if you're using a hidden network). 
 
