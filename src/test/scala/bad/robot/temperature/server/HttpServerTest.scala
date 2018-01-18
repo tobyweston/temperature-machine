@@ -64,12 +64,16 @@ class HttpServerTest extends Specification {
       assertOk(Request(GET, path("/connections/active/within/5/mins")))
     }
 
-    "get the local machines log over http" >> {
+    "get the local machine's log over http" >> {
       assertOk(Request(GET, path("/log")))
     }
     
     def assertOk(request: Request) = {
       val response = client.fetch(request)(Task.delay(_)).unsafePerformSync
+      if (response.status != Status.Ok) {
+        val body = response.as[String].unsafePerformSyncAttempt
+        println(s"Non-200 body was:\n$body")
+      }
       response.status must be_==(Status.Ok).eventually(10, 500 milliseconds)
     }
 
