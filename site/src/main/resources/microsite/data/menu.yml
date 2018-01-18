@@ -2,9 +2,6 @@ options:
   - title: Introduction
     url: docs/index.html
 
-  - title: Getting Help
-    url: docs/getting_help.html
-
   - title: Getting Started
     url: docs/getting_started.html
     section: getting_started
@@ -17,6 +14,9 @@ options:
      - title: Download Binary
        url: docs/getting_started/download.html
 
+  - title: Getting Help
+    url: docs/getting_help.html
+    
   - title: DS18B20 Sensor
     url: docs/ds18b20_sensor.html
 
