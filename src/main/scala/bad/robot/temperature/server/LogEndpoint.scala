@@ -3,7 +3,7 @@ package bad.robot.temperature.server
 import java.util.Scanner
 
 import bad.robot.temperature.rrd.RrdFile
-import bad.robot.temperature.{Error, FileError, FileOps, LogMessage, LogParser}
+import bad.robot.temperature.{Error, FileError, FileOps, LogMessage, LogParser, _}
 import org.http4s.HttpService
 import org.http4s.dsl.{->, /, GET, Ok, Root, _}
 

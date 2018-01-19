@@ -1,20 +1,17 @@
 package bad.robot.temperature
 
-import argonaut.Argonaut._
-import argonaut.{EncodeJson, _}
+import io.circe._
 
 object SensorReading {
-  implicit def jsonEncoder: EncodeJson[SensorReading] = {
-    EncodeJson((sensor: SensorReading) =>
-      argonaut.Json(
-        "name"        := sensor.name,
-        "temperature" := sensor.temperature
-      )
+  implicit def jsonEncoder: Encoder[SensorReading] = new Encoder[SensorReading] {
+    def apply(sensor: SensorReading): Json = Json.obj(
+      ("name", Json.fromString(sensor.name)),
+      ("temperature", Temperature.encoder(sensor.temperature))
     )
   }
 
-  implicit def jsonDecoder: DecodeJson[SensorReading] = {
-    DecodeJson(cursor => for {
+  implicit def jsonDecoder: Decoder[SensorReading] = {
+    Decoder(cursor => for {
       name        <- cursor.get[String]("name")
       temperature <- cursor.get[Temperature]("temperature")
     } yield SensorReading(name, temperature))

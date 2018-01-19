@@ -112,7 +112,7 @@ class TemperatureEndpointTest extends Specification {
     val service = TemperatureEndpoint(stubReader(\/-(List())), stubWriter(\/-(Unit)))(clock)
     val response = service.apply(Put("bad json")).unsafePerformSync.orNotFound
     response must haveStatus(BadRequest)
-    response.as[String].unsafePerformSync must_== "Unable to parse content as JSON Unexpected content found: bad json"
+    response.as[String].unsafePerformSync must_== "Unable to parse content as JSON expected json value got b (line 1, column 1)"
   }
 
   "Get multiple sensors temperatures" >> {

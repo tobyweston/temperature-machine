@@ -1,21 +1,20 @@
 package bad.robot.temperature
 
-import argonaut.Argonaut._
-import argonaut._
+import io.circe._
 
 object Temperature {
 
-  implicit def jsonEncoder: EncodeJson[Temperature] = {
-    EncodeJson((temperature: Temperature) =>
-      argonaut.Json(
-        "celsius" := temperature.celsius
-      )
+  implicit def encoder: Encoder[Temperature] = new Encoder[Temperature] {
+    def apply(temperature: Temperature): Json = Json.obj(
+      ("celsius", Json.fromDoubleOrNull(temperature.celsius))
     )
   }
 
-  implicit def jsonDecoder: DecodeJson[Temperature] = {
-    DecodeJson(cursor => cursor.get[Double]("celsius").map(Temperature.apply))
+  implicit def decoder: Decoder[Temperature] = new Decoder[Temperature] {
+    def apply(cursor: HCursor): Decoder.Result[Temperature] =
+      cursor.get[Double]("celsius").map(Temperature.apply)
   }
+
 }
 
 case class Temperature(celsius: Double) {

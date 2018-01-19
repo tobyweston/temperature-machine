@@ -18,7 +18,7 @@ object JsonFile {
 
 
   def load: Error \/ String = {
-    fromTryCatchNonFatal(Source.fromFile(file).getLines().mkString("\n")).leftMap(FileError)
+    fromTryCatchNonFatal(Source.fromFile(file).getLines().mkString(sys.props("line.separator"))).leftMap(FileError)
   }
 
 }
