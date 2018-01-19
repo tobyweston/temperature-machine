@@ -18,4 +18,11 @@ class IpAddressTest extends Specification {
     IpAddress.isIpAddress("256.255.255.256") must_== false
     IpAddress.isIpAddress("0.0.0.-1") must_== false
   }
+
+  "Encode Json" >> {
+    encode(IpAddress("10.0.1.7")).spaces2ps must_==
+      """|{
+         |  "value" : "10.0.1.7"
+         |}""".stripMargin
+  }
 }

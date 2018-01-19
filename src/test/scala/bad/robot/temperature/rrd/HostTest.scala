@@ -2,6 +2,7 @@ package bad.robot.temperature.rrd
 
 import java.net.InetAddress
 
+import bad.robot.temperature._
 import org.specs2.mutable.Specification
 
 class HostTest extends Specification {
@@ -17,6 +18,13 @@ class HostTest extends Specification {
 
   "Local host" >> {
     Host.local must_== Host(InetAddress.getLocalHost.getHostName)
+  }
+
+  "Encode Json" >> {
+    encode(Host("cheese.local")).spaces2ps must_==
+      """{
+        |  "name" : "cheese.local"
+        |}""".stripMargin
   }
 
 }
