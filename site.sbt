@@ -15,7 +15,7 @@ lazy val siteSettings = Seq(
   micrositeHighlightTheme := "atom-one-light",
   micrositeDocumentationUrl := "/docs",
   micrositeGitterChannel := true,
-  micrositeGitterChannelUrl := "temperature-machine",
+  micrositeGitterChannelUrl := "temperature-machine/Lobby",
   micrositeAnalyticsToken := "UA-3327317-12",
 
   micrositeFavicons := Seq(
