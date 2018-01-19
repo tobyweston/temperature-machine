@@ -70,6 +70,10 @@ class HttpServerTest extends Specification {
       assertOk(Request(GET, path("/log")))
     }
 
+    "get version info" >> {
+      assertOk(Request(GET, path("/version")))
+    }
+
     def assertOk(request: Request) = {
       val response = client.fetch(request)(Task.delay(_)).unsafePerformSync
       if (response.status != Status.Ok) {

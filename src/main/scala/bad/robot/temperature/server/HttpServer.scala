@@ -48,6 +48,7 @@ class HttpServer(port: Int, monitored: List[Host]) {
       ConnectionsEndpoint(Clock.systemDefaultZone) ||
       LogEndpoint() ||
       ExportEndpoint(JsonFile.load, JsonToCsv.DefaultTimeFormatter) ||
+      VersionEndpoint() ||
       StaticFiles() ||
       StaticResources()
     )
