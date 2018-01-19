@@ -16,7 +16,7 @@ ga('send', 'pageview');
   <li>
     <p>Setup your wifi by inserting your new SD card to your machine and creating a file <code class="highlighter-rouge">wpa_supplicant.conf</code> under <code class="highlighter-rouge">/boot</code>. Mine looks like this (the <code class="highlighter-rouge">scan_ssid=1</code> is only needed if you’re using a hidden network).</p>
 
-    <div class="highlighter-rouge"><pre class="highlight"><code> ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
  update_config=1
     
  network={
@@ -24,8 +24,7 @@ ga('send', 'pageview');
    scan_ssid=1
    psk="plain text password"
  }
-</code></pre>
-    </div>
+</code></pre></div>    </div>
   </li>
   <li>Unmount and stick the card in the Pi. Power up.</li>
   <li>On the Pi (<code class="highlighter-rouge">ssh pi@raspberrypi.local</code>), run <code class="highlighter-rouge">raspi-config</code> to:
@@ -39,9 +38,8 @@ ga('send', 'pageview');
       <li>
         <p>If this is the first temperature-machine, run in <em>server</em> mode. Add the following to <code class="highlighter-rouge">/etc/rc.local</code> above the <code class="highlighter-rouge">exit 0</code> line.</p>
 
-        <div class="highlighter-rouge"><pre class="highlight"><code> su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start-server.sh garage bedroom &amp;'
-</code></pre>
-        </div>
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start-server.sh garage bedroom &amp;'
+</code></pre></div>        </div>
       </li>
     </ol>
 
@@ -51,9 +49,8 @@ ga('send', 'pageview');
       <li>
         <p>If you already have a server, run in client mode. Add the following to <code class="highlighter-rouge">/etc/rc.local</code> above the <code class="highlighter-rouge">exit 0</code> line.</p>
 
-        <div class="highlighter-rouge"><pre class="highlight"><code> su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start-client.sh &amp;'
-</code></pre>
-        </div>
+        <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start-client.sh &amp;'
+</code></pre></div>        </div>
       </li>
     </ol>
   </li>
@@ -77,4 +74,4 @@ languages:['scala','java','bash']
 });
 hljs.initHighlighting();
              </script><script>((window.gitter = {}).chat = {}).options = {
-room: 'temperature-machine'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/js/main.js"></script></body></html>
+room: 'temperature-machine/Lobby'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/js/main.js"></script></body></html>

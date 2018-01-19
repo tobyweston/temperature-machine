@@ -49,36 +49,31 @@ ga('send', 'pageview');
 
 <p>Edit <code class="highlighter-rouge">/etc/dphys-swapfile</code> to increase the swap file size:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ sudo nano /etc/dphys-swapfile
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo nano /etc/dphys-swapfile
+</code></pre></div></div>
 
 <p>Replace:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>CONF_SWAPSIZE=100
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CONF_SWAPSIZE=100
+</code></pre></div></div>
 
 <p>with…</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>CONF_SWAPSIZE=512
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CONF_SWAPSIZE=512
+</code></pre></div></div>
 
 <p>Recreate the swap file with the following.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>sudo /etc/init.d/dphys-swapfile restart
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo /etc/init.d/dphys-swapfile restart
+</code></pre></div></div>
 
 <p>Check by running <code class="highlighter-rouge">free -m</code>. The total value for swap should be <code class="highlighter-rouge">512</code> (ish) (and not <code class="highlighter-rouge">99</code>).</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ free -m
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ free -m
               total        used        free      shared  buff/cache   available
 Mem:            434          98         174           3         161         285
 Swap:           511           0          511
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Thanks to Cristian Arezzini for this tip.</p>
 
@@ -86,24 +81,22 @@ Swap:           511           0          511
 
 <p>An SBT build should end with a success message. Something like this.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>...
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>...
 [warn] Strategy 'discard' was applied to 11 files
 [info] SHA-1: 5f0a3316b670b1249256892d76322b0ddec9e47a
 [info] Packaging /home/pi/code/temperature-machine/target/scala-2.12/temperature-machine-2.1.jar ...
 [info] Done packaging.
 [success] Total time: 1688 s, completed 18-Jan-2018 19:29:18
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Anything else is a failure.</p>
 
 <p>Failures will be either environmental (problems with the Pi like memory or general flakeyness) or problems with the code (doesn’t compile or tests fail). If it’s environmental, follow the steps above: rerun and/or increase the swap file size. Here’s an example of a environmental failure during compilation.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>...
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>...
 Compiling 29 Scala sources to /home/pi/code/temperature-machine/target/scala-2.12/test-classes...
 /usr/local/bin/sbt: line 3:  6014 Killed                  java $SBT_OPTS -jar `dirname $0`/sbt-launch.jar "$@"
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>If it’s a compilation or test failure, you’ll need to reach out (see the <a href="../getting_help.html">Getting Help</a> section).</p>
 
@@ -111,13 +104,12 @@ Compiling 29 Scala sources to /home/pi/code/temperature-machine/target/scala-2.1
 
 <p>If you want to skip running the tests as part of the assembly process, use the following command:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>sbt 'set test in assembly := {}' assembly 
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sbt 'set test in assembly := {}' assembly 
+</code></pre></div></div>
 
 </section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({
 languages:['scala','java','bash']
 });
 hljs.initHighlighting();
              </script><script>((window.gitter = {}).chat = {}).options = {
-room: 'temperature-machine'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/js/main.js"></script></body></html>
+room: 'temperature-machine/Lobby'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/js/main.js"></script></body></html>
