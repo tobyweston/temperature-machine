@@ -1,6 +1,6 @@
 package bad.robot.temperature.server
 
-import java.io.{BufferedWriter, File, FileWriter}
+import java.io._
 
 import bad.robot.logging._
 import bad.robot.temperature.rrd.{Host, RrdFile}
@@ -20,7 +20,7 @@ class HttpServerTest extends Specification {
     val client = PooledHttp1Client(config = defaultConfig.copy(idleTimeout = 30 minutes, responseHeaderTimeout = 30 minutes))
 
     // todo wait for server to startup, not sure how.
-    
+
     "index.html can be loaded" >> {
       assertOk(Request(GET, path("")))
     }
@@ -41,12 +41,14 @@ class HttpServerTest extends Specification {
     }
 
     "Some java script can be loaded (note this changes with every UI deployment)" >> {
-      assertOk(Request(GET, path("/static/js/main.e2829bae.js")))
+      val file = findFileIn("src/main/resources/static/js", startingWith("main", ".js"))
+      assertOk(Request(GET, path("/static/js/" + file.head)))
     }
 
-    "Some css can be loaded (note this changes with every UI deployment)" >> {
-      assertOk(Request(GET, path("/static/css/main.b58db282.css")))
-    }
+//    "Some css can be loaded (note this changes with every UI deployment)" >> {
+//      val file = findFileIn("src/main/resources/static/css", startingWith("main", ".css"))
+//      assertOk(Request(GET, path("/static/css/" + file.head)))
+//    }
 
     "image can be loaded" >> {
       assertOk(Request(GET, path("/images/spinner.gif")))
@@ -67,7 +69,7 @@ class HttpServerTest extends Specification {
     "get the local machine's log over http" >> {
       assertOk(Request(GET, path("/log")))
     }
-    
+
     def assertOk(request: Request) = {
       val response = client.fetch(request)(Task.delay(_)).unsafePerformSync
       if (response.status != Status.Ok) {
@@ -107,7 +109,7 @@ class HttpServerTest extends Specification {
       writer.write(exampleJson)
       writer.close()
     }
-    
+
     def createFile(filename: String) = {
       val file = new File(s"${RrdFile.path}/$filename")
       val writer = new BufferedWriter(new FileWriter(file))
@@ -121,6 +123,13 @@ class HttpServerTest extends Specification {
       } yield ()
       shutdown.unsafePerformSync
     }
+  }
+
+  def startingWith(startsWith: String, extension: String): FileFilter = (file: File) => file.getName.startsWith(startsWith) && file.getName.endsWith(extension)
+
+  def findFileIn(base: String, filter: FileFilter): List[String] = {
+    val files = Option(new File(base).listFiles(filter))
+    files.map(_.map(_.getName).toList).getOrElse(List())
   }
 
 }
