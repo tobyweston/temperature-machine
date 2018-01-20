@@ -1,0 +1,77 @@
+<html><head><title>Temperature Machine</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Toby Weston" /><meta name="description" content="The homebrew data logger" /><meta name="og:image" content="/img/poster.png" /><meta name="og:title" content="Temperature Machine" /><meta name="og:site_name" content="Temperature Machine" /><meta name="og:url" content="http://temperature-machine.com" /><meta name="og:type" content="website" /><meta name="og:description" content="The homebrew data logger" /><link rel="icon" type="image/png" href="/img/favicon.png" /><meta name="twitter:title" content="Temperature Machine" /><meta name="twitter:image" content="http://temperature-machine.comimg/poster.png" /><meta name="twitter:description" content="The homebrew data logger" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/img/favicon32x32.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/css/style.css" /><link rel="stylesheet" href="/css/palette.css" /><link rel="stylesheet" href="/css/codemirror.css" /><link rel="stylesheet" href="/css/overrides.css" /><script async="async">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-3327317-12' , 'auto');
+ga('send', 'pageview');
+      </script></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/" class="brand"><div class="brand-wrapper"><span>Temperature Machine</span></div></a></li> <li><a href="/docs/index.html" class="">Introduction</a></li> <li><a href="/docs/getting_started.html" class="">Getting Started</a> <ul class="sub_section"> <li><a href="/docs/getting_started/build_from_source.html" class="">Build from Source</a></li> <li><a href="/docs/getting_started/preinstalled_image.html" class="">Pre-installed Image</a></li> <li><a href="/docs/getting_started/download.html" class="">Download Binary</a></li></ul></li> <li><a href="/docs/configuration.html" class=" active ">Configuration</a></li> <li><a href="/docs/getting_help.html" class="">Getting Help</a></li> <li><a href="/docs/ds18b20_sensor.html" class="">DS18B20 Sensor</a></li> <li><a href="/docs/add-on_board.html" class="">Add-on Board</a></li> <li><a href="/docs/rrd.html" class="">RRD</a></li> <li><a href="/docs/hacking.html" class="">Hacking</a></li> <li><a href="/docs/ansible.html" class="">Ansible Automation</a> <ul class="sub_section"> <li><a href="/docs/ansible/getting_started.html" class="">Getting Started</a></li> <li><a href="/docs/ansible/useful_commands.html" class="">Useful Ad-hoc Commands</a></li></ul></li> <li><a href="/docs/resources.html" class="">Resources</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/tobyweston/temperature-machine"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/tobyweston/temperature-machine"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('Temperature Machine The homebrew data logger');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('Temperature Machine The homebrew data logger');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="tobyweston" data-github-repo="temperature-machine"><div class="content-wrapper"><section><h1 id="configuration">Configuration</h1>
+
+<p>See the <a href="https://github.com/tobyweston/temperature-machine/releases">release notes</a> as not all features listed here may be available on your version.</p>
+
+<h2 id="the-startup-scripts">The Startup Scripts</h2>
+
+<p>There are currently two startup scripts.</p>
+
+<ol>
+  <li><code class="highlighter-rouge">start-server.sh</code></li>
+  <li><code class="highlighter-rouge">start-client.sh</code></li>
+</ol>
+
+<p>You can run these manually from the terminal or setup the Pi to run then automatically on boot (see below). To stop, run the <code class="highlighter-rouge">stop.sh</code> script.</p>
+
+<h3 id="start-server">Start Server</h3>
+
+<p>Run the following to startup the server ready to monitor three machines. Always include the host name of the machine you’re running (it requires the server is monitoring temperatures).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./start-server.sh machine1 machine2 machine3
+</code></pre></div></div>
+
+<h3 id="start-client">Start Client</h3>
+
+<p>Just run the following to start the client. You must have a server running on your network. If you have just one machine, run just the server.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./start-client.sh
+</code></pre></div></div>
+
+<h2 id="start-automatically">Start Automatically</h2>
+
+<p>There are different ways to start software automatically after a reboot. I chose to add the following to <code class="highlighter-rouge">/etc/rc.local</code> on the server. Replace <code class="highlighter-rouge">garage</code> and <code class="highlighter-rouge">bedroom</code> with the names of the machines you want to monitor (the default name of a new Raspberry Pi install will be <code class="highlighter-rouge">raspberrypi</code> but you might want to change each host name to reflect the room the Pi sits in).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start-server.sh garage bedroom &amp;'
+</code></pre></div></div>
+
+<p>…and the following to the client(s).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start-client.sh &amp;'
+</code></pre></div></div>
+
+<p>They run the startup scripts as the user <code class="highlighter-rouge">pi</code> and assumes you’ve cloned the code as to <code class="highlighter-rouge">/home/pi/code/temperature-machine</code>. After rebooting, you should see a log file in <code class="highlighter-rouge">~/.temperature</code> and pid file in the startup folder.</p>
+
+<p>To stop, just run the <code class="highlighter-rouge">stop.sh</code> script.</p>
+
+<h2 id="avoid-spikes-in-charts">Avoid Spikes in Charts</h2>
+
+<p><span class="label label-success">version 2.1 only</span></p>
+
+<p><a href="https://github.com/tobyweston/temperature-machine/issues/9">Issue #9</a> tries to address occasional spikes in temperature data by tracking previous temperatures and ignoring fluctuations. If enabled, ignore temperatures with a +/-25% fluctuation by default. Enable and configure by adding the following to your server startup script (<code class="highlighter-rouge">30</code> is an example percentage).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-Davoid.spikes=30 
+</code></pre></div></div>
+
+<p>So, edit <code class="highlighter-rouge">/home/pi/code/temperature-machine/start-server.sh</code> and change the following line.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nohup java -Xmx512m -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.port=1616 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=${IP} -cp target/scala-2.12/temperature-machine-2.1.jar bad.robot.temperature.server.Server $@ &gt; ${LOG_FILE} 2&gt;&amp;1 &amp;
+</code></pre></div></div>
+
+<p>to</p>
+
+<pre class="highlight"><code class="hljs bash">nohup java <mark>-Davoid.spikes=30</mark> -Xmx512m -Dcom.sun.management.jmxremote=<span class="hljs-literal">true</span> -Dcom.sun.management.jmxremote.port=1616 -Dcom.sun.management.jmxremote.authenticate=<span class="hljs-literal">false</span> -Dcom.sun.management.jmxremote.ssl=<span class="hljs-literal">false</span> -Djava.rmi.server.hostname=<span class="hljs-variable">${IP}</span> -cp target/scala-2.12/temperature-machine-2.1.jar bad.robot.temperature.server.Server <span class="hljs-variable">$@</span> &gt; <span class="hljs-variable">${LOG_FILE}</span> 2&gt;&amp;1 &amp;
+</code></pre>
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script>((window.gitter = {}).chat = {}).options = {
+room: 'temperature-machine/Lobby'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/js/main.js"></script></body></html>
