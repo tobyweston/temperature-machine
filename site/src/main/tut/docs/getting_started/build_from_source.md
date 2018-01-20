@@ -14,7 +14,7 @@ To get the software on the box, I tend to do the following (having setup Java an
 
 > Don't forget to enable 1-wire support by adding `dtoverlay=w1-gpio` to `/boot/config.txt`
 
-You can also read my [blog post](http://baddotrobot.com/blog/2016/03/23/homebrew-temperature-logger/) for more detailed instructions (including automatically logging temperatures on reboot). 
+You can also read my [blog post](http://baddotrobot.com/blog/2016/03/23/homebrew-temperature-logger/) for more detailed instructions and the [configuration section](../configuration.html) to find out how to start on reboot. 
 
 ## Keep up to Date 
 
