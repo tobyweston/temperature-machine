@@ -31,7 +31,7 @@ This is the "in-development" version of the software. It may have partially impl
 
 ### Always run as `pi`
 
-All the steps assume you're running as the `pi` user. **Never run anthing todo with temperature-machine as root**.
+All the steps assume you're running as the `pi` user. **<mark>Never run anything todo with temperature-machine as root</mark>**.
 
 ## Increase Swap File Size
 

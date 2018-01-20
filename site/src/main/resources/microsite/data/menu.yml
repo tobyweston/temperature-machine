@@ -14,6 +14,9 @@ options:
      - title: Download Binary
        url: docs/getting_started/download.html
 
+  - title: Configuration
+    url: docs/configuration.html
+
   - title: Getting Help
     url: docs/getting_help.html
     
