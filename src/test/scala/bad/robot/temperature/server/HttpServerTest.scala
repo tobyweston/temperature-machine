@@ -26,17 +26,17 @@ class HttpServerTest extends Specification {
     }
 
     "temperature.json can be loaded" >> {
-      createJsonFile()
+      maybeCreateJsonFile()
       assertOk(Request(GET, path("/temperature.json")))
     }
 
     "temperature.csv can be loaded" >> {
-      createJsonFile()
+      maybeCreateJsonFile()
       assertOk(Request(GET, path("/temperatures.csv")))
     }
 
     "RRD chart / image can be loaded" >> {
-      createFile("temperature-1-days.png")
+      maybeCreateFile("temperature-1-days.png")
       assertOk(Request(GET, path("/temperature-1-days.png")))
     }
 
@@ -85,7 +85,7 @@ class HttpServerTest extends Specification {
 
     def path(url: String): Uri = Uri.fromString(s"http://localhost:8080$url").getOrElse(throw new Exception(s"bad url $url"))
 
-    def createJsonFile() = {
+    def maybeCreateJsonFile() = if (!JsonFile.exists) {
       val exampleJson =
         """
           |[
@@ -114,10 +114,12 @@ class HttpServerTest extends Specification {
       writer.close()
     }
 
-    def createFile(filename: String) = {
+    def maybeCreateFile(filename: String) = {
       val file = new File(s"${RrdFile.path}/$filename")
-      val writer = new BufferedWriter(new FileWriter(file))
-      writer.close()
+      if (!file.exists()) {
+        val writer = new BufferedWriter(new FileWriter(file))
+        writer.close()
+      }
     }
 
     step {

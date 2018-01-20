@@ -17,6 +17,8 @@ object JsonFile {
   path.mkdirs()
 
 
+  def exists = file.exists()
+
   def load: Error \/ String = {
     fromTryCatchNonFatal(Source.fromFile(file).getLines().mkString(sys.props("line.separator"))).leftMap(FileError)
   }
