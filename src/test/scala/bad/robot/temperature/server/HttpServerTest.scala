@@ -80,7 +80,7 @@ class HttpServerTest extends Specification {
         val body = response.as[String].unsafePerformSyncAttempt
         println(s"Non-200 body was:\n$body")
       }
-      response.status must be_==(Status.Ok).eventually(60, 500 milliseconds)
+      response.status must be_==(Status.Ok).eventually(30, 1 minutes)
     }
 
     def path(url: String): Uri = Uri.fromString(s"http://localhost:8080$url").getOrElse(throw new Exception(s"bad url $url"))
