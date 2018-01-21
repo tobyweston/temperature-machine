@@ -34,26 +34,26 @@ class MeasurementTest extends Specification {
 
   "Decode json" >> {
     val json = """{
-                 |  "host" : "localhost",
-                 |  "seconds" : 1000,
+                 |  "host" : "bedroom1",
+                 |  "seconds" : 1516560422,
                  |  "sensors" : [
-                 |     {
-                 |        "name" : "28-00000dfg34ca",
-                 |        "temperature" : {
-                 |          "celsius" : 32.1
-                 |        }
-                 |     },
-                 |     {
-                 |        "name" : "28-00000f33fdc3",
-                 |        "temperature" : {
-                 |          "celsius" : 32.8
-                 |       }
-                 |     }
-                 |   ]
+                 |    {
+                 |      "name" : "28-03168c8b6fff",
+                 |      "temperature" : {
+                 |        "celsius" : 20.6875
+                 |      }
+                 |    },
+                 |    {
+                 |      "name" : "28-041694e628ff",
+                 |      "temperature" : {
+                 |        "celsius" : 19.6875
+                 |      }
+                 |    }
+                 |  ]
                  |}""".stripMargin
-    decodeAsDisjunction[Measurement](json) must be_\/-(Measurement(Host("localhost"), Seconds(1000), List(
-      SensorReading("28-00000dfg34ca", Temperature(32.1)),
-      SensorReading("28-00000f33fdc3", Temperature(32.8)))
+    decodeAsDisjunction[Measurement](json) must be_\/-(Measurement(Host("bedroom1"), Seconds(1516560422), List(
+      SensorReading("28-03168c8b6fff", Temperature(20.6875)),
+      SensorReading("28-041694e628ff", Temperature(19.6875)))
     ))
   }
 

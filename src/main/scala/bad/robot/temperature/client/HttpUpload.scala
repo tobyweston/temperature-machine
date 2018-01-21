@@ -28,14 +28,19 @@ case class HttpUpload(address: InetAddress) extends TemperatureWriter {
       authority = Some(Authority(host = IPv4(address.getHostAddress), port = Some(11900))),
       path = "/temperature"),
       headers = Headers(`X-Forwarded-For`(currentIpAddress))
-    ).withBody(measurement).unsafePerformSync
+    ).withBody(measurement)
 
-    blaze.fetch(request) {
+    val x = blaze.fetch(request) {
       case Successful(_)   => Task.delay(\/-(()))
-      case Error(response) => Task.delay(-\/(UnexpectedError(s"Failed to PUT temperature data to ${request.uri.renderString}, response was ${response.status}: ${response.as[String].unsafePerformSync}")))
+      case Error(response) => request.map(r => -\/(UnexpectedError(s"Failed to PUT temperature data to ${r.uri.renderString}, response was ${response.status}: ${response.as[String].unsafePerformSyncAttempt}")))
     }.handleWith({
-      case t: Throwable    => Task.delay(-\/(UnexpectedError(s"Failed attempting to connect to $address to send $measurement\n\nError was: $t\nPayload was: '${request.as[String].unsafePerformSyncAttempt}'\n")))
-    }).unsafePerformSync
+      case t: Throwable => Task.delay(-\/(UnexpectedError(s"Failed attempting to connect to $address to send $measurement\n\nError was: $t\nPayload was: '???'\n")))
+    })
+    
+    x.unsafePerformSyncAttempt match {
+      case -\/(a) => -\/(UnexpectedError(s"Failed making request " + a))
+      case \/-(b) => \/-(())
+    }
   }
 
 }
