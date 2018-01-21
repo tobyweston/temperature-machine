@@ -3,7 +3,7 @@ package bad.robot.temperature.client
 import java.net.{InetAddress, NetworkInterface}
 
 import bad.robot.temperature.IpAddress._
-import bad.robot.temperature.{JsonOps, _}
+import bad.robot.temperature._
 import bad.robot.temperature.client.HttpUpload.currentIpAddress
 import org.http4s.Method._
 import org.http4s.Status.Successful
@@ -34,7 +34,7 @@ case class HttpUpload(address: InetAddress) extends TemperatureWriter {
       case Successful(_)   => Task.delay(\/-(()))
       case Error(response) => Task.delay(-\/(UnexpectedError(s"Failed to PUT temperature data to ${request.uri.renderString}, response was ${response.status}: ${response.as[String].unsafePerformSync}")))
     }.handleWith({
-      case t: Throwable    => Task.delay(-\/(UnexpectedError(s"Failed attempting to connect to $address to send $measurement\n\nError was: $t\nPayload was: '${encode(measurement).spaces2ps}'\n")))
+      case t: Throwable    => Task.delay(-\/(UnexpectedError(s"Failed attempting to connect to $address to send $measurement\n\nError was: $t\nPayload was: '${request.as[String].unsafePerformSyncAttempt}'\n")))
     }).unsafePerformSync
   }
 
