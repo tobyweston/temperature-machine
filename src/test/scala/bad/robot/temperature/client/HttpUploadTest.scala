@@ -49,7 +49,7 @@ class HttpUploadTest extends Specification {
 
     val upload = HttpUpload(InetAddress.getLoopbackAddress, client)
     upload.write(measurement) must be_-\/.like {
-      case UnexpectedError("Failed to PUT temperature data to http://127.0.0.1:11900/temperature, response was 500 Internal Server Error: -\\/(org.http4s.MalformedMessageBodyFailure: Malformed message body: Invalid JSON: empty body)") => ok
+      case UnexpectedError("""Failed to PUT temperature data to http://127.0.0.1:11900/temperature, response was 500 Internal Server Error: \/-()""") => ok
     }
   }
 }
