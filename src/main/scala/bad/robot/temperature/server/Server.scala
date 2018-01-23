@@ -3,7 +3,7 @@ package bad.robot.temperature.server
 import java.net.InetAddress
 
 import bad.robot.logging._
-import bad.robot.temperature.client.HttpUpload
+import bad.robot.temperature.client.{BlazeHttpClient, HttpUpload}
 import bad.robot.temperature.ds18b20.SensorFile
 import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.rrd.Host
@@ -35,7 +35,7 @@ object Server extends App {
       _ <- Tasks.init(hosts)
       _ <- Task.gatherUnordered(List(
         discovery,
-        Tasks.record(Host.local.trim, sensors, HttpUpload(InetAddress.getLocalHost)),
+        Tasks.record(Host.local.trim, sensors, HttpUpload(InetAddress.getLocalHost, BlazeHttpClient())),
         Tasks.graphing,
         Tasks.exportJson,
         http

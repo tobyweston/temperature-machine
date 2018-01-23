@@ -8,6 +8,7 @@ import bad.robot.temperature.client.HttpUpload.currentIpAddress
 import org.http4s.Method._
 import org.http4s.Status.Successful
 import org.http4s.Uri.{Authority, IPv4}
+import org.http4s.client.{Client => Http4sClient}
 import org.http4s.headers.`X-Forwarded-For`
 import org.http4s.syntax.string._
 import org.http4s.util.NonEmptyList
@@ -18,9 +19,7 @@ import scalaz.Scalaz._
 import scalaz.concurrent.Task
 import scalaz.{-\/, \/, \/-}
 
-case class HttpUpload(address: InetAddress) extends TemperatureWriter {
-
-  private val blaze = BlazeHttpClient()
+case class HttpUpload(address: InetAddress, client: Http4sClient) extends TemperatureWriter {
 
   def write(measurement: Measurement): Error \/ Unit = {
     val request = Request(PUT, Uri(
@@ -28,11 +27,11 @@ case class HttpUpload(address: InetAddress) extends TemperatureWriter {
       authority = Some(Authority(host = IPv4(address.getHostAddress), port = Some(11900))),
       path = "/temperature"),
       headers = Headers(`X-Forwarded-For`(currentIpAddress))
-    ).withBody(measurement).unsafePerformSync
+    ).withBody(measurement)
 
-    blaze.fetch(request) {
+    client.fetch(request) {
       case Successful(_)   => Task.now(\/-(()))
-      case Error(response) => Task.now(-\/(UnexpectedError(s"Failed to PUT temperature data to ${request.uri.renderString}, response was ${response.status}: ${response.as[String].unsafePerformSync}")))
+      case Error(response) => request.map(r => -\/(UnexpectedError(s"Failed to PUT temperature data to ${r.uri.renderString}, response was ${response.status}: ${response.as[String].unsafePerformSyncAttempt}")))
     }.handleWith({
       case t: Throwable    => Task.now(-\/(UnexpectedError(s"Failed attempting to connect to $address to send $measurement\n\nError was: $t\nPayload was: '${encode(measurement).spaces2ps}'\n")))
     }).unsafePerformSync

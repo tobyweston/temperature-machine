@@ -31,7 +31,7 @@ object Client extends App {
       _      <- Task.delay(Log.info(s"Initialising client '${Host.local.name}' (with ${sensors.size} of a maximum of $MaxSensors sensors)..."))
       server <- Task.delay(DiscoveryClient.discover)
       _      <- Task.delay(Log.info(s"Server discovered on ${server.getHostAddress}, monitoring temperatures..."))
-      _      <- Tasks.record(Host.local.trim, sensors, HttpUpload(server))
+      _      <- Tasks.record(Host.local.trim, sensors, HttpUpload(server, BlazeHttpClient()))
       _      <- ClientsLogHttpServer(clientHttpPort)
       _      <- Task.delay(Log.info(s"HTTP Server started to serve logs on http://${InetAddress.getLocalHost.getHostAddress}:$clientHttpPort"))
       _      <- awaitShutdown()
