@@ -44,12 +44,12 @@ class HttpUploadTest extends Specification {
   
   "Error response from server" >> {
     val measurement = Measurement(Host("example"), Seconds(1509221361), List(SensorReading("28-0115910f5eff", Temperature(19.75))))
-    val willError: Request => Task[DisposableResponse] = _ => InternalServerError().map(DisposableResponse(_, Task.delay(())))
+    val willError: Request => Task[DisposableResponse] = _ => InternalServerError("I'm an error").map(DisposableResponse(_, Task.delay(())))
     val client = Http4sClient(new Kleisli[Task, Request, DisposableResponse](willError), Task.delay(()))
 
     val upload = HttpUpload(InetAddress.getLoopbackAddress, client)
     upload.write(measurement) must be_-\/.like {
-      case UnexpectedError("""Failed to PUT temperature data to http://127.0.0.1:11900/temperature, response was 500 Internal Server Error: \/-()""") => ok
+      case UnexpectedError("""Failed to PUT temperature data to http://127.0.0.1:11900/temperature, response was 500 Internal Server Error: \/-(I'm an error)""") => ok
     }
   }
 }
