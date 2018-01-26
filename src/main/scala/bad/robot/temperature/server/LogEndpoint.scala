@@ -13,12 +13,16 @@ import scalaz.Scalaz._
 import scalaz.\/.{fromTryCatchNonFatal, _}
 import scalaz.{\/, \/-}
 
+import bad.robot.temperature.http4sArgonautEncoder
 
 object LogEndpoint {
   
   private val toLogMessage: String => Error \/ LogMessage = line => LogParser.parseAll(LogParser.log, line).toDisjunction()
-  
+
+  private implicit val jsonEncoder = http4sArgonautEncoder[List[LogMessage]]
+
   def apply() = HttpService[IO] {
+
     case GET -> Root / "log" => {
       val log = RrdFile.path / "temperature-machine.log"
       
@@ -29,7 +33,7 @@ object LogEndpoint {
         _        <- \/-(scanner.close())
       } yield messages
 
-      messages.toHttpResponse(logs => Ok(logs))
+      messages.toHttpResponse(logs => Ok.apply(logs))
     }
   }
 

@@ -23,6 +23,8 @@ case class HttpUpload(address: InetAddress) extends TemperatureWriter {
 
   private val blaze: Http4sClient[IO] = BlazeHttpClient()
 
+  private implicit val jsonEncoder = http4sArgonautEncoder[Measurement]
+
   // return IO
   def write(measurement: Measurement): Error \/ Unit = {
     val uri = Uri(

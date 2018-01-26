@@ -9,9 +9,11 @@ import bad.robot.temperature.ErrorOnTemperatureSpike
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import bad.robot.temperature.rrd.{Host, Rrd}
 import bad.robot.temperature.task.TemperatureMachineThreadFactory
+import cats.implicits._
+//import org.http4s.implicits._
 import cats.effect.IO
-import org.http4s._
-import org.http4s.server.blaze._
+import org.http4s.HttpService
+import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.server.middleware.CORS
 import org.http4s.server.{Server => Http4sServer}
 

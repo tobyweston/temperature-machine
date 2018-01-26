@@ -17,7 +17,7 @@ class HttpServerTest extends Specification {
 
   "When the Http server has been started" >> {
     val server = HttpServer(8080, List(Host("example"))).unsafeRunSync
-    val client = PooledHttp1Client(config = defaultConfig.copy(idleTimeout = 30 minutes, responseHeaderTimeout = 30 minutes))
+    val client = Http1Client[IO](config = defaultConfig.copy(idleTimeout = 30 minutes, responseHeaderTimeout = 30 minutes)).unsafeRunSync()
 
     // todo wait for server to startup, not sure how.
     
@@ -59,7 +59,7 @@ class HttpServerTest extends Specification {
       assertOk(Request(GET, path("/connections/active/within/5/mins")))
     }
 
-    def assertOk(request: Request) = {
+    def assertOk(request: Request[IO]) = {
       val response = client.fetch(request)(IO.pure(_)).unsafeRunSync
       response.status must be_==(Status.Ok).eventually(40, 5 minutes)
     }

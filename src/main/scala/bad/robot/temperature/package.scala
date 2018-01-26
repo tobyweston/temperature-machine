@@ -13,11 +13,10 @@ import scalaz.syntax.either.ToEitherOps
 
 package object temperature {
 
-  implicit def http4sArgonautDecoder[A: DecodeJson]: EntityDecoder[IO, A] = jsonOf[IO, A]
+  def http4sArgonautDecoder[A: DecodeJson]: EntityDecoder[IO, A] = jsonOf[IO, A]
+  def http4sArgonautEncoder[A: EncodeJson]: EntityEncoder[IO, A] = jsonEncoderWithPrinterOf[IO, A](spaces2PlatformSpecific)
   
-  implicit def http4sArgonautEncoder[A: EncodeJson]: EntityEncoder[IO, A] = jsonEncoderWithPrinterOf[IO, A](spaces2PlatformSpecific)
-  
-  def encode[A: EncodeJson](a: A): Json = a.jencode
+  def encode[A](a: A)(implicit evidence: EncodeJson[A]): Json = a.jencode
 
   def decode[A: DecodeJson](value: String): Error \/ A = {
     value.decodeWith[Error \/ A, A](

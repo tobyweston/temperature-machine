@@ -17,6 +17,8 @@ object ConnectionsEndpoint {
 
   private val connections: TrieMap[Connection, Instant] = TrieMap()
 
+  private implicit val jsonEncoder = http4sArgonautEncoder[List[Connection]]
+
   def update(host: Host, forwardedFor: Option[`X-Forwarded-For`]): Error \/ Unit = {
     \/-(forwardedFor.foreach(ip => connections.put(Connection(host, IpAddress(ip.value)), Instant.now)))
   }
