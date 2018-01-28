@@ -9,6 +9,8 @@ Soldering the resistor to between the power and data lines of the sensor cable c
 
 To make things easier, I designed a (very) simple board. It lets you connect up to five sensors, all you need to do is crimp the sensor cables with the appropriate connector.
 
+<mark>I have a limited number of boards available for FREE, get in touch via [char](gitter.im/temperature-machine/) or Twitter (DM @jamanifin) if you're interested.</mark>
+
 <div class="row">
   <div class="col-sm-6 col-md-4">
     <div class="thumbnail">
