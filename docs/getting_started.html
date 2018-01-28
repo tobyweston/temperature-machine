@@ -47,7 +47,7 @@ ga('send', 'pageview');
 
 <p>Make sure you have the following line in your <code class="highlighter-rouge">/boot/config.txt</code>. It will load the GPIO <a href="https://pinout.xyz/pinout/1_wire">1-wire</a> driver and any attached temperature sensor should be automatically detected.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dtoverlay=w1-gpio
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dtoverlay=w1-gpio§
 </code></pre></div></div>
 
 <p>Older tutorials on the web will also say you have to load the <code class="highlighter-rouge">w1-therm</code> module but that seems to load automatically these days.</p>
@@ -59,8 +59,42 @@ ga('send', 'pageview');
 <ol>
   <li>Build and run from source</li>
   <li>Download a pre-installed Raspian image with the above pre-done</li>
-  <li>Download the binary distribution (<code class="highlighter-rouge">temperature-machine-2.1.jar</code>) and run manually</li>
+  <li>Download the binary distribution (e.g. <code class="highlighter-rouge">temperature-machine-2.1.jar</code>) and run manually</li>
 </ol>
+
+<h2 id="prerequisites">Prerequisites</h2>
+
+<p>If you build from source or intend to download and run the the binary, you’ll need Java installed on your Pi (<code class="highlighter-rouge">sudo apt-get install oracle-java8-jdk</code>). The keep up to date you’ll need <code class="highlighter-rouge">git</code> (<code class="highlighter-rouge">sudo apt-get install git</code>) and if you want to build yourself, you’ll need SBT.</p>
+
+<h3 id="install-sbt">Install SBT</h3>
+
+<p>To setup <code class="highlighter-rouge">sbt</code> manually, follow these steps from the terminal.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd /usr/local/bin
+sudo wget https://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/0.13.16/sbt-launch.jar
+sudo chown pi sbt-launch.jar
+sudo chgrp pi sbt-launch.jar
+</code></pre></div></div>
+
+<p>Create a file <code class="highlighter-rouge">/usr/local/bin/sbt</code> (change the owner and group as above) and paste the following in (take note that the max memory is set to 512 MB for the Pi Zero). Change the owner and group as above.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="nv">SBT_OPTS</span><span class="o">=</span><span class="s2">"-Xms512M -Xmx512M"</span>
+java <span class="nv">$SBT_OPTS</span> <span class="nt">-jar</span> <span class="sb">`</span><span class="nb">dirname</span> <span class="nv">$0</span><span class="sb">`</span>/sbt-launch.jar <span class="s2">"</span><span class="nv">$@</span><span class="s2">"</span>
+</code></pre></div></div>
+
+<p>Then make it executable.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chmod u+x /usr/local/bin/sbt
+</code></pre></div></div>
+
+<p>Or if you prefer the official install, these steps (from <a href="http://www.scala-sbt.org/0.13/docs/Installing-sbt-on-Linux.html">scala-sbt.org</a>).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+sudo apt-get update
+sudo apt-get install sbt
+</code></pre></div></div>
 
 </section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({
 languages:['scala','java','bash']

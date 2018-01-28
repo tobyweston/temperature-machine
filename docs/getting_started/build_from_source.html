@@ -21,7 +21,7 @@ ga('send', 'pageview');
   <p>Don’t forget to enable 1-wire support by adding <code class="highlighter-rouge">dtoverlay=w1-gpio</code> to <code class="highlighter-rouge">/boot/config.txt</code></p>
 </blockquote>
 
-<p>You can also read my <a href="http://baddotrobot.com/blog/2016/03/23/homebrew-temperature-logger/">blog post</a> for more detailed instructions and the <a href="../configuration.html">configuration section</a> to find out how to start on reboot.</p>
+<p>You can also read my <a href="http://baddotrobot.com/blog/2016/03/23/homebrew-temperature-logger/">blog post</a> for more detailed instructions and the <a href="../configuration.html">configuration section</a> to find out how to start automatically on boot.</p>
 
 <h2 id="keep-up-to-date">Keep up to Date</h2>
 
@@ -39,9 +39,9 @@ ga('send', 'pageview');
 
 <h3 id="always-run-as-pi">Always run as <code class="highlighter-rouge">pi</code></h3>
 
-<p>All the steps assume you’re running as the <code class="highlighter-rouge">pi</code> user. <strong><mark>Never run anything todo with temperature-machine as root</mark></strong>.</p>
+<p>All the steps assume you’re running as the <code class="highlighter-rouge">pi</code> user. <strong><mark>Never run anything to do with temperature-machine as root</mark></strong>.</p>
 
-<h2 id="increase-swap-file-size">Increase Swap File Size</h2>
+<h3 id="increase-swap-file-size">Increase Swap File Size</h3>
 
 <p>SBT seems to struggle on the Pi and <code class="highlighter-rouge">assembly</code> will frequently fail. It uses incremental compilation so running a second time after a failure picks up from where it left off and will generally succeed.</p>
 
