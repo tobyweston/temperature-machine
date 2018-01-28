@@ -33,7 +33,7 @@ This is the "in-development" version of the software. It may have partially impl
 
 All the steps assume you're running as the `pi` user. **<mark>Never run anything to do with temperature-machine as root</mark>**.
 
-## Increase Swap File Size
+### Increase Swap File Size
 
 SBT seems to struggle on the Pi and `assembly` will frequently fail. It uses incremental compilation so running a second time after a failure picks up from where it left off and will generally succeed.
 
