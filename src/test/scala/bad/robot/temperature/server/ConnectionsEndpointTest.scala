@@ -22,22 +22,6 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
 
   sequential
 
-  "I fucking hate http4s" >> {
-    val service: HttpService[IO] = ConnectionsEndpoint(fixedClock())
-
-    val getRoot = Request[IO](Method.GET, Uri.uri("/"))
-    // getRoot: org.http4s.Request[cats.effect.IO] = Request[IO](method=GET, uri=/, headers=Headers())
-
-//    val io1: IO[Response[IO]] = service.orNotFound.run(getRoot)
-    val io2: IO[Response[IO]] = http4sKleisliResponseSyntax(service).orNotFound.run(getRoot)
-//    val io3: IO[Response[IO]] = new KleisliResponseOps(service).orNotFound.run(getRoot)
-
-    val response = io2.unsafeRunSync
-    // response: org.http4s.Response[cats.effect.IO] = Response(status=200, headers=Headers())
-
-    response.status must_== Ok
-  }
-
   "No recent connections" >> {
     val request = Request[IO](GET, Uri.uri("/connections"))
     val service = ConnectionsEndpoint(fixedClock())

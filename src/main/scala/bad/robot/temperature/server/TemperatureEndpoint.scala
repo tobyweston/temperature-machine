@@ -8,7 +8,7 @@ import argonaut.Argonaut._
 import argonaut.{EncodeJson, Json}
 import bad.robot.temperature._
 import bad.robot.temperature.rrd.Host
-import cats.Monad
+//import cats.Monad
 import cats.effect.IO
 import org.http4s.HttpService
 import org.http4s.dsl.io._
@@ -16,7 +16,7 @@ import org.http4s.headers.`X-Forwarded-For`
 
 object TemperatureEndpoint {
 
-  private implicit val jsonDecoder = http4sArgonautDecoder[Measurement]
+//  private implicit val jsonDecoder = http4sArgonautDecoder[Measurement]
   private implicit val jsonEncode1r = http4sArgonautEncoder[Json]
 
   implicit def jsonEncoder: EncodeJson[Map[Host, Measurement]] = {
@@ -33,7 +33,7 @@ object TemperatureEndpoint {
   def apply(sensors: TemperatureReader, writer: TemperatureWriter)(implicit clock: Clock) = HttpService[IO] {
     case GET -> Root / "temperature" => {
       sensors.read.toHttpResponse(temperatures => {
-        Ok.apply(s"${temperatures.average.temperature.asCelsius}")(implicitly[Monad[IO]], null)
+        Ok.apply(s"${temperatures.average.temperature.asCelsius}")
       })
     }
 
@@ -54,8 +54,9 @@ object TemperatureEndpoint {
     }
 
     case request @ PUT -> Root / "temperature" => {
-      val measurement = request.as[Measurement].unsafeRunSync
+      val payload = request.as[String].unsafeRunSync
       val result = for {
+        measurement <- decode[Measurement](payload)
         _           <- writer.write(measurement)
         _           <- ConnectionsEndpoint.update(measurement.host, request.headers.get(`X-Forwarded-For`))
       } yield measurement
