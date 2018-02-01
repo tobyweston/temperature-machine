@@ -1,14 +1,14 @@
 package bad.robot.temperature.server
 
 import java.time.{Clock, Instant, ZoneId}
+
 import bad.robot.temperature._
 import bad.robot.temperature.server.Requests._
 import bad.robot.temperature.test._
 import cats.effect.IO
-import org.http4s.Method.{GET, PUT}
+import org.http4s.Method._
 import org.http4s.Status.{InternalServerError, NoContent, Ok}
-import org.http4s.blaze.http.http_parser.BaseExceptions.BadRequest
-import org.http4s.dsl.io._
+import org.http4s._
 import org.http4s.implicits._
 import org.http4s.{Request, Uri}
 import org.specs2.mutable.Specification
@@ -112,8 +112,9 @@ class TemperatureEndpointTest extends Specification {
   "Bad json when writing sensor data" >> {
     val clock = fixedClock()
     val service = TemperatureEndpoint(stubReader(\/-(List())), stubWriter(\/-(Unit)))(clock)
-    val response = service.orNotFound.run(Put("bad json")).unsafeRunSync
-    response must haveStatus(BadRequest)
+    val request: Request[IO] = Put("bad json")
+    val response = service.orNotFound.run(request).unsafeRunSync
+    response must haveStatus(org.http4s.Status.BadRequest)
     response.as[String].unsafeRunSync must_== "Unable to parse content as JSON Unexpected content found: bad json"
   }
 
