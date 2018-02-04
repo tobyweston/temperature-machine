@@ -2,7 +2,7 @@
 study.local
 kitchen.local
 bedroom1.local
-bedroom2.local
+10.0.1.26       # bedroom2.local
 
 [misc]
 unicorn-mini.local
