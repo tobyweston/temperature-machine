@@ -67,6 +67,7 @@ class HttpServerTest extends Specification {
     }
 
     "get the local machine's log over http" >> {
+      maybeCreateFile("temperature-machine.log")
       assertOk(Request(GET, path("/log")))
     }
 
