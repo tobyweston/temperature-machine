@@ -61,3 +61,12 @@ You should be able to preview the site using Jekyll to serve it.
     $ jekyll serve
 
 If you're going to publish it (`sbt site/publishMicrosite`), make sure you `site/makeMicrosite` first (otherwise you'll see a commit on the [`gh-pages`](https://github.com/tobyweston/temperature-machine/commit/7aa09f7612f3ff38d86de9ab6ae2fe6ba03223c0) branch with `0 commits`)
+
+## Scalaz vs. Cats
+
+We started with Scalaz but the latest version of Http4s prefers Cats. The break apart of Scalaz to FS2 etc all seems a bit complicated, so I've captured some notes below.
+
+* [scalaz-stream](https://github.com/scalaz/scalaz-stream) (`scalaz.concurrent.Task`) has become [FS2](https://github.com/functional-streams-for-scala/fs2)
+* [cats-effects](https://github.com/typelevel/cats-effect) has some standard `IO` type classes for use with FS2. 
+* Until we migrate away from Scalaz (if ever), use the [shims](https://github.com/djspiewak/shims) for interop. Maybe. Sounds like there'll be problems.
+* `Task.delay(x)` roughly translates to `IO.pure(x)` (where `x` shounld't need to be evaluated or otherwise is "pure")

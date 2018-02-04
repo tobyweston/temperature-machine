@@ -5,8 +5,9 @@ import java.time.{Clock, Instant}
 
 import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.{Error, _}
-import org.http4s.HttpService
-import org.http4s.dsl._
+import cats.effect.IO
+import org.http4s._
+import org.http4s.dsl.io._
 import org.http4s.headers.`X-Forwarded-For`
 
 import scala.collection.concurrent.TrieMap
@@ -16,13 +17,15 @@ object ConnectionsEndpoint {
 
   private val connections: TrieMap[Connection, Instant] = TrieMap()
 
+  private implicit val encoder = jsonEncoder[List[Connection]]
+
   def update(host: Host, forwardedFor: Option[`X-Forwarded-For`]): Error \/ Unit = {
     \/-(forwardedFor.foreach(ip => connections.put(Connection(host, IpAddress(ip.value)), Instant.now)))
   }
 
   def reset() = connections.clear()
 
-  def apply(implicit clock: Clock) = HttpService {
+  def apply(implicit clock: Clock) = HttpService[IO] {
     case GET -> Root / "connections" => {
       Ok(connections.keys.toList)
     }

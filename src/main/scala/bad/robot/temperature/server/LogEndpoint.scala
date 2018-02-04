@@ -4,19 +4,24 @@ import java.util.Scanner
 
 import bad.robot.temperature.rrd.RrdFile
 import bad.robot.temperature.{Error, FileError, FileOps, LogMessage, LogParser, _}
-import org.http4s.HttpService
-import org.http4s.dsl.{->, /, GET, Ok, Root, _}
+import cats.effect._
+import org.http4s._
+import org.http4s.dsl.io._
 
 import scala.collection.JavaConverters._
 import scalaz.Scalaz._
 import scalaz.\/.{fromTryCatchNonFatal, _}
 import scalaz.{\/, \/-}
 
+
 object LogEndpoint {
   
   private val toLogMessage: String => Error \/ LogMessage = line => LogParser.parseAll(LogParser.log, line).toDisjunction()
-  
-  def apply() = HttpService {
+
+  private implicit val encoder = jsonEncoder[List[LogMessage]]
+
+  def apply() = HttpService[IO] {
+
     case GET -> Root / "log" => {
       val log = RrdFile.path / "temperature-machine.log"
       
@@ -27,7 +32,7 @@ object LogEndpoint {
         _        <- \/-(scanner.close())
       } yield messages
 
-      messages.toHttpResponse(Ok(_))
+      messages.toHttpResponse(logs => Ok.apply(logs))
     }
   }
 

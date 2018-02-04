@@ -5,16 +5,18 @@ import java.time.{Clock, Instant, ZoneId}
 import bad.robot.temperature._
 import bad.robot.temperature.server.Requests._
 import bad.robot.temperature.test._
-import org.http4s.Method.{GET, PUT}
+import cats.effect.IO
+import org.http4s.Method._
 import org.http4s.Status.{InternalServerError, NoContent, Ok}
-import org.http4s.dsl._
+import org.http4s._
+import org.http4s.implicits._
 import org.http4s.{Request, Uri}
 import org.specs2.mutable.Specification
 
 import scalaz.{-\/, \/, \/-}
 
 object Requests {
-  val Put: String => Request = (body) => Request(PUT, Uri(path = s"temperature")).withBody(body).unsafePerformSync
+  val Put: String => Request[IO] = (body) => Request[IO](PUT, Uri(path = s"temperature")).withBody(body).unsafeRunSync
 }
 
 class TemperatureEndpointTest extends Specification {
@@ -22,38 +24,38 @@ class TemperatureEndpointTest extends Specification {
   sequential
 
   "Averages a single temperature" >> {
-    val request = Request(GET, Uri.uri("/temperature"))
+    val request = Request[IO](GET, Uri.uri("/temperature"))
     val clock = fixedClock()
     val reader = stubReader(\/-(List(SensorReading("28-0002343fd", Temperature(56.34)))))
     val service = TemperatureEndpoint(reader, UnexpectedWriter)(clock)
-    val response = service(request).unsafePerformSync.orNotFound
+    val response = service.orNotFound.run(request).unsafeRunSync
 
     response.status must_== Ok
-    response.as[String].unsafePerformSync must_== "56.3 °C"
+    response.as[String].unsafeRunSync must_== "56.3 °C"
   }
 
   "Averages several temperatures" >> {
-    val request = Request(GET, Uri.uri("/temperature"))
+    val request = Request[IO](GET, Uri.uri("/temperature"))
     val clock = fixedClock()
     val service = TemperatureEndpoint(stubReader(\/-(List(
       SensorReading("28-0000d34c3", Temperature(25.344)),
       SensorReading("28-0000d34c3", Temperature(23.364)),
       SensorReading("28-0000d34c3", Temperature(21.213))
     ))), UnexpectedWriter)(clock)
-    val response = service(request).unsafePerformSync.orNotFound
+    val response = service.orNotFound.run(request).unsafeRunSync
 
     response.status must_== Ok
-    response.as[String].unsafePerformSync must_== "23.3 °C"
+    response.as[String].unsafeRunSync must_== "23.3 °C"
   }
 
   "General Error reading temperatures" >> {
-    val request = Request(GET, Uri.uri("/temperature"))
+    val request = Request[IO](GET, Uri.uri("/temperature"))
     val clock = fixedClock()
     val service = TemperatureEndpoint(stubReader(-\/(SensorError("An example error"))), UnexpectedWriter)(clock)
-    val response = service(request).unsafePerformSync.orNotFound
+    val response = service.orNotFound.run(request).unsafeRunSync
 
     response.status must_== InternalServerError
-    response.as[String].unsafePerformSync must_== "An example error"
+    response.as[String].unsafeRunSync must_== "An example error"
   }
 
   "Put some temperature data" >> {
@@ -71,7 +73,7 @@ class TemperatureEndpointTest extends Specification {
                          |     }
                          |   ]
                          |}""".stripMargin
-    val response = service.apply(Put(measurement)).unsafePerformSync.orNotFound
+    val response = service.orNotFound.run(Put(measurement)).unsafeRunSync
     response must haveStatus(NoContent)
   }
 
@@ -94,7 +96,7 @@ class TemperatureEndpointTest extends Specification {
                   |     }
                   |   ]
                   |}""".stripMargin
-    val request = Request(PUT, Uri(path = "temperature")).withBody(body).unsafePerformSync
+    val request = Request[IO](PUT, Uri(path = "temperature")).withBody(body).unsafeRunSync
     var temperatures = List[Temperature]()
     val clock = fixedClock()
     val service = TemperatureEndpoint(stubReader(\/-(List())), new TemperatureWriter {
@@ -103,16 +105,17 @@ class TemperatureEndpointTest extends Specification {
         \/-(Unit)
       }
     })(clock)
-    service.apply(request).unsafePerformSync
+    service.orNotFound.run(request).unsafeRunSync
     temperatures must_== List(Temperature(31.1), Temperature(32.8))
   }
 
   "Bad json when writing sensor data" >> {
     val clock = fixedClock()
     val service = TemperatureEndpoint(stubReader(\/-(List())), stubWriter(\/-(Unit)))(clock)
-    val response = service.apply(Put("bad json")).unsafePerformSync.orNotFound
-    response must haveStatus(BadRequest)
-    response.as[String].unsafePerformSync must_== "Unable to parse content as JSON expected json value got b (line 1, column 1)"
+    val request: Request[IO] = Put("bad json")
+    val response = service.orNotFound.run(request).unsafeRunSync
+    response must haveStatus(org.http4s.Status.BadRequest)
+    response.as[String].unsafeRunSync must_== "Unable to parse content as JSON expected json value got b (line 1, column 1)"
   }
 
   "Get multiple sensors temperatures" >> {
@@ -157,12 +160,12 @@ class TemperatureEndpointTest extends Specification {
 
     val clock = fixedClock(Instant.ofEpochSecond(200))
     val service = TemperatureEndpoint(stubReader(\/-(List())), stubWriter(\/-(Unit)))(clock)
-    service.apply(Request(DELETE, Uri.uri("/temperatures"))).unsafePerformSync
-    service.apply(Put(measurement1)).unsafePerformSync
-    service.apply(Put(measurement2)).unsafePerformSync
+    service.orNotFound.run(Request[IO](DELETE, Uri.uri("/temperatures"))).unsafeRunSync
+    service.orNotFound.run(Put(measurement1)).unsafeRunSync
+    service.orNotFound.run(Put(measurement2)).unsafeRunSync
 
-    val request = Request(GET, Uri.uri("/temperatures"))
-    val response = service(request).unsafePerformSync.orNotFound
+    val request = Request[IO](GET, Uri.uri("/temperatures"))
+    val response = service.orNotFound.run(request).unsafeRunSync
 
     response.status must_== Ok
 
@@ -207,7 +210,7 @@ class TemperatureEndpointTest extends Specification {
                       |  ]
                       |}""".stripMargin
 
-    response.as[String].unsafePerformSync must_== expected
+    response.as[String].unsafeRunSync must_== expected
   }
 
   "Get multiple sensors, averaging the temperatures" >> {
@@ -252,15 +255,15 @@ class TemperatureEndpointTest extends Specification {
 
     val clock = fixedClock(Instant.ofEpochSecond(200))
     val service = TemperatureEndpoint(stubReader(\/-(List())), stubWriter(\/-(Unit)))(clock)
-    service.apply(Request(DELETE, Uri.uri("/temperatures"))).unsafePerformSync
-    service.apply(Put(measurement1)).unsafePerformSync
-    service.apply(Put(measurement2)).unsafePerformSync
+    service.orNotFound.run(Request[IO](DELETE, Uri.uri("/temperatures"))).unsafeRunSync
+    service.orNotFound.run(Put(measurement1)).unsafeRunSync
+    service.orNotFound.run(Put(measurement2)).unsafeRunSync
 
-    val request = Request(GET, Uri.uri("/temperatures/average"))
-    val response = service(request).unsafePerformSync.orNotFound
+    val request = Request[IO](GET, Uri.uri("/temperatures/average"))
+    val response = service.orNotFound.run(request).unsafeRunSync
 
     response.status must_== Ok
-    response.as[String].unsafePerformSync must_==
+    response.as[String].unsafeRunSync must_==
                                     """{
                                       |  "measurements" : [
                                       |    {
@@ -333,12 +336,12 @@ class TemperatureEndpointTest extends Specification {
 
     val clock = fixedClock(Instant.ofEpochSecond(300))
     val service = TemperatureEndpoint(stubReader(\/-(List())), stubWriter(\/-(Unit)))(clock)
-    service.apply(Request(DELETE, Uri.uri("/temperatures"))).unsafePerformSync
-    service.apply(Put(measurement1)).unsafePerformSync
-    service.apply(Put(measurement2)).unsafePerformSync
+    service.orNotFound.run(Request[IO](DELETE, Uri.uri("/temperatures"))).unsafeRunSync
+    service.orNotFound.run(Put(measurement1)).unsafeRunSync
+    service.orNotFound.run(Put(measurement2)).unsafeRunSync
 
-    val request = Request(GET, Uri.uri("/temperatures"))
-    val response = service(request).unsafePerformSync.orNotFound
+    val request = Request[IO](GET, Uri.uri("/temperatures"))
+    val response = service.orNotFound.run(request).unsafeRunSync
 
     response.status must_== Ok
 
@@ -365,7 +368,7 @@ class TemperatureEndpointTest extends Specification {
                      |  ]
                      |}""".stripMargin
 
-    response.as[String].unsafePerformSync must_== expected
+    response.as[String].unsafeRunSync must_== expected
   }
 
   "Filter out old temperatures when averaging" >> {
@@ -410,15 +413,15 @@ class TemperatureEndpointTest extends Specification {
 
     val clock = fixedClock(Instant.ofEpochSecond(300))
     val service = TemperatureEndpoint(stubReader(\/-(List())), stubWriter(\/-(Unit)))(clock)
-    service.apply(Request(DELETE, Uri.uri("/temperatures"))).unsafePerformSync
-    service.apply(Put(measurement1)).unsafePerformSync
-    service.apply(Put(measurement2)).unsafePerformSync
+    service.orNotFound.run(Request[IO](DELETE, Uri.uri("/temperatures"))).unsafeRunSync
+    service.orNotFound.run(Put(measurement1)).unsafeRunSync
+    service.orNotFound.run(Put(measurement2)).unsafeRunSync
 
-    val request = Request(GET, Uri.uri("/temperatures/average"))
-    val response = service(request).unsafePerformSync.orNotFound
+    val request = Request[IO](GET, Uri.uri("/temperatures/average"))
+    val response = service.orNotFound.run(request).unsafeRunSync
 
     response.status must_== Ok
-    response.as[String].unsafePerformSync must_==
+    response.as[String].unsafeRunSync must_==
                                     """{
                                       |  "measurements" : [
                                       |    {

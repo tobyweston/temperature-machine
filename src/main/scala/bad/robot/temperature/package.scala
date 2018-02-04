@@ -2,10 +2,11 @@ package bad.robot
 
 import java.io.{File, PrintWriter, StringWriter}
 
+import cats.effect.IO
 import cats.syntax.either._
-import io.circe.parser._
 import io.circe._
 import org.http4s.circe.{jsonEncoderWithPrinterOf, jsonOf}
+import io.circe.parser._
 import org.http4s.{EntityDecoder, EntityEncoder}
 
 import scalaz.\/
@@ -13,8 +14,8 @@ import scalaz.syntax.std.either._
 
 package object temperature {
 
-  implicit def http4sCirceDecoder[A: Decoder]: EntityDecoder[A] = jsonOf[A]
-  implicit def http4sCirceEncoder[A: Encoder]: EntityEncoder[A] = jsonEncoderWithPrinterOf(spaces2PlatformSpecific)
+  def jsonDecoder[A: Decoder]: EntityDecoder[IO, A] = jsonOf[IO, A]
+  def jsonEncoder[A: Encoder]: EntityEncoder[IO, A] = jsonEncoderWithPrinterOf(spaces2PlatformSpecific)
 
   def encode[A: Encoder](a: A): Json = Encoder[A].apply(a)
 

@@ -11,13 +11,13 @@ import org.http4s.{Request, Status, Uri}
 import org.specs2.mutable.Specification
 
 import scala.concurrent.duration._
-import scalaz.concurrent.Task
+import cats.effect.IO
 
 class HttpServerTest extends Specification {
 
   "When the Http server has been started" >> {
-    val server = HttpServer(8080, List(Host("example"))).unsafePerformSync
-    val client = PooledHttp1Client(config = defaultConfig.copy(idleTimeout = 30 minutes, responseHeaderTimeout = 30 minutes))
+    val server = HttpServer(8080, List(Host("example"))).unsafeRunSync
+    val client = Http1Client[IO](config = defaultConfig.copy(idleTimeout = 30 minutes, responseHeaderTimeout = 30 minutes)).unsafeRunSync()
 
     // todo wait for server to startup, not sure how.
 
@@ -74,10 +74,10 @@ class HttpServerTest extends Specification {
       assertOk(Request(GET, path("/version")))
     }
 
-    def assertOk(request: Request) = {
-      val response = client.fetch(request)(Task.delay(_)).unsafePerformSync
+    def assertOk(request: Request[IO]) = {
+      val response = client.fetch(request)(IO.pure(_)).unsafeRunSync
       if (response.status != Status.Ok) {
-        val body = response.as[String].unsafePerformSyncAttempt
+        val body = response.as[String].attempt.unsafeRunSync()
         println(s"Non-200 body was:\n$body")
       }
       response.status must be_==(Status.Ok).eventually(30, 1 minutes)
@@ -125,9 +125,9 @@ class HttpServerTest extends Specification {
     step {
       val shutdown = for {
         _ <- server.shutdown()
-        _ <- Task.delay(Log.info(s"HTTP Server shutting down"))
+        _ <- IO.pure(Log.info(s"HTTP Server shutting down"))
       } yield ()
-      shutdown.unsafePerformSync
+      shutdown.unsafeRunSync
     }
   }
 

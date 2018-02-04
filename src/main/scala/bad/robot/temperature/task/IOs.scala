@@ -10,13 +10,13 @@ import bad.robot.temperature.{JsonExport, TemperatureWriter, XmlExport}
 import bad.robot.logging._
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import scalaz.concurrent.Task
+import cats.effect.IO
 
-object Tasks {
+object IOs {
 
   def init(hosts: List[Host]) = {
     Log.info(s"RRD initialising for ${hosts.map(_.name).mkString("'", "', '", "'")} (with up to $MaxSensors sensors each)...")
-    Task.delay(RrdFile.exists).map {
+    IO.pure(RrdFile.exists).map {
       case false => RrdFile(hosts, 30 seconds).create()
       case _     => Log.info("Ok")
     }
@@ -25,28 +25,28 @@ object Tasks {
   def record(source: Host, sensors: List[SensorFile], destination: TemperatureWriter) = {
     val executor = newSingleThreadScheduledExecutor(TemperatureMachineThreadFactory("reading-thread"))
     for {
-      _     <- Task.delay(Log.info(s"Monitoring sensor file(s) on '${source.name}' ${sensors.mkString("\n\t", "\n\t", "\n")}"))
-      tasks <- Task.delay(executor.schedule(30 seconds, RecordTemperature(source, SensorReader(sensors), destination, Log)))
+      _     <- IO.pure(Log.info(s"Monitoring sensor file(s) on '${source.name}' ${sensors.mkString("\n\t", "\n\t", "\n")}"))
+      tasks <- IO.pure(executor.schedule(30 seconds, RecordTemperature(source, SensorReader(sensors), destination, Log)))
     } yield tasks
   }
 
   def graphing(implicit hosts: List[Host]) = {
     val executor = newScheduledThreadPool(3, TemperatureMachineThreadFactory("graphing-thread"))
     for {
-      _ <- Task.delay(executor.schedule(90 seconds, GenerateGraph(24 hours)))
-      _ <- Task.delay(executor.schedule(12 hours, GenerateGraph(7 days)))
-      _ <- Task.delay(executor.schedule(24 hours, GenerateGraph(30 days)))
+      _ <- IO.pure(executor.schedule(90 seconds, GenerateGraph(24 hours)))
+      _ <- IO.pure(executor.schedule(12 hours, GenerateGraph(7 days)))
+      _ <- IO.pure(executor.schedule(24 hours, GenerateGraph(30 days)))
     } yield ()
   }
 
   def exportXml(implicit hosts: List[Host]) = {
     val executor = newSingleThreadScheduledExecutor(TemperatureMachineThreadFactory("xml-export-thread"))
-    Task.delay(executor.schedule(100 seconds, XmlExport(24 hours)))
+    IO.pure(executor.schedule(100 seconds, XmlExport(24 hours)))
   }
 
   def exportJson(implicit hosts: List[Host]) = {
     val executor = newSingleThreadScheduledExecutor(TemperatureMachineThreadFactory("json-export-thread"))
-    Task.delay(executor.schedule(100 seconds, JsonExport(24 hours)))
+    IO.pure(executor.schedule(100 seconds, JsonExport(24 hours)))
   }
 
 }

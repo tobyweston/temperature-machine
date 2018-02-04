@@ -2,20 +2,20 @@ package bad.robot.temperature
 
 import java.net.DatagramPacket
 
-import org.http4s.Response
-import org.http4s.dsl._
+import cats.effect.IO
+import org.http4s._
+import org.http4s.dsl.io._
 
 import scalaz.\/
-import scalaz.concurrent.Task
 
 package object server {
 
   implicit class EitherToResponse[A](either: Error \/ A) {
-    def toHttpResponse(success: A => Task[Response]): Task[Response] = {
+    def toHttpResponse(success: A => IO[Response[IO]]): IO[Response[IO]] = {
       either.fold(errors, success)
     }
 
-    val errors = PartialFunction[Error, Task[Response]] {
+    val errors = PartialFunction[Error, IO[Response[IO]]] {
       case error @ CrcFailure()        => InternalServerError(error.message)
       case error @ FailedToFindFile(_) => NotFound(error.message)
       case error @ FileError(_)        => InternalServerError(error.message)

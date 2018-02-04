@@ -9,17 +9,18 @@ import bad.robot.temperature.{ErrorOnTemperatureSpike, JsonToCsv}
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import bad.robot.temperature.rrd.{Host, Rrd}
 import bad.robot.temperature.task.TemperatureMachineThreadFactory
+import cats.implicits._
+//import org.http4s.implicits._
+import cats.effect.IO
+import org.http4s.HttpService
 import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.server.middleware.CORS
-import org.http4s.server.syntax.ServiceOps
 import org.http4s.server.{Server => Http4sServer}
 
-import scalaz.concurrent.Task
-
 object HttpServer {
-  def apply(port: Int, monitored: List[Host]): Task[HttpServer] = Task.delay {
+  def apply(port: Int, monitored: List[Host]): IO[HttpServer] = IO.pure {
     val server = new HttpServer(port, monitored)
-    server.build().unsafePerformSync
+    server.build().unsafeRunSync
     server
   }
 }
@@ -28,28 +29,28 @@ class HttpServer(port: Int, monitored: List[Host]) {
 
   private val latch = new CountDownLatch(1)
 
-  def awaitShutdown(): Task[Unit] = Task.delay(latch.await())
+  def awaitShutdown(): IO[Unit] = IO.pure(latch.await())
 
-  def shutdown(): Task[Unit] = Task.delay(latch.countDown())
+  def shutdown(): IO[Unit] = IO.pure(latch.countDown())
 
   private val DefaultExecutorService: ExecutorService = {
     newFixedThreadPool(max(4, Runtime.getRuntime.availableProcessors), TemperatureMachineThreadFactory("http-server"))
   }
 
-  private def build(): Task[Http4sServer] = BlazeBuilder
-    .withServiceExecutor(DefaultExecutorService)
+  private def build(): IO[Http4sServer[IO]] = BlazeBuilder[IO]
+    .withExecutionContext(scala.concurrent.ExecutionContext.fromExecutorService(DefaultExecutorService))
     .bindHttp(port, "0.0.0.0")
     .mountService(services(), "/")
     .start
 
-  private def services() = {
+  private def services(): HttpService[IO] = {
     CORS(
-      TemperatureEndpoint(SensorReader(SensorFile.find()), ErrorOnTemperatureSpike(Rrd(monitored)))(Clock.systemDefaultZone) ||
-      ConnectionsEndpoint(Clock.systemDefaultZone) ||
-      LogEndpoint() ||
-      ExportEndpoint(JsonFile.load, JsonToCsv.DefaultTimeFormatter) ||
-      VersionEndpoint() ||
-      StaticFiles() ||
+      TemperatureEndpoint(SensorReader(SensorFile.find()), ErrorOnTemperatureSpike(Rrd(monitored)))(Clock.systemDefaultZone) <+>
+      ConnectionsEndpoint(Clock.systemDefaultZone) <+>
+      LogEndpoint() <+>
+      ExportEndpoint(JsonFile.load, JsonToCsv.DefaultTimeFormatter) <+>
+      VersionEndpoint() <+>
+      ApplicationHomeFiles() <+>
       StaticResources()
     )
   }

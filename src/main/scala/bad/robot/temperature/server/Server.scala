@@ -7,39 +7,37 @@ import bad.robot.temperature.client.{BlazeHttpClient, HttpUpload}
 import bad.robot.temperature.ds18b20.SensorFile
 import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.rrd.Host
-import bad.robot.temperature.task.{Tasks, TemperatureMachineThreadFactory}
-
-import scalaz.concurrent.Task
+import bad.robot.temperature.task.IOs._
+import bad.robot.temperature.task.TemperatureMachineThreadFactory
+import cats.effect.IO
 
 object Server extends App {
-  
-  def discovery = {
+
+  def discovery: IO[Unit] = {
     for {
-      _        <- Task.delay(Log.info(s"Starting Discovery Server, listening for ${hosts.map(_.name).mkString("'", "', '", "'")}..."))
-      listener <- Task.delay(TemperatureMachineThreadFactory("machine-discovery-server").newThread(new DiscoveryServer()).start())
+      _        <- IO.pure(Log.info(s"Starting Discovery Server, listening for ${hosts.map(_.name).mkString("'", "', '", "'")}..."))
+      listener <- IO.pure(TemperatureMachineThreadFactory("machine-discovery-server").newThread(new DiscoveryServer()).start())
     } yield ()
   }
 
-  def http(implicit monitored: List[Host]): Task[HttpServer] = {
+  def http(implicit monitored: List[Host]): IO[HttpServer] = {
     val port = 11900
     for {
       server <- HttpServer(port, monitored)
-      _      <- Task.delay(Log.info(s"HTTP Server started on http://${InetAddress.getLocalHost.getHostAddress}:$port"))
+      _      <- IO.pure(Log.info(s"HTTP Server started on http://${InetAddress.getLocalHost.getHostAddress}:$port"))
       _      <- server.awaitShutdown()
     } yield server
   }
 
   def server(sensors: List[SensorFile])(implicit monitored: List[Host]) = {
     for {
-      _ <- Task.delay(Log.info("Starting temperature-machine (server mode)..."))
-      _ <- Tasks.init(hosts)
-      _ <- Task.gatherUnordered(List(
-        discovery,
-        Tasks.record(Host.local.trim, sensors, HttpUpload(InetAddress.getLocalHost, BlazeHttpClient())),
-        Tasks.graphing,
-        Tasks.exportJson,
-        http
-      ))
+      _ <- IO.pure(Log.info("Starting temperature-machine (server mode)..."))
+      _ <- init(hosts)
+      _ <- discovery
+      _ <- record(Host.local.trim, sensors, HttpUpload(InetAddress.getLocalHost, BlazeHttpClient()))
+      _ <- graphing
+      _ <- exportJson
+      _ <- http
     } yield ()
   }
 
