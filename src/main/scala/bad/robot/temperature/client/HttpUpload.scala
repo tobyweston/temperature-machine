@@ -4,7 +4,6 @@ import java.net.{InetAddress, NetworkInterface}
 
 import bad.robot.temperature.IpAddress._
 import bad.robot.temperature.client.HttpUpload.currentIpAddress
-import bad.robot.temperature._
 import bad.robot.temperature.{JsonOps, _}
 import cats.data.NonEmptyList
 import cats.effect.IO
@@ -22,8 +21,10 @@ import scalaz.{-\/, \/, \/-}
 
 case class HttpUpload(address: InetAddress, client: Http4sClient[IO]) extends TemperatureWriter {
 
-  private val decoder = EntityDecoder.text
+  private implicit val encoder = jsonEncoder[Measurement]
 
+  private val decoder = EntityDecoder.text[IO]
+  
   def write(measurement: Measurement): Error \/ Unit = {
     val uri = Uri(
       scheme = Some(Scheme.http),
@@ -33,13 +34,13 @@ case class HttpUpload(address: InetAddress, client: Http4sClient[IO]) extends Te
 
     val request: IO[Request[IO]] = PUT.apply(uri, measurement, `X-Forwarded-For`(currentIpAddress))
 
-    val toRun: IO[Error \/ Unit] = blaze.fetch(request) {
+    val fetch: IO[Error \/ Unit] = client.fetch(request) {
       case Successful(_) => IO.pure(\/-(()))
-      case error @ _     => IO.pure(-\/(UnexpectedError(s"Failed to PUT temperature data to ${uri.renderString}, response was ${error.status}:"))) // ${error.as[String].unsafeRunSync}
+      case error @ _     => IO(-\/(UnexpectedError(s"Failed to PUT temperature data to ${uri.renderString}, response was ${error.status}: ${error.as[String](implicitly, decoder).attempt.unsafeRunSync}")))
     }
 
     // why no leftMap?
-    toRun.attempt.map {
+    fetch.attempt.map {
       case Left(t)      => -\/(UnexpectedError(s"Failed attempting to connect to $address to send $measurement\n\nError was: $t\nPayload was: '${encode(measurement).spaces2ps}'\n"))
       case Right(value) => value
     }.unsafeRunSync()

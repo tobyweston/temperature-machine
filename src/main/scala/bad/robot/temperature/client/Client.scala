@@ -12,11 +12,11 @@ import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.rrd.RrdFile._
 import bad.robot.temperature.server.{LogEndpoint, VersionEndpoint}
 import bad.robot.temperature.task.{IOs, TemperatureMachineThreadFactory}
+import cats.implicits._
 import cats.effect.IO
 import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.server.middleware.CORS
 import org.http4s.server.{Server => Http4sServer}
-import org.http4s.server.syntax.ServiceOps
 
 import scala.concurrent.ExecutionContext
 
@@ -67,7 +67,7 @@ class ClientsLogHttpServer(port: Int) {
     .bindHttp(port, "0.0.0.0")
     .mountService(
       CORS(
-        LogEndpoint() ||
+        LogEndpoint() <+>
         VersionEndpoint()
       ), "/")
     .start

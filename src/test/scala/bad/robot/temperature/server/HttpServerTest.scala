@@ -77,7 +77,7 @@ class HttpServerTest extends Specification {
     def assertOk(request: Request[IO]) = {
       val response = client.fetch(request)(IO.pure(_)).unsafeRunSync
       if (response.status != Status.Ok) {
-        val body = response.as[String].unsafePerformSyncAttempt
+        val body = response.as[String].attempt.unsafeRunSync()
         println(s"Non-200 body was:\n$body")
       }
       response.status must be_==(Status.Ok).eventually(30, 1 minutes)

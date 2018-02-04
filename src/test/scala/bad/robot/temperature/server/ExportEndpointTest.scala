@@ -5,9 +5,10 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle.SHORT
 import java.util.Locale._
 
+import cats.effect.IO
 import org.http4s.Method.GET
 import org.http4s.Status.Ok
-import org.http4s.dsl._
+import org.http4s.implicits._
 import org.http4s.{Request, Uri}
 import org.specs2.mutable.Specification
 
@@ -48,10 +49,10 @@ class ExportEndpointTest extends Specification {
 
     val UkDateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(SHORT).withLocale(UK).withZone(ZoneId.of("GMT"))
     
-    val request = Request(GET, Uri.uri("/temperatures.csv"))
+    val request = Request[IO](GET, Uri.uri("/temperatures.csv"))
     val service = ExportEndpoint(exampleJson.right, UkDateTimeFormatter)
-    val response = service(request).unsafePerformSync.orNotFound
-    response.as[String].unsafePerformSync must_== expectedCsv
+    val response = service.orNotFound.run(request).unsafeRunSync()
+    response.as[String].unsafeRunSync must_== expectedCsv
     response.status must_== Ok
   }
 
