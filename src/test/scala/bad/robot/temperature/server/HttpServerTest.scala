@@ -45,10 +45,10 @@ class HttpServerTest extends Specification {
       assertOk(Request(GET, path("/static/js/" + file.head)))
     }
 
-//    "Some css can be loaded (note this changes with every UI deployment)" >> {
-//      val file = findFileIn("src/main/resources/static/css", startingWith("main", ".css"))
-//      assertOk(Request(GET, path("/static/css/" + file.head)))
-//    }
+    "Some css can be loaded (note this changes with every UI deployment)" >> {
+      val file = findFileIn("src/main/resources/static/css", startingWith("main", ".css"))
+      assertOk(Request(GET, path("/static/css/" + file.head)))
+    }
 
     "image can be loaded" >> {
       assertOk(Request(GET, path("/images/spinner.gif")))
