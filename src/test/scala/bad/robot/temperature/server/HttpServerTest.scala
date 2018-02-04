@@ -7,7 +7,7 @@ import bad.robot.temperature.rrd.{Host, RrdFile}
 import org.http4s.Method.GET
 import org.http4s.client.blaze.BlazeClientConfig._
 import org.http4s.client.blaze._
-import org.http4s.{Request, Status, Uri}
+import org.http4s.{EntityDecoder, Request, Status, Uri}
 import org.specs2.mutable.Specification
 
 import scala.concurrent.duration._
@@ -77,7 +77,7 @@ class HttpServerTest extends Specification {
     def assertOk(request: Request[IO]) = {
       val response = client.fetch(request)(IO.pure(_)).unsafeRunSync
       if (response.status != Status.Ok) {
-        val body = response.as[String].attempt.unsafeRunSync()
+        val body = response.as[String](implicitly, EntityDecoder.text).attempt.unsafeRunSync()
         println(s"Non-200 body was:\n$body")
       }
       response.status must be_==(Status.Ok).eventually(30, 1 minutes)
@@ -125,7 +125,7 @@ class HttpServerTest extends Specification {
     step {
       val shutdown = for {
         _ <- server.shutdown()
-        _ <- IO.pure(Log.info(s"HTTP Server shutting down"))
+        _ <- info(s"HTTP Server shutting down")
       } yield ()
       shutdown.unsafeRunSync
     }

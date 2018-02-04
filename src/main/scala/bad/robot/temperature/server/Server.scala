@@ -15,8 +15,8 @@ object Server extends App {
 
   def discovery: IO[Unit] = {
     for {
-      _        <- IO.pure(Log.info(s"Starting Discovery Server, listening for ${hosts.map(_.name).mkString("'", "', '", "'")}..."))
-      listener <- IO.pure(TemperatureMachineThreadFactory("machine-discovery-server").newThread(new DiscoveryServer()).start())
+      _        <- info(s"Starting Discovery Server, listening for ${hosts.map(_.name).mkString("'", "', '", "'")}...")
+      listener <- IO(TemperatureMachineThreadFactory("machine-discovery-server").newThread(new DiscoveryServer()).start())
     } yield ()
   }
 
@@ -24,14 +24,14 @@ object Server extends App {
     val port = 11900
     for {
       server <- HttpServer(port, monitored)
-      _      <- IO.pure(Log.info(s"HTTP Server started on http://${InetAddress.getLocalHost.getHostAddress}:$port"))
+      _      <- info(s"HTTP Server started on http://${InetAddress.getLocalHost.getHostAddress}:$port")
       _      <- server.awaitShutdown()
     } yield server
   }
 
   def server(sensors: List[SensorFile])(implicit monitored: List[Host]) = {
     for {
-      _ <- IO.pure(Log.info("Starting temperature-machine (server mode)..."))
+      _ <- info("Starting temperature-machine (server mode)...")
       _ <- init(hosts)
       _ <- discovery
       _ <- record(Host.local.trim, sensors, HttpUpload(InetAddress.getLocalHost, BlazeHttpClient()))

@@ -11,7 +11,8 @@ import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.rrd.RrdFile._
 import bad.robot.temperature.server.{LogEndpoint, VersionEndpoint}
-import bad.robot.temperature.task.{IOs, TemperatureMachineThreadFactory}
+import bad.robot.temperature.task.IOs._
+import bad.robot.temperature.task.{TemperatureMachineThreadFactory}
 import cats.implicits._
 import cats.effect.IO
 import org.http4s.server.blaze.BlazeBuilder
@@ -29,17 +30,17 @@ object Client extends App {
 
   private val client: List[SensorFile] => IO[Unit] = sensors => {
     for {
-      _      <- IO.pure(Log.info(s"Initialising client '${Host.local.name}' (with ${sensors.size} of a maximum of $MaxSensors sensors)..."))
-      server <- IO.pure(DiscoveryClient.discover)
-      _      <- IO.pure(Log.info(s"Server discovered on ${server.getHostAddress}, monitoring temperatures..."))
-      _      <- IOs.record(Host.local.trim, sensors, HttpUpload(server, BlazeHttpClient()))
+      _      <- info(s"Initialising client '${Host.local.name}' (with ${sensors.size} of a maximum of $MaxSensors sensors)...")
+      server <- IO(DiscoveryClient.discover)
+      _      <- info(s"Server discovered on ${server.getHostAddress}, monitoring temperatures...")
+      _      <- record(Host.local.trim, sensors, HttpUpload(server, BlazeHttpClient()))
       _      <- ClientsLogHttpServer(clientHttpPort)
-      _      <- IO.pure(Log.info(s"HTTP Server started to serve logs on http://${InetAddress.getLocalHost.getHostAddress}:$clientHttpPort"))
+      _      <- info(s"HTTP Server started to serve logs on http://${InetAddress.getLocalHost.getHostAddress}:$clientHttpPort")
       _      <- awaitShutdown()
     } yield ()
   }
 
-  private def awaitShutdown(): IO[Unit] = IO.pure(latch.await())
+  private def awaitShutdown(): IO[Unit] = IO(latch.await())
 
   findSensorsAndExecute(client).leftMap(error => Log.error(error.message))
 
@@ -47,10 +48,9 @@ object Client extends App {
 
 
 object ClientsLogHttpServer {
-  def apply(port: Int): IO[ClientsLogHttpServer] = IO.pure {
+  def apply(port: Int): IO[Http4sServer[IO]] = {
     val server = new ClientsLogHttpServer(port)
-    server.build().unsafeRunSync
-    server
+    server.build()
   }
 }
 

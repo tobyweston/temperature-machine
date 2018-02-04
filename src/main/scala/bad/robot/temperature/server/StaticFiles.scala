@@ -5,7 +5,7 @@ import cats.data.Kleisli
 import cats.effect._
 import org.http4s._
 
-object ApplicationHomeFiles {
+object StaticFiles {
 
   def apply(): HttpService[IO] = Kleisli.apply(request => {
     val location = RrdFile.path

@@ -6,6 +6,7 @@ import bad.robot.logging._
 import bad.robot.temperature.FileOps
 import bad.robot.temperature.rrd.RrdFile._
 import bad.robot.temperature.rrd.Seconds.now
+import cats.effect.IO
 import org.rrd4j.DsType.GAUGE
 import org.rrd4j.core._
 
@@ -21,7 +22,7 @@ object RrdFile {
 
   path.mkdirs()
 
-  def exists = file.exists()
+  def exists = IO(file.exists())
 
 }
 

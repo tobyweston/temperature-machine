@@ -69,4 +69,4 @@ We started with Scalaz but the latest version of Http4s prefers Cats. The break 
 * [scalaz-stream](https://github.com/scalaz/scalaz-stream) (`scalaz.concurrent.Task`) has become [FS2](https://github.com/functional-streams-for-scala/fs2)
 * [cats-effects](https://github.com/typelevel/cats-effect) has some standard `IO` type classes for use with FS2. 
 * Until we migrate away from Scalaz (if ever), use the [shims](https://github.com/djspiewak/shims) for interop. Maybe. Sounds like there'll be problems.
-* `Task.delay(x)` roughly translates to `IO.pure(x)` (where `x` shounld't need to be evaluated or otherwise is "pure")
+* `Task.delay(x)` roughly translates to `IO(x)` (where `x` shouldn't need to be evaluated / should be "pure")

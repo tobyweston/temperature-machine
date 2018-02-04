@@ -18,7 +18,7 @@ import org.http4s.server.middleware.CORS
 import org.http4s.server.{Server => Http4sServer}
 
 object HttpServer {
-  def apply(port: Int, monitored: List[Host]): IO[HttpServer] = IO.pure {
+  def apply(port: Int, monitored: List[Host]): IO[HttpServer] = IO {
     val server = new HttpServer(port, monitored)
     server.build().unsafeRunSync
     server
@@ -29,9 +29,9 @@ class HttpServer(port: Int, monitored: List[Host]) {
 
   private val latch = new CountDownLatch(1)
 
-  def awaitShutdown(): IO[Unit] = IO.pure(latch.await())
+  def awaitShutdown(): IO[Unit] = IO(latch.await())
 
-  def shutdown(): IO[Unit] = IO.pure(latch.countDown())
+  def shutdown(): IO[Unit] = IO(latch.countDown())
 
   private val DefaultExecutorService: ExecutorService = {
     newFixedThreadPool(max(4, Runtime.getRuntime.availableProcessors), TemperatureMachineThreadFactory("http-server"))
@@ -50,7 +50,7 @@ class HttpServer(port: Int, monitored: List[Host]) {
       LogEndpoint() <+>
       ExportEndpoint(JsonFile.load, JsonToCsv.DefaultTimeFormatter) <+>
       VersionEndpoint() <+>
-      ApplicationHomeFiles() <+>
+      StaticFiles() <+>
       StaticResources()
     )
   }
