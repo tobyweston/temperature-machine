@@ -1,33 +1,29 @@
 package bad.robot
 
-import java.io.{PrintWriter, StringWriter}
+import java.io.{File, PrintWriter, StringWriter}
 
-import argonaut.Argonaut._
-import argonaut._
+import cats.syntax.either._
+import io.circe.parser._
+import io.circe._
 import cats.effect.IO
-import org.http4s.argonaut.{jsonEncoderWithPrinterOf, jsonOf}
+import org.http4s.circe.{jsonEncoderWithPrinterOf, jsonOf}
 import org.http4s.{EntityDecoder, EntityEncoder}
 
 import scalaz.\/
-import scalaz.syntax.either.ToEitherOps
+import scalaz.syntax.std.either._
 
 package object temperature {
 
-  def http4sArgonautDecoder[A: DecodeJson]: EntityDecoder[IO, A] = jsonOf[IO, A]
-  def http4sArgonautEncoder[A: EncodeJson]: EntityEncoder[IO, A] = jsonEncoderWithPrinterOf[IO, A](spaces2PlatformSpecific)
-  
-  def encode[A](a: A)(implicit evidence: EncodeJson[A]): Json = a.jencode
+  implicit def http4sCirceDecoder[A: Decoder]: EntityDecoder[A] = jsonOf[A]
+  implicit def http4sCirceEncoder[A: Encoder]: EntityEncoder[A] = jsonEncoderWithPrinterOf(spaces2PlatformSpecific)
 
-  def decode[A: DecodeJson](value: String): Error \/ A = {
-    value.decodeWith[Error \/ A, A](
-      _.right,
-      ParseError(_).left,
-      (message, history) => {
-        val detailMessage =
-          if (history.toList.nonEmpty) s"$message Cursor history: $history"
-          else message
-        ParseError(detailMessage).left[A]
-      })
+  def encode[A: Encoder](a: A): Json = Encoder[A].apply(a)
+
+  // deprecated
+  def decodeAsDisjunction[A: Decoder](value: String): temperature.Error \/ A = {
+    decode(value)
+      .leftMap(error => ParseError(error.getMessage))
+      .disjunction
   }
 
   def stackTraceOf(error: Throwable): String = {
@@ -37,8 +33,10 @@ package object temperature {
   }
 
   private val eol = sys.props("line.separator")
-  val spaces2PlatformSpecific = PrettyParams(
-    indent = "  "
+  val spaces2PlatformSpecific = Printer(
+    preserveOrder = true
+    , dropNullValues = false
+    , indent = "  "
     , lbraceLeft = ""
     , lbraceRight = eol
     , rbraceLeft = eol
@@ -54,12 +52,15 @@ package object temperature {
     , objectCommaRight = eol
     , colonLeft = " "
     , colonRight = " "
-    , preserveOrder = false
-    , dropNullKeys = false
   )
 
   implicit class JsonOps(json: Json) {
     /** Pretty print with platform specific line endings, see [[https://github.com/argonaut-io/argonaut/issues/268]] **/
     def spaces2ps: String = spaces2PlatformSpecific.pretty(json)
   }
+
+  implicit class FileOps(file: File) {
+    def /(child: String): File = new File(file, child)
+  }
+
 }

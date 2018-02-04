@@ -10,12 +10,13 @@ import bad.robot.temperature.ds18b20.SensorFile
 import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.rrd.RrdFile._
-import bad.robot.temperature.server.LogEndpoint
+import bad.robot.temperature.server.{LogEndpoint, VersionEndpoint}
 import bad.robot.temperature.task.{IOs, TemperatureMachineThreadFactory}
 import cats.effect.IO
 import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.server.middleware.CORS
 import org.http4s.server.{Server => Http4sServer}
+import org.http4s.server.syntax.ServiceOps
 
 import scala.concurrent.ExecutionContext
 
@@ -31,7 +32,7 @@ object Client extends App {
       _      <- IO.pure(Log.info(s"Initialising client '${Host.local.name}' (with ${sensors.size} of a maximum of $MaxSensors sensors)..."))
       server <- IO.pure(DiscoveryClient.discover)
       _      <- IO.pure(Log.info(s"Server discovered on ${server.getHostAddress}, monitoring temperatures..."))
-      _      <- IOs.record(Host.local.trim, sensors, HttpUpload(server))
+      _      <- IOs.record(Host.local.trim, sensors, HttpUpload(server, BlazeHttpClient()))
       _      <- ClientsLogHttpServer(clientHttpPort)
       _      <- IO.pure(Log.info(s"HTTP Server started to serve logs on http://${InetAddress.getLocalHost.getHostAddress}:$clientHttpPort"))
       _      <- awaitShutdown()
@@ -64,7 +65,11 @@ class ClientsLogHttpServer(port: Int) {
   private def build(): IO[Http4sServer[IO]] = BlazeBuilder[IO]
     .withExecutionContext(DefaultExecutorService)
     .bindHttp(port, "0.0.0.0")
-    .mountService(CORS(LogEndpoint()), "/")
+    .mountService(
+      CORS(
+        LogEndpoint() ||
+        VersionEndpoint()
+      ), "/")
     .start
 
 }

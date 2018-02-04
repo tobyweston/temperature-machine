@@ -1,8 +1,7 @@
 package bad.robot.temperature.rrd
 
-import argonaut.Argonaut._
-import argonaut._
 import bad.robot.temperature.rrd.ChartJson._
+import io.circe._
 
 import scala.collection.immutable.Seq
 import scala.xml.Elem
@@ -46,23 +45,21 @@ case class Series(name: Sensor, data: List[(Time, Celsius)])
 
 object Series {
 
-  implicit def seriesEncoder: EncodeJson[Series] = {
-    EncodeJson((series: Series) =>
-      Json(
-        "label" -> jString(series.name),
-        "data" -> data(series.data)
-      )
+  implicit def seriesEncoder: Encoder[Series] = new Encoder[Series] {
+    def apply(series: Series): Json = Json.obj(
+      ("label", Json.fromString(series.name)),
+      ("data" -> data(series.data))
     )
   }
 
   private def data(measurements: List[(Time, Celsius)]): Json = {
-    Json.array(measurements.map(point): _*)
+    Json.arr(measurements.map(point): _*)
   }
 
   private def point(measurement: (Time, Celsius)): Json = {
-    Json(
-      "x" -> jNumber(Seconds.secondsToDuration(Seconds(measurement._1.toLong)).toMillis),
-      "y" -> jString(measurement._2)
+    Json.obj(
+      "x" -> Json.fromLong(Seconds.secondsToDuration(Seconds(measurement._1.toLong)).toMillis),
+      "y" -> Json.fromString(measurement._2)
     )
   }
 

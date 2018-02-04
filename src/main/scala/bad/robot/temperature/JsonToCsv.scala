@@ -2,29 +2,32 @@ package bad.robot.temperature
 
 import java.time.Instant
 import java.time.ZoneId._
-import java.time.format.DateTimeFormatter._
+import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle._
-import java.util.Locale._
+import java.util.Locale
 
-import argonaut._
 import bad.robot.temperature.PercentageDifference.percentageDifference
+import io.circe.Decoder
 
-import scalaz.{-\/, \/, \/-}
+import scalaz.\/
 
 object JsonToCsv {
 
   type Row = (String, Instant, Double)
  
-  def convert(json: String): Error \/ String = {
-    Parse.decodeEither[List[Series]](json) match {
-      case Left(error)   => -\/(UnexpectedError(error))
-      case Right(series) => \/-(toCsv(series))
+  val DefaultTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(SHORT).withLocale(Locale.getDefault).withZone(systemDefault())
+  
+  def convert(json: => Error \/ String, formatter: DateTimeFormatter): Error \/ String = {
+    for {
+      string <- json
+      series <- decodeAsDisjunction[List[Series]](string)
+    } yield {
+      toCsv(series, formatter)
     }
   }
   
-  private def toCsv(series: List[Series]) = {
+  private def toCsv(series: List[Series], formatter: DateTimeFormatter) = {
     val quote = "\""
-    val formatter = ofLocalizedDateTime(SHORT).withLocale(UK).withZone(systemDefault())
     
     def toRows: List[Row] = for {
       reading     <- series
@@ -58,17 +61,21 @@ object JsonToCsv {
       ).mkString(","))
     }
     
-    toCsv(toRows).mkString("\n")
+    toCsv(toRows).mkString(sys.props("line.separator"))
   }
 }
 
 object Series {
-  implicit val dataCodec: CodecJson[Series] = CodecJson.derive[Series]
+  import io.circe.generic.semiauto._
+
+  implicit val dataCodec: Decoder[Series] = deriveDecoder[Series]
 }
 case class Series(label: String, data: List[Data])
 
 object Data {
-  implicit val seriesCodec: CodecJson[Data] = CodecJson.derive[Data]
+  import io.circe.generic.semiauto._
+
+  implicit val seriesCodec: Decoder[Data] = deriveDecoder[Data]
 }
 case class Data(x: Long, y: String) {
   def time: Instant = Instant.ofEpochMilli(x)

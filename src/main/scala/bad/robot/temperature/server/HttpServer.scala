@@ -5,7 +5,7 @@ import java.time.Clock
 import java.util.concurrent.Executors._
 import java.util.concurrent.{CountDownLatch, ExecutorService}
 
-import bad.robot.temperature.ErrorOnTemperatureSpike
+import bad.robot.temperature.{ErrorOnTemperatureSpike, JsonToCsv}
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import bad.robot.temperature.rrd.{Host, Rrd}
 import bad.robot.temperature.task.TemperatureMachineThreadFactory
@@ -48,7 +48,8 @@ class HttpServer(port: Int, monitored: List[Host]) {
       TemperatureEndpoint(SensorReader(SensorFile.find()), ErrorOnTemperatureSpike(Rrd(monitored)))(Clock.systemDefaultZone) <+>
       ConnectionsEndpoint(Clock.systemDefaultZone) <+>
       LogEndpoint() <+>
-      ExportEndpoint() <+>
+      ExportEndpoint(JsonFile.load, JsonToCsv.DefaultTimeFormatter) ||
+      VersionEndpoint() <+>
       ApplicationHomeFiles() <+>
       StaticResources()
     )

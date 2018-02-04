@@ -9,3 +9,14 @@ table {
 .content-wrapper a {
     border-bottom: 1px dashed;
 }
+
+#sidebar-wrapper {
+    background: #1b1323;
+    -webkit-transition: none;
+    transition: none;
+}
+
+#wrapper {
+    -webkit-transition: none;
+    transition: none;
+}

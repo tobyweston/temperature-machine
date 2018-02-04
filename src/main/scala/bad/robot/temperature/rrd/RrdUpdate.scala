@@ -3,7 +3,6 @@ package bad.robot.temperature.rrd
 import bad.robot.temperature.{Error, Measurement, RrdError, SensorReading, Temperature, _}
 import org.rrd4j.core.RrdDb
 
-import scala.{Error => _}
 import scalaz.\/
 import scalaz.\/.fromTryCatchNonFatal
 

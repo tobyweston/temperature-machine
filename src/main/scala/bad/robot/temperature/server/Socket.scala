@@ -6,7 +6,6 @@ import bad.robot.temperature.server.DiscoveryServer._
 import bad.robot.temperature.{Error, Timeout, UnexpectedError}
 
 import scala.concurrent.duration.Duration
-import scala.{Error => _}
 import scalaz.\/
 
 object Socket {
@@ -19,7 +18,7 @@ object Socket {
         socket.receive(packet)
         packet
       }.leftMap {
-        case e: SocketTimeoutException => Timeout(s"socket timed out after $timeout ms")
+        case _: SocketTimeoutException => Timeout(s"socket timed out after $timeout")
         case e: Throwable              => UnexpectedError(e.getMessage)
       }
     }

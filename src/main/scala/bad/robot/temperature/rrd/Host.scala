@@ -1,12 +1,12 @@
 package bad.robot.temperature.rrd
 
 import java.net.InetAddress
-
-import argonaut.CodecJson
+import io.circe.generic.semiauto._
 
 object Host {
   def local = Host(InetAddress.getLocalHost.getHostName)
-  implicit val codec = CodecJson.derive[Host]
+  implicit val encoder = deriveEncoder[Host]
+  implicit val decoder = deriveDecoder[Host]
 }
 
 case class Host(name: String) {

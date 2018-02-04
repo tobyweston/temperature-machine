@@ -1,12 +1,9 @@
 package bad.robot.temperature.server
 
-import java.lang.{Error => _}
-
 import bad.robot.temperature._
 import org.http4s.dsl.io._
 import org.specs2.mutable.Specification
 
-import scala.{Error => _}
 import scalaz.{-\/, \/-}
 
 class EitherToResponseTest extends Specification {

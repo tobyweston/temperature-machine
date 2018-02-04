@@ -4,6 +4,7 @@ import java.net.{InetAddress, NetworkInterface}
 
 import bad.robot.temperature.IpAddress._
 import bad.robot.temperature.client.HttpUpload.currentIpAddress
+import bad.robot.temperature._
 import bad.robot.temperature.{JsonOps, _}
 import cats.data.NonEmptyList
 import cats.effect.IO
@@ -19,13 +20,10 @@ import scala.collection.JavaConverters._
 import scalaz.Scalaz._
 import scalaz.{-\/, \/, \/-}
 
-case class HttpUpload(address: InetAddress) extends TemperatureWriter {
+case class HttpUpload(address: InetAddress, client: Http4sClient[IO]) extends TemperatureWriter {
 
-  private val blaze: Http4sClient[IO] = BlazeHttpClient()
+  private val decoder = EntityDecoder.text
 
-  private implicit val jsonEncoder = http4sArgonautEncoder[Measurement]
-
-  // return IO
   def write(measurement: Measurement): Error \/ Unit = {
     val uri = Uri(
       scheme = Some(Scheme.http),

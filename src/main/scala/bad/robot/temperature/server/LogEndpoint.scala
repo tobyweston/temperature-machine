@@ -2,8 +2,8 @@ package bad.robot.temperature.server
 
 import java.util.Scanner
 
-import bad.robot.temperature.rrd.{RrdFile, _}
-import bad.robot.temperature.{Error, FileError, LogMessage, LogParser}
+import bad.robot.temperature.rrd.RrdFile
+import bad.robot.temperature.{Error, FileError, FileOps, LogMessage, LogParser, _}
 import cats.effect._
 import org.http4s._
 import org.http4s.dsl.io._

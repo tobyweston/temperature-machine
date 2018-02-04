@@ -22,4 +22,14 @@ class SensorReadingTest extends Specification {
   "Averages an empty list" >> {
     List[SensorReading]().average must_== SensorReading("Unknown", Temperature(0.0))
   }
+
+  "Encode JSON" >> {
+    encode(SensorReading("A", Temperature(23.4))).spaces2ps must_==
+      """{
+        |  "name" : "A",
+        |  "temperature" : {
+        |    "celsius" : 23.4
+        |  }
+        |}""".stripMargin
+  }
 }

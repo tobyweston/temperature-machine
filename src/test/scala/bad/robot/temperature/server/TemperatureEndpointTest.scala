@@ -115,7 +115,7 @@ class TemperatureEndpointTest extends Specification {
     val request: Request[IO] = Put("bad json")
     val response = service.orNotFound.run(request).unsafeRunSync
     response must haveStatus(org.http4s.Status.BadRequest)
-    response.as[String].unsafeRunSync must_== "Unable to parse content as JSON Unexpected content found: bad json"
+    response.as[String].unsafeRunSync must_== "Unable to parse content as JSON expected json value got b (line 1, column 1)"
   }
 
   "Get multiple sensors temperatures" >> {

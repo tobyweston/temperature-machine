@@ -4,12 +4,9 @@ import java.time.Clock
 import java.time.temporal.ChronoUnit.{MINUTES => minutes}
 import java.time.temporal.TemporalUnit
 
-import argonaut.Argonaut._
-import argonaut.{EncodeJson, Json}
 import bad.robot.temperature._
 import bad.robot.temperature.rrd.Host
-//import cats.Monad
-import cats.effect.IO
+import io.circe._
 import org.http4s.HttpService
 import org.http4s.dsl.io._
 import org.http4s.headers.`X-Forwarded-For`
@@ -17,13 +14,11 @@ import org.http4s.headers.`X-Forwarded-For`
 object TemperatureEndpoint {
 
 //  private implicit val jsonDecoder = http4sArgonautDecoder[Measurement]
-  private implicit val jsonEncode1r = http4sArgonautEncoder[Json]
+  private implicit val jsonEncode1r = http4sCirceEncoder[Json]
 
-  implicit def jsonEncoder: EncodeJson[Map[Host, Measurement]] = {
-    EncodeJson((measurements: Map[Host, Measurement]) =>
-      argonaut.Json(
-        "measurements" := measurements.values.toList
-      )
+  implicit def jsonEncoder: Encoder[Map[Host, Measurement]] = new Encoder[Map[Host, Measurement]] {
+    def apply(measurements: Map[Host, Measurement]): Json = Json.obj(
+      ("measurements", Encoder[List[Measurement]].apply(measurements.values.toList))
     )
   }
 
@@ -56,7 +51,7 @@ object TemperatureEndpoint {
     case request @ PUT -> Root / "temperature" => {
       val payload = request.as[String].unsafeRunSync
       val result = for {
-        measurement <- decode[Measurement](payload)
+        measurement <- decodeAsDisjunction[Measurement](payload)
         _           <- writer.write(measurement)
         _           <- ConnectionsEndpoint.update(measurement.host, request.headers.get(`X-Forwarded-For`))
       } yield measurement

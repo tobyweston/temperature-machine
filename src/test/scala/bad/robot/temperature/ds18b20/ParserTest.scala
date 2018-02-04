@@ -4,7 +4,6 @@ import bad.robot.temperature.{CrcFailure, Temperature, UnexpectedError}
 import org.specs2.matcher.DisjunctionMatchers._
 import org.specs2.mutable.Specification
 
-import scala.{Error => _}
 
 class ParserTest extends Specification {
 

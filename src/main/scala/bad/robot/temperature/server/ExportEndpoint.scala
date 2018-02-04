@@ -1,38 +1,25 @@
 package bad.robot.temperature.server
 
+import java.time.format.DateTimeFormatter
+
+import bad.robot.temperature.Error
 import bad.robot.temperature.JsonToCsv
-import cats.effect.IO
-import org.http4s._
-import org.http4s.dsl.io._
+import cats.effect.IOimport org.http4s._
+import org.http4s.MediaType._
+importorg.http4s.dsl.io._
+import org.http4s.headers.{`Content-Disposition`, `Content-Type`}
+
+import scalaz.\/
 object ExportEndpoint {
   
-  def apply() = HttpService[IO] {
-    case GET -> Root / "temperatures" / "csv" => {
-      val exampleJson =
-        """
-          |[
-          |  {
-          |    "label": "bedroom1-sensor-1",
-          |    "data": [
-          |      {
-          |        "x": 1507709610000,
-          |        "y": "NaN"
-          |      },
-          |      {
-          |        "x": 1507709640000,
-          |        "y": "+2.2062500000E01"
-          |      },
-          |      {
-          |        "x": 1507709680000,
-          |        "y": "+2.2262500000E01"
-          |      }
-          |    ]
-          |  }
-          |]
-        """.stripMargin
-
-      val csv = JsonToCsv.convert(exampleJson)
-      csv.toHttpResponse(Ok(_))
+  def apply(json: => Error \/ String, formatter: DateTimeFormatter) = HttpService[IO] {
+    
+    case GET -> Root / "temperatures.csv" => {
+      val csv = JsonToCsv.convert(json, formatter)
+      csv.toHttpResponse(Ok(_).putHeaders(
+        `Content-Type`(`text/csv`),
+        `Content-Disposition`("attachment", Map("filename" -> "temperatures.csv"))
+      ))
     }
 
   }

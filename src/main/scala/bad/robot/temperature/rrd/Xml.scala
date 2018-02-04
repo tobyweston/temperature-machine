@@ -2,6 +2,7 @@ package bad.robot.temperature.rrd
 
 import java.io.{BufferedWriter, FileWriter}
 
+import bad.robot.temperature.FileOps
 import bad.robot.temperature.encode
 import bad.robot.temperature.rrd.ChartJson._
 import org.rrd4j.ConsolFun._

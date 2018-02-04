@@ -16,10 +16,6 @@ package object rrd {
 
   implicit def fileToString(file: File): String = file.getAbsolutePath
 
-  implicit class FileOps(file: File) {
-    def /(child: String): File = new File(file, child)
-  }
-
   implicit class RrdDbOps(database: RrdDb) {
     def hasValuesFor(datasource: String): Boolean = {
       DataSources.updated.contains(database.getDatasource(database.getDsIndex(datasource)).getName)

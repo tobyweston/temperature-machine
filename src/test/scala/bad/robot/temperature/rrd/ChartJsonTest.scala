@@ -1,5 +1,6 @@
 package bad.robot.temperature.rrd
 
+import bad.robot.temperature._
 import org.specs2.mutable.Specification
 
 import scala.xml.Elem
@@ -78,4 +79,77 @@ class ChartJsonTest extends Specification {
     actual must_=== expected
   }
 
+  "Encode Json" >> {
+    encode(ChartJson.parse(xml)).spaces2ps must_==
+      """[
+        |  {
+        |    "label" : "bedroom-sensor-1",
+        |    "data" : [
+        |      {
+        |        "x" : 1487582430000,
+        |        "y" : "NaN"
+        |      },
+        |      {
+        |        "x" : 1487582460000,
+        |        "y" : "+2.3310391215E01"
+        |      },
+        |      {
+        |        "x" : 1487582490000,
+        |        "y" : "+2.2793614109E01"
+        |      }
+        |    ]
+        |  },
+        |  {
+        |    "label" : "bedroom-sensor-2",
+        |    "data" : [
+        |      {
+        |        "x" : 1487582430000,
+        |        "y" : "NaN"
+        |      },
+        |      {
+        |        "x" : 1487582460000,
+        |        "y" : "+2.9610391215E01"
+        |      },
+        |      {
+        |        "x" : 1487582490000,
+        |        "y" : "+2.9093614109E01"
+        |      }
+        |    ]
+        |  },
+        |  {
+        |    "label" : "lounge-sensor-1",
+        |    "data" : [
+        |      {
+        |        "x" : 1487582430000,
+        |        "y" : "NaN"
+        |      },
+        |      {
+        |        "x" : 1487582460000,
+        |        "y" : "+3.3282822188E00"
+        |      },
+        |      {
+        |        "x" : 1487582490000,
+        |        "y" : "+2.6427807382E00"
+        |      }
+        |    ]
+        |  },
+        |  {
+        |    "label" : "lounge-sensor-2",
+        |    "data" : [
+        |      {
+        |        "x" : 1487582430000,
+        |        "y" : "NaN"
+        |      },
+        |      {
+        |        "x" : 1487582460000,
+        |        "y" : "+4.6282822188E00"
+        |      },
+        |      {
+        |        "x" : 1487582490000,
+        |        "y" : "+3.9427807382E00"
+        |      }
+        |    ]
+        |  }
+        |]""".stripMargin
+  }
 }
