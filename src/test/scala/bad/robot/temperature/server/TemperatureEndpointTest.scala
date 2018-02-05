@@ -8,7 +8,6 @@ import bad.robot.temperature.test._
 import cats.effect.IO
 import org.http4s.Method._
 import org.http4s.Status.{InternalServerError, NoContent, Ok}
-import org.http4s._
 import org.http4s.implicits._
 import org.http4s.{Request, Uri}
 import org.specs2.mutable.Specification
@@ -115,7 +114,7 @@ class TemperatureEndpointTest extends Specification {
     val request: Request[IO] = Put("bad json")
     val response = service.orNotFound.run(request).unsafeRunSync
     response must haveStatus(org.http4s.Status.BadRequest)
-    response.as[String].unsafeRunSync must_== "Unable to parse content as JSON expected json value got b (line 1, column 1)"
+    response.as[String].unsafeRunSync must_== "The request body was malformed."
   }
 
   "Get multiple sensors temperatures" >> {

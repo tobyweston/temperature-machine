@@ -8,13 +8,14 @@ import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.{jsonEncoder, _}
 import cats.effect.IO
 import io.circe._
+import org.http4s.HttpService
 import org.http4s.dsl.io._
 import org.http4s.headers.`X-Forwarded-For`
-import org.http4s.{EntityDecoder, HttpService}
 
 object TemperatureEndpoint {
 
   private implicit val encoder = jsonEncoder[Json]
+  private implicit val decoder = jsonDecoder[Measurement]
 
   implicit def jsonMapEncoder: Encoder[Map[Host, Measurement]] = new Encoder[Map[Host, Measurement]] {
     def apply(measurements: Map[Host, Measurement]): Json = Json.obj(
@@ -49,15 +50,16 @@ object TemperatureEndpoint {
     }
 
     case request @ PUT -> Root / "temperature" => {
-      val payload = request.as[String](implicitly, EntityDecoder.text).unsafeRunSync
-      val result = for {
-        measurement <- decodeAsDisjunction[Measurement](payload)
-        _           <- writer.write(measurement)
-        _           <- ConnectionsEndpoint.update(measurement.host, request.headers.get(`X-Forwarded-For`))
-      } yield measurement
-      result.toHttpResponse(success => {
-        current = current + (success.host -> success)
-        NoContent()
+      request.decode[Measurement](measurement => {
+        val result = for {
+          _ <- writer.write(measurement)
+          _ <- ConnectionsEndpoint.update(measurement.host, request.headers.get(`X-Forwarded-For`))
+        } yield measurement
+        
+        result.toHttpResponse(success => {
+          current = current + (success.host -> success)
+          NoContent()
+        })
       })
     }
   }
