@@ -4,7 +4,7 @@ import java.net.{InetAddress, NetworkInterface}
 
 import bad.robot.temperature.IpAddress._
 import bad.robot.temperature.client.HttpUpload.currentIpAddress
-import bad.robot.temperature.{JsonOps, _}
+import bad.robot.temperature._
 import cats.data.NonEmptyList
 import cats.effect.IO
 import org.http4s.Status.Successful
@@ -41,7 +41,7 @@ case class HttpUpload(address: InetAddress, client: Http4sClient[IO]) extends Te
 
     // why no leftMap?
     fetch.attempt.map {
-      case Left(t)      => -\/(UnexpectedError(s"Failed attempting to connect to $address to send $measurement\n\nError was: $t\nPayload was: '${encode(measurement).spaces2ps}'\n"))
+      case Left(t)      => -\/(UnexpectedError(s"Failed attempting to connect to $address to send $measurement\n\nError was: $t"))
       case Right(value) => value
     }.unsafeRunSync()
   }
