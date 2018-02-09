@@ -61,7 +61,10 @@ class TemperatureEndpointTest extends Specification {
     val clock = fixedClock()
     val service = TemperatureEndpoint(stubReader(\/-(List())), stubWriter(\/-(Unit)))(clock)
     val measurement = """{
-                         |  "host" : "localhost",
+                         |  "host" : {
+                         |    "name" : "localhost",
+                         |    "utcOffset" : null
+                         |  },
                          |  "seconds" : 9000,
                          |  "sensors" : [
                          |     {
@@ -78,7 +81,10 @@ class TemperatureEndpointTest extends Specification {
 
   "Putting sensor data to the writer" >> {
     val body = """{
-                  |  "host" : "localhost",
+                  |  "host" : {
+                  |    "name" : "localhost",
+                  |    "utcOffset" : null
+                  |  },
                   |  "seconds" : 7000,
                   |  "sensors" : [
                   |     {
@@ -119,7 +125,10 @@ class TemperatureEndpointTest extends Specification {
 
   "Get multiple sensors temperatures" >> {
     val measurement1 = """{
-                         |  "host" : "lounge",
+                         |  "host" : {
+                         |    "name" : "lounge",
+                         |    "utcOffset" : null
+                         |  },
                          |  "seconds" : 100,
                          |  "sensors" : [
                          |     {
@@ -138,7 +147,10 @@ class TemperatureEndpointTest extends Specification {
                          |}""".stripMargin
 
     val measurement2 = """{
-                         |  "host" : "bedroom",
+                         |  "host" : {
+                         |    "name" : "bedroom",
+                         |    "utcOffset" : null
+                         |  },
                          |  "seconds" : 200,
                          |  "sensors" : [
                          |     {
@@ -171,7 +183,10 @@ class TemperatureEndpointTest extends Specification {
     val expected = """{
                       |  "measurements" : [
                       |    {
-                      |      "host" : "lounge",
+                      |      "host" : {
+                      |        "name" : "lounge",
+                      |        "utcOffset" : null
+                      |      },
                       |      "seconds" : 100,
                       |      "sensors" : [
                       |        {
@@ -189,7 +204,10 @@ class TemperatureEndpointTest extends Specification {
                       |      ]
                       |    },
                       |    {
-                      |      "host" : "bedroom",
+                      |      "host" : {
+                      |        "name" : "bedroom",
+                      |        "utcOffset" : null
+                      |      },
                       |      "seconds" : 200,
                       |      "sensors" : [
                       |        {
@@ -214,7 +232,10 @@ class TemperatureEndpointTest extends Specification {
 
   "Get multiple sensors, averaging the temperatures" >> {
     val measurement1 = """{
-                         |  "host" : "lounge",
+                         |  "host" : {
+                         |    "name" : "lounge",
+                         |    "utcOffset" : null
+                         |  },
                          |  "seconds" : 100,
                          |  "sensors" : [
                          |     {
@@ -233,7 +254,10 @@ class TemperatureEndpointTest extends Specification {
                          |}""".stripMargin
 
     val measurement2 = """{
-                         |  "host" : "bedroom",
+                         |  "host" : {
+                         |    "name" : "bedroom",
+                         |    "utcOffset" : null
+                         |  },
                          |  "seconds" : 200,
                          |  "sensors" : [
                          |     {
@@ -266,7 +290,10 @@ class TemperatureEndpointTest extends Specification {
                                     """{
                                       |  "measurements" : [
                                       |    {
-                                      |      "host" : "lounge",
+                                      |      "host" : {
+                                      |        "name" : "lounge",
+                                      |        "utcOffset" : null
+                                      |      },
                                       |      "seconds" : 100,
                                       |      "sensors" : [
                                       |        {
@@ -278,7 +305,10 @@ class TemperatureEndpointTest extends Specification {
                                       |      ]
                                       |    },
                                       |    {
-                                      |      "host" : "bedroom",
+                                      |      "host" : {
+                                      |        "name" : "bedroom",
+                                      |        "utcOffset" : null
+                                      |      },
                                       |      "seconds" : 200,
                                       |      "sensors" : [
                                       |        {
@@ -295,7 +325,10 @@ class TemperatureEndpointTest extends Specification {
 
   "Filter out old temperatures when getting multiple sensors" >> {
     val measurement1 = """{
-                         |  "host" : "lounge",
+                         |  "host" : {
+                         |    "name" : "lounge",
+                         |    "utcOffset" : null
+                         |  },
                          |  "seconds" : 0,
                          |  "sensors" : [
                          |     {
@@ -314,7 +347,10 @@ class TemperatureEndpointTest extends Specification {
                          |}""".stripMargin
 
     val measurement2 = """{
-                         |  "host" : "bedroom",
+                         |  "host" : {
+                         |    "name" : "bedroom",
+                         |    "utcOffset" : null
+                         |  },
                          |  "seconds" : 120,
                          |  "sensors" : [
                          |     {
@@ -347,7 +383,10 @@ class TemperatureEndpointTest extends Specification {
     val expected = """{
                      |  "measurements" : [
                      |    {
-                     |      "host" : "bedroom",
+                     |      "host" : {
+                     |        "name" : "bedroom",
+                     |        "utcOffset" : null
+                     |      },
                      |      "seconds" : 120,
                      |      "sensors" : [
                      |        {
@@ -372,7 +411,10 @@ class TemperatureEndpointTest extends Specification {
 
   "Filter out old temperatures when averaging" >> {
     val measurement1 = """{
-                         |  "host" : "lounge",
+                         |  "host" : {
+                         |    "name" : "lounge",
+                         |    "utcOffset" : null
+                         |  },
                          |  "seconds" : 0,
                          |  "sensors" : [
                          |     {
@@ -391,7 +433,10 @@ class TemperatureEndpointTest extends Specification {
                          |}""".stripMargin
 
     val measurement2 = """{
-                         |  "host" : "bedroom",
+                         |  "host" : {
+                         |    "name" : "bedroom",
+                         |    "utcOffset" : null
+                         |  },
                          |  "seconds" : 60,
                          |  "sensors" : [
                          |     {
@@ -424,7 +469,10 @@ class TemperatureEndpointTest extends Specification {
                                     """{
                                       |  "measurements" : [
                                       |    {
-                                      |      "host" : "bedroom",
+                                      |      "host" : {
+                                      |        "name" : "bedroom",
+                                      |        "utcOffset" : null
+                                      |      },
                                       |      "seconds" : 60,
                                       |      "sensors" : [
                                       |        {

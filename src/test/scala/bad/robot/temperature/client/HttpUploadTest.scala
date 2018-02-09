@@ -26,9 +26,12 @@ class HttpUploadTest extends Specification {
       EntityDecoder.decodeString(request.unsafeRunSync()).unsafeRunSync()
     }
 
-    val measurement = Measurement(Host("example"), Seconds(1509221361), List(SensorReading("28-0115910f5eff", Temperature(19.75))))
+    val measurement = Measurement(Host("example", None), Seconds(1509221361), List(SensorReading("28-0115910f5eff", Temperature(19.75))))
     encodeMessageViaEntityEncoder(measurement) must_== """|{
-                                                          |  "host" : "example",
+                                                          |  "host" : {
+                                                          |    "name" : "example",
+                                                          |    "utcOffset" : null
+                                                          |  },
                                                           |  "seconds" : 1509221361,
                                                           |  "sensors" : [
                                                           |    {
@@ -42,7 +45,7 @@ class HttpUploadTest extends Specification {
   }
   
   "Error response from server" >> {
-    val measurement = Measurement(Host("example"), Seconds(1509221361), List(SensorReading("28-0115910f5eff", Temperature(19.75))))
+    val measurement = Measurement(Host("example", None), Seconds(1509221361), List(SensorReading("28-0115910f5eff", Temperature(19.75))))
     
     val error = InternalServerError("I'm an error").map(DisposableResponse(_, IO.pure(())))
     val willError: Kleisli[IO, Request[IO], DisposableResponse[IO]] = new Kleisli[IO, Request[IO], DisposableResponse[IO]](_ => error)
@@ -57,7 +60,7 @@ class HttpUploadTest extends Specification {
   }
   
   "Request has headers" >> {
-    val measurement = Measurement(Host("example"), Seconds(1509221361), List(SensorReading("28-0115910f5eff", Temperature(19.75))))
+    val measurement = Measurement(Host("example", None), Seconds(1509221361), List(SensorReading("28-0115910f5eff", Temperature(19.75))))
     
     var headers = List[String]()
     
@@ -72,7 +75,6 @@ class HttpUploadTest extends Specification {
     headers must_== List(
       "Content-Type",
       "X-Forwarded-For",
-      "X-Utc-Offset",
       "Content-Length"
     )
   }

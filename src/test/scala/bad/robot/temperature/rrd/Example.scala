@@ -21,7 +21,7 @@ object Example extends App {
 
   val frequency = Duration(30, "seconds")
 
-  val hosts = List(Host("bedroom"), Host("lounge"))
+  val hosts = List(Host("bedroom", None), Host("lounge", None))
 
   RrdFile(hosts, frequency).create(start - 5)
 

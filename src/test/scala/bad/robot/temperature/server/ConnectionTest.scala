@@ -7,10 +7,11 @@ import org.specs2.mutable.Specification
 class ConnectionTest extends Specification {
 
   "Encode Json" >> {
-    encode(Connection(Host("box.local"), IpAddress("127.0.0.1"))).spaces2ps must_==
+    encode(Connection(Host("box.local", Some("Z")), IpAddress("127.0.0.1"))).spaces2ps must_==
       """{
         |  "host" : {
-        |    "name" : "box.local"
+        |    "name" : "box.local",
+        |    "utcOffset" : "Z"
         |  },
         |  "ip" : {
         |    "value" : "127.0.0.1"

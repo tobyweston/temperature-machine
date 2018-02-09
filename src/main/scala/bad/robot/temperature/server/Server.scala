@@ -32,7 +32,7 @@ object Server extends App {
   def server(sensors: List[SensorFile])(implicit monitored: List[Host]) = {
     for {
       _ <- info("Starting temperature-machine (server mode)...")
-      _ <- init(hosts)
+      _ <- init(monitored)
       _ <- discovery
       _ <- record(Host.local, sensors, HttpUpload(InetAddress.getLocalHost, BlazeHttpClient()))
       _ <- graphing
@@ -52,7 +52,7 @@ object Server extends App {
 
   val hosts = args.toList match {
     case Nil   => quit
-    case hosts => hosts.map(host => Host.apply(host))
+    case hosts => hosts.map(host => Host(host, utcOffset = None))
   }
 
   findSensorsAndExecute(server(_)(hosts)).leftMap(error => Log.error(error.message))

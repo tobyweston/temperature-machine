@@ -27,7 +27,7 @@ class RecordTemperatureTest extends Specification {
         \/-(Unit)
       }
     }
-    RecordTemperature(Host("example"), input, output, null).run()
+    RecordTemperature(Host("example", None), input, output, null).run()
     output.temperatures must_== List(Temperature(69.9))
   }
 
@@ -42,7 +42,7 @@ class RecordTemperatureTest extends Specification {
     val logger = LogManager.getRootLogger
     val appender = new TestAppender(logger.getName, ERROR)
 
-    RecordTemperature(Host("example"), input, output, logger).run()
+    RecordTemperature(Host("example", None), input, output, logger).run()
 
     appender.cleanup(logger.getName)
     
@@ -60,7 +60,7 @@ class RecordTemperatureTest extends Specification {
     val logger = LogManager.getRootLogger
     val appender = new TestAppender(logger.getName, ERROR)
 
-    RecordTemperature(Host("example"), input, output, logger).run()
+    RecordTemperature(Host("example", None), input, output, logger).run()
 
     appender.cleanup(logger.getName)
     

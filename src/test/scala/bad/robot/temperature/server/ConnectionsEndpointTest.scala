@@ -33,7 +33,7 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
   }
 
   "After a connection is made" >> {
-    ConnectionsEndpoint.update(Host("garage"), Some(xForwardedFor("84.12.43.124")))
+    ConnectionsEndpoint.update(Host("garage", None), Some(xForwardedFor("84.12.43.124")))
 
     val request = Request[IO](GET, Uri.uri("/connections"))
     val service = ConnectionsEndpoint(fixedClock())
@@ -44,7 +44,8 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
       """[
         |  {
         |    "host" : {
-        |      "name" : "garage"
+        |      "name" : "garage",
+        |      "utcOffset" : null
         |    },
         |    "ip" : {
         |      "value" : "84.12.43.124"
@@ -57,14 +58,15 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
     val service = ConnectionsEndpoint(fixedClock(Instant.now.plus(4, minutes)))
 
     val request = Request[IO](GET, Uri.uri("/connections/active/within/5/mins"))
-    ConnectionsEndpoint.update(Host("garage"), Some(xForwardedFor("184.14.23.214")))
+    ConnectionsEndpoint.update(Host("garage", None), Some(xForwardedFor("184.14.23.214")))
     val response =  service.orNotFound.run(request)
 
     response.unsafeRunSync().status must_== Ok
     response.flatMap(_.as[String]).unsafeRunSync must_== """[
                                                     |  {
                                                     |    "host" : {
-                                                    |      "name" : "garage"
+                                                    |      "name" : "garage",
+                                                    |      "utcOffset" : null
                                                     |    },
                                                     |    "ip" : {
                                                     |      "value" : "184.14.23.214"
@@ -74,7 +76,7 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
   }
 
   "Multiple IPs" >> {
-    ConnectionsEndpoint.update(Host("garage"), Some(xForwardedFor("84.12.43.124", "10.0.1.12")))
+    ConnectionsEndpoint.update(Host("garage", None), Some(xForwardedFor("84.12.43.124", "10.0.1.12")))
 
     val request = Request[IO](GET, Uri.uri("/connections"))
     val service = ConnectionsEndpoint(fixedClock())
@@ -85,7 +87,8 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
       """[
         |  {
         |    "host" : {
-        |      "name" : "garage"
+        |      "name" : "garage",
+        |      "utcOffset" : null
         |    },
         |    "ip" : {
         |      "value" : "84.12.43.124, 10.0.1.12"
@@ -98,7 +101,7 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
     val service = ConnectionsEndpoint(fixedClock(Instant.now.plus(6, minutes)))
 
     val request = Request[IO](GET, Uri.uri("/connections/active/within/5/mins"))
-    ConnectionsEndpoint.update(Host("garage"), Some(xForwardedFor("162.34.13.113")))
+    ConnectionsEndpoint.update(Host("garage", None), Some(xForwardedFor("162.34.13.113")))
     val response =  service.orNotFound.run(request).unsafeRunSync()
 
 
