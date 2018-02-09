@@ -1,10 +1,11 @@
 package bad.robot.temperature.client
 
 import java.net.{InetAddress, NetworkInterface}
+import java.time.{Instant, ZoneId}
 
 import bad.robot.temperature.IpAddress._
-import bad.robot.temperature.client.HttpUpload.currentIpAddress
 import bad.robot.temperature._
+import bad.robot.temperature.client.HttpUpload.currentIpAddress
 import cats.data.NonEmptyList
 import cats.effect.IO
 import org.http4s.Status.Successful
@@ -32,7 +33,7 @@ case class HttpUpload(address: InetAddress, client: Http4sClient[IO]) extends Te
       path = "/temperature"
     )
 
-    val request: IO[Request[IO]] = PUT.apply(uri, measurement, `X-Forwarded-For`(currentIpAddress))
+    val request: IO[Request[IO]] = PUT.apply(uri, measurement, `X-Forwarded-For`(currentIpAddress), Header("X-Utc-Offset", HttpUpload.utcOffset))
 
     val fetch: IO[Error \/ Unit] = client.fetch(request) {
       case Successful(_) => IO.pure(\/-(()))
@@ -48,6 +49,9 @@ case class HttpUpload(address: InetAddress, client: Http4sClient[IO]) extends Te
 }
 
 object HttpUpload {
+  
+  val utcOffset = ZoneId.systemDefault().getRules().getOffset(Instant.now()).getId
+  
   val allNetworkInterfaces: List[NetworkInterface] = {
     NetworkInterface.getNetworkInterfaces
       .asScala
@@ -59,8 +63,8 @@ object HttpUpload {
   val currentIpAddress: NonEmptyList[Option[InetAddress]] = {
     val addresses = for {
       interface <- allNetworkInterfaces
-      address <- interface.getInetAddresses.asScala
-      ip <- isIpAddress(address.getHostAddress).option(address)
+      address   <- interface.getInetAddresses.asScala
+      ip        <- isIpAddress(address.getHostAddress).option(address)
     } yield Some(ip)
 
     NonEmptyList(addresses.head, addresses.tail)

@@ -50,9 +50,30 @@ class HttpUploadTest extends Specification {
     val client = Http4sClient[IO](willError, IO.pure(()))
 
     val upload = HttpUpload(InetAddress.getLoopbackAddress, client)
-    val value1 = upload.write(measurement)
-    value1 must be_-\/.like {
+    val value = upload.write(measurement)
+    value must be_-\/.like {
       case UnexpectedError("""Failed to PUT temperature data to http://127.0.0.1:11900/temperature, response was 500 Internal Server Error: Right(I'm an error)""") => ok
     }
+  }
+  
+  "Request has headers" >> {
+    val measurement = Measurement(Host("example"), Seconds(1509221361), List(SensorReading("28-0115910f5eff", Temperature(19.75))))
+    
+    var headers = List[String]()
+    
+    val client = Http4sClient[IO](new Kleisli[IO, Request[IO], DisposableResponse[IO]](request => {
+      headers = request.headers.map(_.name.toString()).toList
+      Ok().map(DisposableResponse(_, IO.pure(())))
+    }), IO.pure(()))
+
+    val upload = HttpUpload(InetAddress.getLoopbackAddress, client)
+    upload.write(measurement)
+    
+    headers must_== List(
+      "Content-Type",
+      "X-Forwarded-For",
+      "X-Utc-Offset",
+      "Content-Length"
+    )
   }
 }
