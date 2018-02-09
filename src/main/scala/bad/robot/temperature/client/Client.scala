@@ -33,7 +33,7 @@ object Client extends App {
       _      <- info(s"Initialising client '${Host.local.name}' (with ${sensors.size} of a maximum of $MaxSensors sensors)...")
       server <- IO(DiscoveryClient.discover)
       _      <- info(s"Server discovered on ${server.getHostAddress}, monitoring temperatures...")
-      _      <- record(Host.local.trim, sensors, HttpUpload(server, BlazeHttpClient()))
+      _      <- record(Host.local, sensors, HttpUpload(server, BlazeHttpClient()))
       _      <- ClientsLogHttpServer(clientHttpPort)
       _      <- info(s"HTTP Server started to serve logs on http://${InetAddress.getLocalHost.getHostAddress}:$clientHttpPort")
       _      <- awaitShutdown()

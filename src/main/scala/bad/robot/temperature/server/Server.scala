@@ -34,7 +34,7 @@ object Server extends App {
       _ <- info("Starting temperature-machine (server mode)...")
       _ <- init(hosts)
       _ <- discovery
-      _ <- record(Host.local.trim, sensors, HttpUpload(InetAddress.getLocalHost, BlazeHttpClient()))
+      _ <- record(Host.local, sensors, HttpUpload(InetAddress.getLocalHost, BlazeHttpClient()))
       _ <- graphing
       _ <- exportJson
       _ <- http
@@ -52,7 +52,7 @@ object Server extends App {
 
   val hosts = args.toList match {
     case Nil   => quit
-    case hosts => hosts.map(host => Host.apply(host).trim)
+    case hosts => hosts.map(host => Host.apply(host))
   }
 
   findSensorsAndExecute(server(_)(hosts)).leftMap(error => Log.error(error.message))
