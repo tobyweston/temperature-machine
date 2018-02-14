@@ -184,27 +184,6 @@ class TemperatureEndpointTest extends Specification {
                       |  "measurements" : [
                       |    {
                       |      "host" : {
-                      |        "name" : "lounge",
-                      |        "utcOffset" : null
-                      |      },
-                      |      "seconds" : 100,
-                      |      "sensors" : [
-                      |        {
-                      |          "name" : "28-00000dfg34ca",
-                      |          "temperature" : {
-                      |            "celsius" : 31.1
-                      |          }
-                      |        },
-                      |        {
-                      |          "name" : "28-00000f33fdc3",
-                      |          "temperature" : {
-                      |            "celsius" : 32.8
-                      |          }
-                      |        }
-                      |      ]
-                      |    },
-                      |    {
-                      |      "host" : {
                       |        "name" : "bedroom",
                       |        "utcOffset" : null
                       |      },
@@ -220,6 +199,27 @@ class TemperatureEndpointTest extends Specification {
                       |          "name" : "28-000003dd3433",
                       |          "temperature" : {
                       |            "celsius" : 22.8
+                      |          }
+                      |        }
+                      |      ]
+                      |    },
+                      |    {
+                      |      "host" : {
+                      |        "name" : "lounge",
+                      |        "utcOffset" : null
+                      |      },
+                      |      "seconds" : 100,
+                      |      "sensors" : [
+                      |        {
+                      |          "name" : "28-00000dfg34ca",
+                      |          "temperature" : {
+                      |            "celsius" : 31.1
+                      |          }
+                      |        },
+                      |        {
+                      |          "name" : "28-00000f33fdc3",
+                      |          "temperature" : {
+                      |            "celsius" : 32.8
                       |          }
                       |        }
                       |      ]
@@ -291,21 +291,6 @@ class TemperatureEndpointTest extends Specification {
                                       |  "measurements" : [
                                       |    {
                                       |      "host" : {
-                                      |        "name" : "lounge",
-                                      |        "utcOffset" : null
-                                      |      },
-                                      |      "seconds" : 100,
-                                      |      "sensors" : [
-                                      |        {
-                                      |          "name" : "Average",
-                                      |          "temperature" : {
-                                      |            "celsius" : 31.95
-                                      |          }
-                                      |        }
-                                      |      ]
-                                      |    },
-                                      |    {
-                                      |      "host" : {
                                       |        "name" : "bedroom",
                                       |        "utcOffset" : null
                                       |      },
@@ -315,6 +300,21 @@ class TemperatureEndpointTest extends Specification {
                                       |          "name" : "Average",
                                       |          "temperature" : {
                                       |            "celsius" : 21.950000000000003
+                                      |          }
+                                      |        }
+                                      |      ]
+                                      |    },
+                                      |    {
+                                      |      "host" : {
+                                      |        "name" : "lounge",
+                                      |        "utcOffset" : null
+                                      |      },
+                                      |      "seconds" : 100,
+                                      |      "sensors" : [
+                                      |        {
+                                      |          "name" : "Average",
+                                      |          "temperature" : {
+                                      |            "celsius" : 31.95
                                       |          }
                                       |        }
                                       |      ]

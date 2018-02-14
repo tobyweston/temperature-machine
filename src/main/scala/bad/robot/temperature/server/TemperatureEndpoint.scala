@@ -12,19 +12,21 @@ import org.http4s.HttpService
 import org.http4s.dsl.io._
 import org.http4s.headers.`X-Forwarded-For`
 
+import scala.collection.concurrent.TrieMap
+
 object TemperatureEndpoint {
 
   private implicit val encoder = jsonEncoder[Json]
   private implicit val decoder = jsonDecoder[Measurement]
 
-  implicit def jsonMapEncoder: Encoder[Map[Host, Measurement]] = new Encoder[Map[Host, Measurement]] {
-    def apply(measurements: Map[Host, Measurement]): Json = Json.obj(
+  implicit def jsonMapEncoder: Encoder[TrieMap[Host, Measurement]] = new Encoder[TrieMap[Host, Measurement]] {
+    def apply(measurements: TrieMap[Host, Measurement]): Json = Json.obj(
       ("measurements", Encoder[List[Measurement]].apply(measurements.values.toList))
     )
   }
 
 
-  private var current: Map[Host, Measurement] = Map()
+  private val temperatures: TrieMap[Host, Measurement] = TrieMap()
 
   def apply(sensors: TemperatureReader, writer: TemperatureWriter)(implicit clock: Clock) = HttpService[IO] {
     case GET -> Root / "temperature" => {
@@ -34,18 +36,18 @@ object TemperatureEndpoint {
     }
 
     case GET -> Root / "temperatures" / "average" => {
-      val average = current.filter(within(5, minutes)).map { case (host, measurement) => {
+      val average = temperatures.filter(within(5, minutes)).map { case (host, measurement) => {
         host -> measurement.copy(temperatures = List(measurement.temperatures.average))
       }}
       Ok(encode(average))
     }
 
     case GET -> Root / "temperatures" => {
-      Ok(encode(current.filter(within(5, minutes))))
+      Ok(encode(temperatures.filter(within(5, minutes))))
     }
 
     case DELETE -> Root / "temperatures" => {
-      current = Map[Host, Measurement]()
+      temperatures.clear()
       NoContent()
     }
 
@@ -56,8 +58,8 @@ object TemperatureEndpoint {
           _ <- ConnectionsEndpoint.update(measurement.host, request.headers.get(`X-Forwarded-For`))
         } yield measurement
         
-        result.toHttpResponse(success => {
-          current = current + (success.host -> success)
+        result.toHttpResponse(measurement => {
+          temperatures.put(measurement.host, measurement)
           NoContent()
         })
       })
