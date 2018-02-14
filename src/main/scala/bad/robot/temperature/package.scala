@@ -14,6 +14,8 @@ import scalaz.syntax.std.either._
 
 package object temperature {
 
+  type Degrees = Int
+
   // NB not implicit as this seems to clash with http4s implicits that are kicking around
   def jsonDecoder[A: Decoder]: EntityDecoder[IO, A] = jsonOf[IO, A]
   def jsonEncoder[A: Encoder]: EntityEncoder[IO, A] = jsonEncoderWithPrinterOf(spaces2PlatformSpecific)

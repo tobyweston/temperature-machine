@@ -1,10 +1,7 @@
 package bad.robot.temperature
 
-import java.lang.Math._
-
-import bad.robot.temperature.ErrorOnTemperatureSpike.DefaultSpikePercentage
-import bad.robot.temperature.PercentageDifference.percentageDifference
 import bad.robot.logging._
+import bad.robot.temperature.ErrorOnTemperatureSpike.DefaultBarrier
 
 import scala.collection.concurrent.TrieMap
 import scala.util.{Failure, Success, Try}
@@ -12,27 +9,27 @@ import scalaz.{-\/, \/}
 
 object ErrorOnTemperatureSpike {
 
-  private val DefaultSpikePercentage = 25
+  private val DefaultBarrier = Barrier(5)
 
   /**
     * @param delegate delegate writer
-    * @return a [[TemperatureWriter]] that will produce an error (left disjunction) when a spike over n percent
+    * @return a [[TemperatureWriter]] that will produce an error (left disjunction) when a spike over n degrees
     *         is detected or pass through to the delegate if the system property `avoid.spikes` is not set.
     *         
-    *         n is configured via a system property `avoid.spikes` and must be greater than 10 and less than 100
+    *         n is configured via a system property `avoid.spikes` and must be greater than 1 and less than 100
     */
   def apply(delegate: TemperatureWriter): TemperatureWriter = {
-    sys.props.get("avoid.spikes").map(spike => {
-      val percentage = toInt(spike).getOrElse(DefaultSpikePercentage)
-      Log.info(s"Temperature spikes greater than +/-$percentage% will not be recorded")
-      new ErrorOnTemperatureSpike(delegate, percentage)
+    sys.props.get("avoid.spikes").map(value => {
+      val barrier = toBarrier(value)
+      Log.info(s"Temperature spikes greater than +/-${barrier.degrees} °C will not be recorded")
+      new ErrorOnTemperatureSpike(delegate, barrier)
     }).getOrElse(delegate)
   }
   
-  private def toInt(string: String) = Try(string.toInt) match {
-    case Success(value) if value >= 10 && value <= 100 => Some(value)
-    case Failure(_)                                    => None
-    case _                                             => None
+  private def toBarrier(string: String) = Try(string.toInt) match {
+    case Success(value) if value >= 1 && value <= 100 => Barrier(value)
+    case Failure(_)                                   => DefaultBarrier
+    case _                                            => DefaultBarrier
   }
   
 }
@@ -46,7 +43,7 @@ object ErrorOnTemperatureSpike {
   * However, as we know that for every host, at most one call will be made every 30 seconds, there is no risk on
   * concurrent access for a particular sensor (the key to the cache).
   */
-class ErrorOnTemperatureSpike(delegate: TemperatureWriter, percentageSpike: Int = DefaultSpikePercentage) extends TemperatureWriter {
+class ErrorOnTemperatureSpike(delegate: TemperatureWriter, barrier: Barrier = DefaultBarrier) extends TemperatureWriter {
 
   private val temperatures: TrieMap[String, Temperature] = TrieMap()
 
@@ -54,8 +51,8 @@ class ErrorOnTemperatureSpike(delegate: TemperatureWriter, percentageSpike: Int 
 
     val spiked = measurement.temperatures.flatMap(current => {
       temperatures.get(current.name) match {
-        case Some(previous) if spikeBetween(current, previous) => Some(Spike(current.name, previous, current.temperature))
-        case _                                                 => None
+        case Some(previous) if breached(current, previous) => Some(Spike(current.name, previous, current.temperature))
+        case _                                             => None
       }
     })
 
@@ -67,9 +64,8 @@ class ErrorOnTemperatureSpike(delegate: TemperatureWriter, percentageSpike: Int 
     }
   }
 
-  private def spikeBetween(reading: SensorReading, previous: Temperature) = {
-    val difference = percentageDifference(previous.celsius, reading.temperature.celsius)
-    abs(difference) >= percentageSpike || difference.isNaN
+  private def breached(reading: SensorReading, previous: Temperature) = {
+    barrier.breached(previous, reading.temperature)
   }
 
 }
