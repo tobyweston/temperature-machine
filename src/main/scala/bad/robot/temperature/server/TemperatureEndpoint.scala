@@ -28,7 +28,7 @@ object TemperatureEndpoint {
 
   private val temperatures: TrieMap[Host, Measurement] = TrieMap()
 
-  def apply(sensors: TemperatureReader, writer: TemperatureWriter)(implicit clock: Clock) = HttpService[IO] {
+  def apply(sensors: TemperatureReader)(implicit clock: Clock) = HttpService[IO] {
     case GET -> Root / "temperature" => {
       sensors.read.toHttpResponse(temperatures => {
         Ok(s"${temperatures.average.temperature.asCelsius}")
@@ -53,12 +53,9 @@ object TemperatureEndpoint {
 
     case request @ PUT -> Root / "temperature" => {
       request.decode[Measurement](measurement => {
-        val result = for {
-          _ <- writer.write(measurement)
-          _ <- ConnectionsEndpoint.update(measurement.host, request.headers.get(`X-Forwarded-For`))
-        } yield measurement
+        val result = ConnectionsEndpoint.update(measurement.host, request.headers.get(`X-Forwarded-For`))
         
-        result.toHttpResponse(measurement => {
+        result.toHttpResponse(_ => {
           temperatures.put(measurement.host, measurement)
           NoContent()
         })
