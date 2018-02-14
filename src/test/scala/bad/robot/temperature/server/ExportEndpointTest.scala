@@ -42,10 +42,10 @@ class ExportEndpointTest extends Specification {
         |]
       """.stripMargin
     
-    val expectedCsv = """"Sensor","Time","Temperature","%Difference"
-                        |"bedroom1-sensor-1","11/10/17 08:13","NaN","0.0"
+    val expectedCsv = """"Sensor","Time","Temperature","Difference"
+                        |"bedroom1-sensor-1","11/10/17 08:13","NaN","0"
                         |"bedroom1-sensor-1","11/10/17 08:14","22.0625","NaN"
-                        |"bedroom1-sensor-1","11/10/17 08:14","22.2625","0.91"""".stripMargin
+                        |"bedroom1-sensor-1","11/10/17 08:14","22.2625","0.20"""".stripMargin
 
     val UkDateTimeFormatter = DateTimeFormatter.ofLocalizedDateTime(SHORT).withLocale(UK).withZone(ZoneId.of("GMT"))
     

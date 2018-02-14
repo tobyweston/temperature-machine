@@ -1,12 +1,12 @@
 package bad.robot.temperature
 
+import java.lang.Math.abs
 import java.time.Instant
 import java.time.ZoneId._
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle._
 import java.util.Locale
 
-import bad.robot.temperature.PercentageDifference.percentageDifference
 import io.circe.Decoder
 
 import scalaz.\/
@@ -42,15 +42,15 @@ object JsonToCsv {
         enquote("Sensor"), 
         enquote("Time"), 
         enquote("Temperature"),
-        enquote("%Difference")
+        enquote("Difference")
       ).mkString(",")
       
       if (rows.isEmpty)
         return Nil
       
-      val tuples = rows.map(x => (x._1, x._2, x._3, 0D))
+      val tuples = rows.map(x => (x._1, x._2, x._3, "0"))
       val rowsWithPercentageDifference = tuples.drop(1).scan(tuples.head) {
-        case (previous, current) => (current._1, current._2, current._3, percentageDifference(previous._3, current._3)) 
+        case (previous, current) => (current._1, current._2, current._3, f"${abs(current._3 - previous._3)}%.2f")
       }
       
       heading :: rowsWithPercentageDifference.map(row => List(
