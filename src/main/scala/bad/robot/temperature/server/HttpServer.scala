@@ -45,7 +45,7 @@ class HttpServer(port: Int, monitored: List[Host]) {
 
   private def services(): HttpService[IO] = {
     CORS(
-      TemperatureEndpoint(SensorReader(SensorFile.find())) <+>
+      TemperatureEndpoint(SensorReader(Host.local, SensorFile.find())) <+>
       ConnectionsEndpoint(Clock.systemDefaultZone) <+>
       LogEndpoint() <+>
       ExportEndpoint(JsonFile.load, JsonToCsv.DefaultTimeFormatter) <+>

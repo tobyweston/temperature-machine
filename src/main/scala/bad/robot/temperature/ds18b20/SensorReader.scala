@@ -4,6 +4,8 @@ import bad.robot.temperature.AutoClosing._
 import bad.robot.temperature._
 import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.ds18b20.SensorReader._
+import bad.robot.temperature.rrd.Host
+import bad.robot.temperature.rrd.Seconds.{apply => _, _}
 
 import scala.io.Source
 import scalaz.Scalaz._
@@ -13,7 +15,7 @@ import scalaz.\/._
 
 object SensorReader {
 
-  def apply(files: List[SensorFile]) = new SensorReader(files)
+  def apply(host: Host, files: List[SensorFile]) = new SensorReader(host, files)
 
   private val toReading: SensorFile => Error \/ SensorReading = file => {
     for {
@@ -25,13 +27,13 @@ object SensorReader {
 
 }
 
-class SensorReader(sensors: List[SensorFile]) extends TemperatureReader {
+class SensorReader(host: Host, sensors: List[SensorFile]) extends TemperatureReader {
 
-  def read: Error \/ List[SensorReading] = {
+  def read: Error \/ Measurement = {
     for {
       files         <- sensors.toNel.toRightDisjunction(FailedToFindFile(BaseFolder))
       temperatures  <- files.map(toReading).sequenceU
-    } yield temperatures.toList
+    } yield Measurement(host, now(), temperatures.toList)
   }
 
 }

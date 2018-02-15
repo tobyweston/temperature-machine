@@ -1,7 +1,7 @@
 package bad.robot.temperature
 
 import bad.robot.temperature.TestAppender.Name
-import bad.robot.temperature.rrd.Host
+import bad.robot.temperature.rrd.{Host, Seconds}
 import bad.robot.temperature.task.RecordTemperature
 import org.apache.logging.log4j.Level._
 import org.apache.logging.log4j.core.appender.AbstractAppender
@@ -13,22 +13,24 @@ import org.specs2.mutable.Specification
 import scalaz.{-\/, \/-}
 
 class RecordTemperatureTest extends Specification {
+  
   sequential
 
   "Take a measurement and write it out" >> {
+    val time = Seconds.now()
     val input = new TemperatureReader {
-      def read = \/-(List(SensorReading("example", Temperature(69.9))))
+      def read = \/-(Measurement(Host("A", None), time, List(SensorReading("example", Temperature(69.9)))))
     }
     val output = new TemperatureWriter {
-      var temperatures = List[Temperature]()
+      var measurements = List[Measurement]()
 
       def write(measurement: Measurement) = {
-        this.temperatures = measurement.temperatures.map(_.temperature)
+        this.measurements = measurement :: measurements
         \/-(Unit)
       }
     }
-    RecordTemperature(Host("example", None), input, output, null).run()
-    output.temperatures must_== List(Temperature(69.9))
+    RecordTemperature(input, output, null).run()
+    output.measurements must_== List(Measurement(Host("A", None), time, List(SensorReading("example", Temperature(69.9)))))
   }
 
   "Fail to take a measurement" >> {
@@ -42,7 +44,7 @@ class RecordTemperatureTest extends Specification {
     val logger = LogManager.getRootLogger
     val appender = new TestAppender(logger.getName, ERROR)
 
-    RecordTemperature(Host("example", None), input, output, logger).run()
+    RecordTemperature(input, output, logger).run()
 
     appender.cleanup(logger.getName)
     
@@ -51,7 +53,7 @@ class RecordTemperatureTest extends Specification {
 
   "Take a measurement but fail to write it" >> {
     val input = new TemperatureReader {
-      def read = \/-(List(SensorReading("example", Temperature(69.9))))
+      def read = \/-(Measurement(Host("A", None), Seconds.now(), List(SensorReading("example", Temperature(69.9)))))
     }
     val output = new TemperatureWriter {
       def write(measurement: Measurement) = -\/(UnexpectedError("whatever trevor"))
@@ -60,7 +62,7 @@ class RecordTemperatureTest extends Specification {
     val logger = LogManager.getRootLogger
     val appender = new TestAppender(logger.getName, ERROR)
 
-    RecordTemperature(Host("example", None), input, output, logger).run()
+    RecordTemperature(input, output, logger).run()
 
     appender.cleanup(logger.getName)
     

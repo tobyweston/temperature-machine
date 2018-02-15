@@ -1,7 +1,7 @@
 package bad.robot.temperature.server
 
 import bad.robot.temperature._
-import bad.robot.temperature.rrd.Seconds
+import bad.robot.temperature.rrd.{Host, Seconds}
 import bad.robot.temperature.server.Requests._
 import bad.robot.temperature.test._
 import cats.effect.IO
@@ -283,7 +283,7 @@ class TemperatureEndpointTest extends Specification {
   }
   
   def stubReader(result: Error \/ List[SensorReading]) = new TemperatureReader {
-    def read: Error \/ List[SensorReading] = result
+    def read: Error \/ Measurement = result.map(x => Measurement(Host("A", None), Seconds.now(), x))
   }
 
   def stubWriter(result: Error \/ Unit) = new TemperatureWriter {

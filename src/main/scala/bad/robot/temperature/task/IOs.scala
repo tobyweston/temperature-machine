@@ -22,11 +22,11 @@ object IOs {
     }
   }
 
-  def record(source: Host, sensors: List[SensorFile], destination: TemperatureWriter) = {
+  def record(host: Host, sensors: List[SensorFile], destination: TemperatureWriter) = {
     val executor = newSingleThreadScheduledExecutor(TemperatureMachineThreadFactory("reading-thread"))
     for {
-      _     <- info(s"Monitoring sensor file(s) on '${source.name}' ${sensors.mkString("\n\t", "\n\t", "\n")}")
-      tasks <- IO(executor.schedule(30 seconds, RecordTemperature(source, SensorReader(sensors), destination, Log)))
+      _     <- info(s"Monitoring sensor file(s) on '${host.name}' ${sensors.mkString("\n\t", "\n\t", "\n")}")
+      tasks <- IO(executor.schedule(30 seconds, RecordTemperature(SensorReader(host, sensors), destination, Log)))
     } yield tasks
   }
 

@@ -25,9 +25,10 @@ object TemperatureEndpoint {
   private val temperatures = Temperatures(Clock.systemDefaultZone)
 
   def apply(sensors: TemperatureReader) = HttpService[IO] {
+    // todo delete this one, it shouldn't be used
     case GET -> Root / "temperature" => {
-      sensors.read.toHttpResponse(temperatures => {
-        Ok(s"${temperatures.average.temperature.asCelsius}")
+      sensors.read.toHttpResponse(measurement => {
+        Ok(s"${measurement.temperatures.average.temperature.asCelsius}")
       })
     }
 
