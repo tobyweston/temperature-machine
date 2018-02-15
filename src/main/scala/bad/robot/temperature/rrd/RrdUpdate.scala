@@ -5,6 +5,7 @@ import org.rrd4j.core.RrdDb
 
 import scalaz.\/
 import scalaz.\/.fromTryCatchNonFatal
+import bad.robot.logging._
 
 case class RrdUpdate(monitored: List[Host], measurement: Measurement) {
 
@@ -16,6 +17,7 @@ case class RrdUpdate(monitored: List[Host], measurement: Measurement) {
       val sample = database.createSample()
       val temperatures = UnknownValues.patch(monitored.indexOf(measurement.host) * RrdFile.MaxSensors, measurement.temperatures, measurement.temperatures.size)
       sample.setValues(database, measurement.time, temperatures.map(_.temperature.celsius): _*)
+      Log.debug(s"rrd -> ${measurement.time} ${temperatures.map(t => t.name + " " + t.temperature.celsius).mkString(", ")}")
       database.close()
     }.leftMap(error => {
       RrdError(messageOrStackTrace(error))

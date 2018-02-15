@@ -4,10 +4,11 @@ import java.net.InetAddress
 import java.time.Clock
 
 import bad.robot.logging._
+import bad.robot.temperature.ErrorOnTemperatureSpike
 import bad.robot.temperature.client.{BlazeHttpClient, HttpUpload}
 import bad.robot.temperature.ds18b20.SensorFile
 import bad.robot.temperature.ds18b20.SensorFile._
-import bad.robot.temperature.rrd.Host
+import bad.robot.temperature.rrd.{Host, Rrd}
 import bad.robot.temperature.task.IOs._
 import bad.robot.temperature.task.TemperatureMachineThreadFactory
 import cats.effect.IO
@@ -35,6 +36,7 @@ object Server extends App {
       _ <- info("Starting temperature-machine (server mode)...")
       _ <- init(monitored)
       _ <- discovery
+      _ <- gather(temperatures, ErrorOnTemperatureSpike(Rrd(monitored)))
       _ <- record(Host.local, sensors, HttpUpload(InetAddress.getLocalHost, BlazeHttpClient()))
       _ <- graphing
       _ <- exportJson
