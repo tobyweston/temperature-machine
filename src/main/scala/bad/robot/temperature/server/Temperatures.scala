@@ -13,7 +13,7 @@ case class Temperatures(clock: Clock) {
 
   private val temperatures: TrieMap[Host, Measurement] = TrieMap()
 
-  private implicit val c = clock
+  private implicit val implicitClock = clock
   
   
   def average: Map[Host, Measurement] = {

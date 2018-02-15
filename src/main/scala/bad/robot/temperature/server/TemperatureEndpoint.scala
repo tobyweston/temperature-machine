@@ -1,7 +1,5 @@
 package bad.robot.temperature.server
 
-import java.time.Clock
-
 import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.{jsonEncoder, _}
 import cats.effect.IO
@@ -22,9 +20,7 @@ object TemperatureEndpoint {
   }
 
 
-  private val temperatures = Temperatures(Clock.systemDefaultZone)
-
-  def apply(sensors: TemperatureReader) = HttpService[IO] {
+  def apply(sensors: TemperatureReader, temperatures: Temperatures) = HttpService[IO] {
     // todo delete this one, it shouldn't be used
     case GET -> Root / "temperature" => {
       sensors.read.toHttpResponse(measurement => {
