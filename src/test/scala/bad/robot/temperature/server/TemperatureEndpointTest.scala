@@ -1,8 +1,7 @@
 package bad.robot.temperature.server
 
-import java.time.{Clock, Instant, ZoneId}
-
 import bad.robot.temperature._
+import bad.robot.temperature.rrd.Seconds
 import bad.robot.temperature.server.Requests._
 import bad.robot.temperature.test._
 import cats.effect.IO
@@ -24,9 +23,8 @@ class TemperatureEndpointTest extends Specification {
 
   "Averages a single temperature" >> {
     val request = Request[IO](GET, Uri.uri("/temperature"))
-    val clock = fixedClock()
     val reader = stubReader(\/-(List(SensorReading("28-0002343fd", Temperature(56.34)))))
-    val service = TemperatureEndpoint(reader)(clock)
+    val service = TemperatureEndpoint(reader)
     val response = service.orNotFound.run(request).unsafeRunSync
 
     response.status must_== Ok
@@ -35,12 +33,11 @@ class TemperatureEndpointTest extends Specification {
 
   "Averages several temperatures" >> {
     val request = Request[IO](GET, Uri.uri("/temperature"))
-    val clock = fixedClock()
     val service = TemperatureEndpoint(stubReader(\/-(List(
       SensorReading("28-0000d34c3", Temperature(25.344)),
       SensorReading("28-0000d34c3", Temperature(23.364)),
       SensorReading("28-0000d34c3", Temperature(21.213))
-    ))))(clock)
+    ))))
     val response = service.orNotFound.run(request).unsafeRunSync
 
     response.status must_== Ok
@@ -49,8 +46,7 @@ class TemperatureEndpointTest extends Specification {
 
   "General Error reading temperatures" >> {
     val request = Request[IO](GET, Uri.uri("/temperature"))
-    val clock = fixedClock()
-    val service = TemperatureEndpoint(stubReader(-\/(SensorError("An example error"))))(clock)
+    val service = TemperatureEndpoint(stubReader(-\/(SensorError("An example error"))))
     val response = service.orNotFound.run(request).unsafeRunSync
 
     response.status must_== InternalServerError
@@ -58,8 +54,7 @@ class TemperatureEndpointTest extends Specification {
   }
 
   "Put some temperature data" >> {
-    val clock = fixedClock()
-    val service = TemperatureEndpoint(stubReader(\/-(List())))(clock)
+    val service = TemperatureEndpoint(stubReader(\/-(List())))
     val measurement = """{
                          |  "host" : {
                          |    "name" : "localhost",
@@ -80,8 +75,7 @@ class TemperatureEndpointTest extends Specification {
   }
 
   "Bad json when writing sensor data" >> {
-    val clock = fixedClock()
-    val service = TemperatureEndpoint(stubReader(\/-(List())))(clock)
+    val service = TemperatureEndpoint(stubReader(\/-(List())))
     val request: Request[IO] = Put("bad json")
     val response = service.orNotFound.run(request).unsafeRunSync
     response must haveStatus(org.http4s.Status.BadRequest)
@@ -89,12 +83,13 @@ class TemperatureEndpointTest extends Specification {
   }
 
   "Get multiple sensors temperatures" >> {
-    val measurement1 = """{
+    val now = Seconds.now()
+    val measurement1 = s"""{
                          |  "host" : {
                          |    "name" : "lounge",
                          |    "utcOffset" : null
                          |  },
-                         |  "seconds" : 100,
+                         |  "seconds" : ${now.value - 10},
                          |  "sensors" : [
                          |     {
                          |        "name" : "28-00000dfg34ca",
@@ -111,12 +106,12 @@ class TemperatureEndpointTest extends Specification {
                          |   ]
                          |}""".stripMargin
 
-    val measurement2 = """{
+    val measurement2 = s"""{
                          |  "host" : {
                          |    "name" : "bedroom",
                          |    "utcOffset" : null
                          |  },
-                         |  "seconds" : 200,
+                         |  "seconds" : ${now.value},
                          |  "sensors" : [
                          |     {
                          |        "name" : "28-00000f3554ds",
@@ -134,8 +129,7 @@ class TemperatureEndpointTest extends Specification {
                          |}""".stripMargin
 
 
-    val clock = fixedClock(Instant.ofEpochSecond(200))
-    val service = TemperatureEndpoint(stubReader(\/-(List())))(clock)
+    val service = TemperatureEndpoint(stubReader(\/-(List())))
     service.orNotFound.run(Request[IO](DELETE, Uri.uri("/temperatures"))).unsafeRunSync
     service.orNotFound.run(Put(measurement1)).unsafeRunSync
     service.orNotFound.run(Put(measurement2)).unsafeRunSync
@@ -145,14 +139,14 @@ class TemperatureEndpointTest extends Specification {
 
     response.status must_== Ok
 
-    val expected = """{
+    val expected = s"""{
                       |  "measurements" : [
                       |    {
                       |      "host" : {
                       |        "name" : "bedroom",
                       |        "utcOffset" : null
                       |      },
-                      |      "seconds" : 200,
+                      |      "seconds" : ${now.value},
                       |      "sensors" : [
                       |        {
                       |          "name" : "28-00000f3554ds",
@@ -173,7 +167,7 @@ class TemperatureEndpointTest extends Specification {
                       |        "name" : "lounge",
                       |        "utcOffset" : null
                       |      },
-                      |      "seconds" : 100,
+                      |      "seconds" : ${now.value - 10},
                       |      "sensors" : [
                       |        {
                       |          "name" : "28-00000dfg34ca",
@@ -196,12 +190,13 @@ class TemperatureEndpointTest extends Specification {
   }
 
   "Get multiple sensors, averaging the temperatures" >> {
-    val measurement1 = """{
+    val now = Seconds.now()
+    val measurement1 = s"""{
                          |  "host" : {
                          |    "name" : "lounge",
                          |    "utcOffset" : null
                          |  },
-                         |  "seconds" : 100,
+                         |  "seconds" : ${now.value - 10},
                          |  "sensors" : [
                          |     {
                          |        "name" : "28-00000dfg34ca",
@@ -218,12 +213,12 @@ class TemperatureEndpointTest extends Specification {
                          |   ]
                          |}""".stripMargin
 
-    val measurement2 = """{
+    val measurement2 = s"""{
                          |  "host" : {
                          |    "name" : "bedroom",
                          |    "utcOffset" : null
                          |  },
-                         |  "seconds" : 200,
+                         |  "seconds" : ${now.value},
                          |  "sensors" : [
                          |     {
                          |        "name" : "28-00000f3554ds",
@@ -241,8 +236,7 @@ class TemperatureEndpointTest extends Specification {
                          |}""".stripMargin
 
 
-    val clock = fixedClock(Instant.ofEpochSecond(200))
-    val service = TemperatureEndpoint(stubReader(\/-(List())))(clock)
+    val service = TemperatureEndpoint(stubReader(\/-(List())))
     service.orNotFound.run(Request[IO](DELETE, Uri.uri("/temperatures"))).unsafeRunSync
     service.orNotFound.run(Put(measurement1)).unsafeRunSync
     service.orNotFound.run(Put(measurement2)).unsafeRunSync
@@ -252,14 +246,14 @@ class TemperatureEndpointTest extends Specification {
 
     response.status must_== Ok
     response.as[String].unsafeRunSync must_==
-                                    """{
+                                    s"""{
                                       |  "measurements" : [
                                       |    {
                                       |      "host" : {
                                       |        "name" : "bedroom",
                                       |        "utcOffset" : null
                                       |      },
-                                      |      "seconds" : 200,
+                                      |      "seconds" : ${now.value},
                                       |      "sensors" : [
                                       |        {
                                       |          "name" : "Average",
@@ -274,7 +268,7 @@ class TemperatureEndpointTest extends Specification {
                                       |        "name" : "lounge",
                                       |        "utcOffset" : null
                                       |      },
-                                      |      "seconds" : 100,
+                                      |      "seconds" : ${now.value - 10},
                                       |      "sensors" : [
                                       |        {
                                       |          "name" : "Average",
@@ -287,171 +281,7 @@ class TemperatureEndpointTest extends Specification {
                                       |  ]
                                       |}""".stripMargin
   }
-
-  "Filter out old temperatures when getting multiple sensors" >> {
-    val measurement1 = """{
-                         |  "host" : {
-                         |    "name" : "lounge",
-                         |    "utcOffset" : null
-                         |  },
-                         |  "seconds" : 0,
-                         |  "sensors" : [
-                         |     {
-                         |        "name" : "28-00000dfg34ca",
-                         |        "temperature" : {
-                         |          "celsius" : 31.1
-                         |        }
-                         |     },
-                         |     {
-                         |        "name" : "28-00000f33fdc3",
-                         |        "temperature" : {
-                         |          "celsius" : 32.8
-                         |       }
-                         |     }
-                         |   ]
-                         |}""".stripMargin
-
-    val measurement2 = """{
-                         |  "host" : {
-                         |    "name" : "bedroom",
-                         |    "utcOffset" : null
-                         |  },
-                         |  "seconds" : 120,
-                         |  "sensors" : [
-                         |     {
-                         |        "name" : "28-00000f3554ds",
-                         |        "temperature" : {
-                         |          "celsius" : 21.1
-                         |        }
-                         |     },
-                         |     {
-                         |        "name" : "28-000003dd3433",
-                         |        "temperature" : {
-                         |          "celsius" : 22.8
-                         |       }
-                         |     }
-                         |   ]
-                         |}""".stripMargin
-
-
-    val clock = fixedClock(Instant.ofEpochSecond(300))
-    val service = TemperatureEndpoint(stubReader(\/-(List())))(clock)
-    service.orNotFound.run(Request[IO](DELETE, Uri.uri("/temperatures"))).unsafeRunSync
-    service.orNotFound.run(Put(measurement1)).unsafeRunSync
-    service.orNotFound.run(Put(measurement2)).unsafeRunSync
-
-    val request = Request[IO](GET, Uri.uri("/temperatures"))
-    val response = service.orNotFound.run(request).unsafeRunSync
-
-    response.status must_== Ok
-
-    val expected = """{
-                     |  "measurements" : [
-                     |    {
-                     |      "host" : {
-                     |        "name" : "bedroom",
-                     |        "utcOffset" : null
-                     |      },
-                     |      "seconds" : 120,
-                     |      "sensors" : [
-                     |        {
-                     |          "name" : "28-00000f3554ds",
-                     |          "temperature" : {
-                     |            "celsius" : 21.1
-                     |          }
-                     |        },
-                     |        {
-                     |          "name" : "28-000003dd3433",
-                     |          "temperature" : {
-                     |            "celsius" : 22.8
-                     |          }
-                     |        }
-                     |      ]
-                     |    }
-                     |  ]
-                     |}""".stripMargin
-
-    response.as[String].unsafeRunSync must_== expected
-  }
-
-  "Filter out old temperatures when averaging" >> {
-    val measurement1 = """{
-                         |  "host" : {
-                         |    "name" : "lounge",
-                         |    "utcOffset" : null
-                         |  },
-                         |  "seconds" : 0,
-                         |  "sensors" : [
-                         |     {
-                         |        "name" : "28-00000dfg34ca",
-                         |        "temperature" : {
-                         |          "celsius" : 31.1
-                         |        }
-                         |     },
-                         |     {
-                         |        "name" : "28-00000f33fdc3",
-                         |        "temperature" : {
-                         |          "celsius" : 32.8
-                         |       }
-                         |     }
-                         |   ]
-                         |}""".stripMargin
-
-    val measurement2 = """{
-                         |  "host" : {
-                         |    "name" : "bedroom",
-                         |    "utcOffset" : null
-                         |  },
-                         |  "seconds" : 60,
-                         |  "sensors" : [
-                         |     {
-                         |        "name" : "28-00000f3554ds",
-                         |        "temperature" : {
-                         |          "celsius" : 21.1
-                         |        }
-                         |     },
-                         |     {
-                         |        "name" : "28-000003dd3433",
-                         |        "temperature" : {
-                         |          "celsius" : 22.8
-                         |       }
-                         |     }
-                         |   ]
-                         |}""".stripMargin
-
-
-    val clock = fixedClock(Instant.ofEpochSecond(300))
-    val service = TemperatureEndpoint(stubReader(\/-(List())))(clock)
-    service.orNotFound.run(Request[IO](DELETE, Uri.uri("/temperatures"))).unsafeRunSync
-    service.orNotFound.run(Put(measurement1)).unsafeRunSync
-    service.orNotFound.run(Put(measurement2)).unsafeRunSync
-
-    val request = Request[IO](GET, Uri.uri("/temperatures/average"))
-    val response = service.orNotFound.run(request).unsafeRunSync
-
-    response.status must_== Ok
-    response.as[String].unsafeRunSync must_==
-                                    """{
-                                      |  "measurements" : [
-                                      |    {
-                                      |      "host" : {
-                                      |        "name" : "bedroom",
-                                      |        "utcOffset" : null
-                                      |      },
-                                      |      "seconds" : 60,
-                                      |      "sensors" : [
-                                      |        {
-                                      |          "name" : "Average",
-                                      |          "temperature" : {
-                                      |            "celsius" : 21.950000000000003
-                                      |          }
-                                      |        }
-                                      |      ]
-                                      |    }
-                                      |  ]
-                                      |}""".stripMargin
-  }
-
+  
   def stubReader(result: Error \/ List[SensorReading]) = new TemperatureReader {
     def read: Error \/ List[SensorReading] = result
   }
@@ -463,7 +293,4 @@ class TemperatureEndpointTest extends Specification {
   def UnexpectedWriter = new TemperatureWriter {
     def write(measurement: Measurement) = ???
   }
-
-  def fixedClock(instant: Instant = Instant.now) = Clock.fixed(instant, ZoneId.systemDefault())
-
 }
