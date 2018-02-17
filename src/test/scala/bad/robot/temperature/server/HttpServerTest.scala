@@ -17,8 +17,9 @@ import cats.effect.IO
 class HttpServerTest extends Specification {
 
   "When the Http server has been started" >> {
-    val temperatures = Temperatures(Clock.systemDefaultZone)
-    val server = HttpServer(8080, List(Host("example", None)), temperatures).unsafeRunSync
+    val current = CurrentTemperatures(Clock.systemDefaultZone)
+    val all = AllTemperatures()
+    val server = HttpServer(8080, List(Host("example", None)), current, all).unsafeRunSync
     val client = Http1Client[IO](config = defaultConfig.copy(idleTimeout = 30 minutes, responseHeaderTimeout = 30 minutes)).unsafeRunSync()
 
     // todo wait for server to startup, not sure how.

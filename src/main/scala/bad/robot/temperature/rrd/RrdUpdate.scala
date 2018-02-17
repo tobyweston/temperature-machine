@@ -15,9 +15,11 @@ case class RrdUpdate(monitored: List[Host], measurement: Measurement) {
     fromTryCatchNonFatal {
       val database = new RrdDb(RrdFile.file)
       val sample = database.createSample()
-      val temperatures = UnknownValues.patch(monitored.indexOf(measurement.host) * RrdFile.MaxSensors, measurement.temperatures, measurement.temperatures.size)
+      val indexOf = monitored.indexOf(measurement.host)
+      Log.debug(s"Index of ${measurement.host.name } is $indexOf (-1 means it couldn't be found)")
+      val temperatures = UnknownValues.patch(indexOf * RrdFile.MaxSensors, measurement.temperatures, measurement.temperatures.size)
       sample.setValues(database, measurement.time, temperatures.map(_.temperature.celsius): _*)
-      Log.debug(s"rrd -> ${measurement.time} ${temperatures.map(t => t.name + " " + t.temperature.celsius).mkString(", ")}")
+      Log.debug(s"rrd -> ${measurement.host.name} ${measurement.time} ${temperatures.map(t => t.name + " " + t.temperature.celsius).mkString(", ")}")
       database.close()
     }.leftMap(error => {
       RrdError(messageOrStackTrace(error))

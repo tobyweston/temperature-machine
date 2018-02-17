@@ -4,4 +4,4 @@
 
 sbt assembly && ansible -i ansible/inventory temperatures -m copy -a "src=target/scala-2.12/temperature-machine-2.1.jar dest=/home/pi/code/temperature-machine/target/scala-2.12" -u pi
 
-#ansible -i ansible/inventory temperatures -a reboot --become -u pi
+ansible -i ansible/inventory temperatures -a reboot --become -u pi

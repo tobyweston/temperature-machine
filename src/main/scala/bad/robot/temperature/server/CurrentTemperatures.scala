@@ -9,7 +9,7 @@ import bad.robot.temperature.rrd.Host
 
 import scala.collection.concurrent.TrieMap
 
-case class Temperatures(clock: Clock) {
+case class CurrentTemperatures(clock: Clock) {
 
   private val temperatures: TrieMap[Host, Measurement] = TrieMap()
 

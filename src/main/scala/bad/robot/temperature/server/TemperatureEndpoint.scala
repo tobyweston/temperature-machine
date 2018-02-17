@@ -20,7 +20,7 @@ object TemperatureEndpoint {
   }
 
 
-  def apply(sensors: TemperatureReader, temperatures: Temperatures) = HttpService[IO] {
+  def apply(sensors: TemperatureReader, current: CurrentTemperatures, all: AllTemperatures) = HttpService[IO] {
     // todo delete this one, it shouldn't be used
     case GET -> Root / "temperature" => {
       sensors.read.toHttpResponse(measurement => {
@@ -29,15 +29,15 @@ object TemperatureEndpoint {
     }
 
     case GET -> Root / "temperatures" / "average" => {
-      Ok(encode(temperatures.average))
+      Ok(encode(current.average))
     }
 
     case GET -> Root / "temperatures" => {
-      Ok(encode(temperatures.all))
+      Ok(encode(current.all))
     }
 
     case DELETE -> Root / "temperatures" => {
-      temperatures.clear()
+      current.clear()
       NoContent()
     }
 
@@ -46,7 +46,8 @@ object TemperatureEndpoint {
         val result = ConnectionsEndpoint.update(measurement.host, request.headers.get(`X-Forwarded-For`))
         
         result.toHttpResponse(_ => {
-          temperatures.updateWith(measurement)
+          current.updateWith(measurement)
+          all.put(measurement)
           NoContent()
         })
       })

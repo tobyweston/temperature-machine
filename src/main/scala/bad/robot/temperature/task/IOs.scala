@@ -6,7 +6,7 @@ import bad.robot.logging._
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import bad.robot.temperature.rrd.RrdFile.MaxSensors
 import bad.robot.temperature.rrd.{Host, RrdFile}
-import bad.robot.temperature.server.Temperatures
+import bad.robot.temperature.server.AllTemperatures
 import bad.robot.temperature.task.Scheduler.ScheduledExecutorServiceOps
 import bad.robot.temperature.{JsonExport, TemperatureWriter, XmlExport}
 import cats.effect.IO
@@ -24,7 +24,7 @@ object IOs {
     }
   }
 
-  def gather(temperatures: Temperatures, destination: TemperatureWriter) = {
+  def gather(temperatures: AllTemperatures, destination: TemperatureWriter) = {
     val frequency = 30 seconds
     val executor = newSingleThreadScheduledExecutor(TemperatureMachineThreadFactory("rrd-writing-thread"))
     for {
