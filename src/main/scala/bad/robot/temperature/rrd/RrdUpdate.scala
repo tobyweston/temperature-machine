@@ -25,7 +25,6 @@ case class RrdUpdate(monitored: List[Host]) {
       val sample = database.createSample()
       val temperatures = UnknownValues.patch(index * RrdFile.MaxSensors, measurement.temperatures, measurement.temperatures.size)
       sample.setValues(database, measurement.time, temperatures.map(_.temperature.celsius): _*)
-      Log.debug(s"rrd -> ${measurement.host.name} ${measurement.time} ${temperatures.map(t => t.name + " " + t.temperature.celsius).mkString(", ")}")
       database.close()
     }.leftMap(error => {
       RrdError(messageOrStackTrace(error))

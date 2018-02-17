@@ -1,7 +1,6 @@
 package bad.robot.temperature.server
 
 import java.net.InetAddress
-import java.time.Clock
 
 import bad.robot.logging._
 import bad.robot.temperature.ErrorOnTemperatureSpike
@@ -22,25 +21,25 @@ object Server extends App {
     } yield ()
   }
 
-  def http(current: CurrentTemperatures, all: AllTemperatures)(implicit monitored: List[Host]): IO[HttpServer] = {
+  def http(temperatures: AllTemperatures)(implicit monitored: List[Host]): IO[HttpServer] = {
     val port = 11900
     for {
-      server <- HttpServer(port, monitored, current, all)
+      server <- HttpServer(port, monitored, temperatures)
       _      <- info(s"HTTP Server started on http://${InetAddress.getLocalHost.getHostAddress}:$port")
       _      <- server.awaitShutdown()
     } yield server
   }
 
-  def server(current: CurrentTemperatures, all: AllTemperatures, sensors: List[SensorFile])(implicit monitored: List[Host]) = {
+  def server(temperatures: AllTemperatures, sensors: List[SensorFile])(implicit monitored: List[Host]) = {
     for {
       _ <- info("Starting temperature-machine (server mode)...")
       _ <- init(monitored)
       _ <- discovery
-      _ <- gather(all, ErrorOnTemperatureSpike(Rrd(monitored)))
+      _ <- gather(temperatures, ErrorOnTemperatureSpike(Rrd(monitored)))
       _ <- record(Host.local, sensors, HttpUpload(InetAddress.getLocalHost, BlazeHttpClient()))
       _ <- graphing
       _ <- exportJson
-      _ <- http(current, all)
+      _ <- http(temperatures)
     } yield ()
   }
 
@@ -58,9 +57,8 @@ object Server extends App {
     case hosts => hosts.map(host => Host(host, utcOffset = None))
   }
 
-  private val current = CurrentTemperatures(Clock.systemDefaultZone)
-  private val all = new AllTemperatures()
+  private val temperatures = new AllTemperatures()
 
-  findSensorsAndExecute(server(current, all, _)(hosts)).leftMap(error => Log.error(error.message))
+  findSensorsAndExecute(server(temperatures, _)(hosts)).leftMap(error => Log.error(error.message))
 
 }

@@ -1,10 +1,10 @@
 package bad.robot.temperature.server
 
 import java.io._
-import java.time.Clock
 
 import bad.robot.logging._
 import bad.robot.temperature.rrd.{Host, RrdFile}
+import cats.effect.IO
 import org.http4s.Method.GET
 import org.http4s.client.blaze.BlazeClientConfig._
 import org.http4s.client.blaze._
@@ -12,14 +12,11 @@ import org.http4s.{EntityDecoder, Request, Status, Uri}
 import org.specs2.mutable.Specification
 
 import scala.concurrent.duration._
-import cats.effect.IO
 
 class HttpServerTest extends Specification {
 
   "When the Http server has been started" >> {
-    val current = CurrentTemperatures(Clock.systemDefaultZone)
-    val all = AllTemperatures()
-    val server = HttpServer(8080, List(Host("example", None)), current, all).unsafeRunSync
+    val server = HttpServer(8080, List(Host("example", None)), AllTemperatures()).unsafeRunSync
     val client = Http1Client[IO](config = defaultConfig.copy(idleTimeout = 30 minutes, responseHeaderTimeout = 30 minutes)).unsafeRunSync()
 
     // todo wait for server to startup, not sure how.

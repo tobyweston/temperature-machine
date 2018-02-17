@@ -1,5 +1,7 @@
 package bad.robot.temperature.server
 
+import java.time.Clock
+
 import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.{jsonEncoder, _}
 import cats.effect.IO
@@ -19,8 +21,9 @@ object TemperatureEndpoint {
     )
   }
 
+  private val lastestTemperatures = CurrentTemperatures(Clock.systemDefaultZone)
 
-  def apply(sensors: TemperatureReader, current: CurrentTemperatures, all: AllTemperatures) = HttpService[IO] {
+  def apply(sensors: TemperatureReader, allTemperatures: AllTemperatures) = HttpService[IO] {
     // todo delete this one, it shouldn't be used
     case GET -> Root / "temperature" => {
       sensors.read.toHttpResponse(measurement => {
@@ -29,15 +32,15 @@ object TemperatureEndpoint {
     }
 
     case GET -> Root / "temperatures" / "average" => {
-      Ok(encode(current.average))
+      Ok(encode(lastestTemperatures.average))
     }
 
     case GET -> Root / "temperatures" => {
-      Ok(encode(current.all))
+      Ok(encode(lastestTemperatures.all))
     }
 
     case DELETE -> Root / "temperatures" => {
-      current.clear()
+      lastestTemperatures.clear()
       NoContent()
     }
 
@@ -46,8 +49,8 @@ object TemperatureEndpoint {
         val result = ConnectionsEndpoint.update(measurement.host, request.headers.get(`X-Forwarded-For`))
         
         result.toHttpResponse(_ => {
-          current.updateWith(measurement)
-          all.put(measurement)
+          lastestTemperatures.updateWith(measurement)
+          allTemperatures.put(measurement)
           NoContent()
         })
       })
