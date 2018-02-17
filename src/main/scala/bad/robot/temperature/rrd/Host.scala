@@ -14,12 +14,12 @@ object Host {
   }
 
   def local = Host(InetAddress.getLocalHost.getHostName, localUtcOffset)
-  
+
   implicit val encoder = deriveEncoder[Host]
   implicit val decoder = deriveDecoder[Host]
 
   // another arbitrary constraint of rrd4j; data source names can only be a max of 20 characters
-  def trim(name: String) =name.take(20 - "-sensor-x".length)
+  def trim(name: String) = name.take(20 - "-sensor-x".length)
 }
 
 case class Host(name: String, utcOffset: Option[String])

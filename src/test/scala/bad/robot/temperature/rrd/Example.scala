@@ -48,14 +48,14 @@ object Example extends App {
 
     times.zip(temperatures).foreach({
       case (time, (temperature1, temperature2)) => {
-        handleError(RrdUpdate(hosts, Measurement(hosts(0), time, List(
+        handleError(RrdUpdate(hosts).apply(Measurement(hosts(0), time, List(
           SensorReading("?", Temperature(temperature1)),
           SensorReading("?", Temperature(temperature1 + 6.3)))
-        )).apply())
-        handleError(RrdUpdate(hosts, Measurement(hosts(1), time + 1, List(
+        )))
+        handleError(RrdUpdate(hosts).apply(Measurement(hosts(1), time + 1, List(
           SensorReading("?", Temperature(temperature2)),
           SensorReading("?", Temperature(temperature2 + 1.3)))
-        )).apply())
+        )))
       }
     })
 
