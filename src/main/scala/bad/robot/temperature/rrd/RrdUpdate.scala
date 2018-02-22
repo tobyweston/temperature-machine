@@ -1,6 +1,6 @@
 package bad.robot.temperature.rrd
 
-§import java.io.File
+import java.io.File
 
 import bad.robot.logging.Log
 import bad.robot.temperature.task.FixedTimeMeasurement
