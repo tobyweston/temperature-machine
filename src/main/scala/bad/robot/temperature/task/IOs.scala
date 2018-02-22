@@ -8,7 +8,7 @@ import bad.robot.temperature.rrd.RrdFile.MaxSensors
 import bad.robot.temperature.rrd.{Host, RrdFile}
 import bad.robot.temperature.server.AllTemperatures
 import bad.robot.temperature.task.Scheduler.ScheduledExecutorServiceOps
-import bad.robot.temperature.{JsonExport, TemperatureWriter, XmlExport}
+import bad.robot.temperature.{FixedTimeMeasurementWriter, JsonExport, TemperatureWriter, XmlExport}
 import cats.effect.IO
 
 import scala.concurrent.duration._
@@ -24,7 +24,7 @@ object IOs {
     }
   }
 
-  def gather(temperatures: AllTemperatures, destination: TemperatureWriter) = {
+  def gather(temperatures: AllTemperatures, destination: FixedTimeMeasurementWriter) = {
     val frequency = 30 seconds
     val executor = newSingleThreadScheduledExecutor(TemperatureMachineThreadFactory("rrd-writing-thread"))
     for {
@@ -37,7 +37,7 @@ object IOs {
     val executor = newSingleThreadScheduledExecutor(TemperatureMachineThreadFactory("reading-thread"))
     for {
       _     <- info(s"Monitoring sensor file(s) on '${host.name}' ${sensors.mkString("\n\t", "\n\t", "\n")}")
-      tasks <- IO(executor.schedule(30 seconds, RecordTemperature(SensorReader(host, sensors), destination, Log)))
+      tasks <- IO(executor.schedule(1 second, RecordTemperature(SensorReader(host, sensors), destination, Log)))
     } yield tasks
   }
 

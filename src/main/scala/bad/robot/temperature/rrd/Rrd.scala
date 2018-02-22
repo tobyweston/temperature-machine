@@ -1,7 +1,8 @@
 package bad.robot.temperature.rrd
 
-import bad.robot.temperature.{Measurement, TemperatureWriter}
+import bad.robot.temperature.FixedTimeMeasurementWriter
+import bad.robot.temperature.task.FixedTimeMeasurement
 
-case class Rrd(monitored: List[Host]) extends TemperatureWriter {
-  def write(measurement: Measurement) = RrdUpdate(monitored).apply(measurement)
+case class Rrd(monitored: List[Host]) extends FixedTimeMeasurementWriter {
+  def write(measurement: FixedTimeMeasurement) = RrdUpdate(monitored).apply(measurement)
 }

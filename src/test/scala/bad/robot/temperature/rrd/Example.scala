@@ -2,6 +2,7 @@ package bad.robot.temperature.rrd
 
 import bad.robot.temperature.rrd.Seconds.{now, secondsToLong}
 import bad.robot.temperature.server.JsonFile
+import bad.robot.temperature.task.FixedTimeMeasurement
 import bad.robot.temperature.{Error, Measurement, SensorReading, Temperature}
 
 import scala.concurrent.duration.Duration
@@ -41,6 +42,7 @@ object Example extends App {
 
   def populateRrd(hosts: List[Host]) = {
     def seed = random.nextInt(30) + random.nextDouble()
+
     def smooth = (value: Double) => if (random.nextDouble() > 0.5) value + random.nextDouble() else value - random.nextDouble()
 
     val temperatures = Stream.iterate(seed)(smooth).zip(Stream.iterate(seed)(smooth))
@@ -48,18 +50,22 @@ object Example extends App {
 
     times.zip(temperatures).foreach({
       case (time, (temperature1, temperature2)) => {
-        handleError(RrdUpdate(hosts).apply(Measurement(hosts(0), time, List(
-          SensorReading("?", Temperature(temperature1)),
-          SensorReading("?", Temperature(temperature1 + 6.3)))
+        handleError(RrdUpdate(hosts).apply(FixedTimeMeasurement(time, List(
+          Measurement(hosts(0), time, List(
+            SensorReading("?", Temperature(temperature1)),
+            SensorReading("?", Temperature(temperature1 + 6.3)))
+          ))
         )))
-        handleError(RrdUpdate(hosts).apply(Measurement(hosts(1), time + 1, List(
-          SensorReading("?", Temperature(temperature2)),
-          SensorReading("?", Temperature(temperature2 + 1.3)))
+        handleError(RrdUpdate(hosts).apply(FixedTimeMeasurement(time + 1, List(
+          Measurement(hosts(1), time + 1, List(
+            SensorReading("?", Temperature(temperature2)),
+            SensorReading("?", Temperature(temperature2 + 1.3)))
+          ))
         )))
       }
     })
 
-    def handleError(f: => Error \/ Unit): Unit = {
+    def handleError(f: => Error \/ Any): Unit = {
       f match {
         case -\/(error) => println(error)
         case _          => ()
