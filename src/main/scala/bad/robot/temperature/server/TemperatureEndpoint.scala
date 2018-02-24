@@ -21,38 +21,36 @@ object TemperatureEndpoint {
     )
   }
 
+  private val lastestTemperatures = CurrentTemperatures(Clock.systemDefaultZone)
 
-  private val temperatures = Temperatures(Clock.systemDefaultZone)
-
-  def apply(sensors: TemperatureReader, writer: TemperatureWriter) = HttpService[IO] {
+  def apply(sensors: TemperatureReader, allTemperatures: AllTemperatures) = HttpService[IO] {
+    // todo delete this one, it shouldn't be used
     case GET -> Root / "temperature" => {
-      sensors.read.toHttpResponse(temperatures => {
-        Ok(s"${temperatures.average.temperature.asCelsius}")
+      sensors.read.toHttpResponse(measurement => {
+        Ok(s"${measurement.temperatures.average.temperature.asCelsius}")
       })
     }
 
     case GET -> Root / "temperatures" / "average" => {
-      Ok(encode(temperatures.average))
+      Ok(encode(lastestTemperatures.average))
     }
 
     case GET -> Root / "temperatures" => {
-      Ok(encode(temperatures.all))
+      Ok(encode(lastestTemperatures.all))
     }
 
     case DELETE -> Root / "temperatures" => {
-      temperatures.clear()
+      lastestTemperatures.clear()
       NoContent()
     }
 
     case request @ PUT -> Root / "temperature" => {
       request.decode[Measurement](measurement => {
-        val result = for {
-          _ <- writer.write(measurement)
-          _ <- ConnectionsEndpoint.update(measurement.host, request.headers.get(`X-Forwarded-For`))
-        } yield measurement
-
+        val result = ConnectionsEndpoint.update(measurement.host, request.headers.get(`X-Forwarded-For`))
+        
         result.toHttpResponse(_ => {
-          temperatures.updateWith(measurement)
+          lastestTemperatures.updateWith(measurement)
+          allTemperatures.put(measurement)
           NoContent()
         })
       })

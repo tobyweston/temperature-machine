@@ -20,6 +20,7 @@ case class Seconds(value: Long) {
   def -(other: Seconds) = Seconds(value - other.value)
   def toInstant: Instant = Instant.ofEpochSecond(value)
   def isAfter(instant: Instant) = toInstant.isAfter(instant)
+  def isBefore(instant: Instant) = toInstant.isBefore(instant)
 
   override def toString: String = value + " seconds"
 }

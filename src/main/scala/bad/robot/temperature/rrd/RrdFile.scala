@@ -26,7 +26,7 @@ object RrdFile {
 
 }
 
-case class RrdFile(hosts: List[Host], frequency: Seconds = Duration(30, "seconds")) {
+case class RrdFile(hosts: List[Host], frequency: Seconds = Duration(30, "seconds"), file: File = RrdFile.file) {
 
   def create(start: Seconds = now() - Seconds(1)) {
 

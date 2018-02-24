@@ -5,9 +5,9 @@ import java.time.Clock
 import java.util.concurrent.Executors._
 import java.util.concurrent.{CountDownLatch, ExecutorService}
 
-import bad.robot.temperature.{ErrorOnTemperatureSpike, JsonToCsv}
+import bad.robot.temperature.JsonToCsv
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
-import bad.robot.temperature.rrd.{Host, Rrd}
+import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.task.TemperatureMachineThreadFactory
 import cats.implicits._
 //import org.http4s.implicits._
@@ -18,9 +18,9 @@ import org.http4s.server.middleware.CORS
 import org.http4s.server.{Server => Http4sServer}
 
 object HttpServer {
-  def apply(port: Int, monitored: List[Host]): IO[HttpServer] = IO {
+  def apply(port: Int, monitored: List[Host], temperatures: AllTemperatures): IO[HttpServer] = IO {
     val server = new HttpServer(port, monitored)
-    server.build().unsafeRunSync
+    server.build(temperatures).unsafeRunSync
     server
   }
 }
@@ -37,15 +37,15 @@ class HttpServer(port: Int, monitored: List[Host]) {
     newFixedThreadPool(max(4, Runtime.getRuntime.availableProcessors), TemperatureMachineThreadFactory("http-server"))
   }
 
-  private def build(): IO[Http4sServer[IO]] = BlazeBuilder[IO]
+  private def build(temperatures: AllTemperatures): IO[Http4sServer[IO]] = BlazeBuilder[IO]
     .withExecutionContext(scala.concurrent.ExecutionContext.fromExecutorService(DefaultExecutorService))
     .bindHttp(port, "0.0.0.0")
-    .mountService(services(), "/")
+    .mountService(services(temperatures), "/")
     .start
 
-  private def services(): HttpService[IO] = {
+  private def services(temperatures: AllTemperatures): HttpService[IO] = {
     CORS(
-      TemperatureEndpoint(SensorReader(SensorFile.find()), ErrorOnTemperatureSpike(Rrd(monitored))) <+>
+      TemperatureEndpoint(SensorReader(Host.local, SensorFile.find()), temperatures) <+>
       ConnectionsEndpoint(Clock.systemDefaultZone) <+>
       LogEndpoint() <+>
       ExportEndpoint(JsonFile.load, JsonToCsv.DefaultTimeFormatter) <+>

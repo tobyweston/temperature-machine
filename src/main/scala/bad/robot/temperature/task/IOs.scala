@@ -2,15 +2,17 @@ package bad.robot.temperature.task
 
 import java.util.concurrent.Executors._
 
+import bad.robot.logging._
 import bad.robot.temperature.ds18b20.{SensorFile, SensorReader}
 import bad.robot.temperature.rrd.RrdFile.MaxSensors
 import bad.robot.temperature.rrd.{Host, RrdFile}
+import bad.robot.temperature.server.AllTemperatures
 import bad.robot.temperature.task.Scheduler.ScheduledExecutorServiceOps
-import bad.robot.temperature.{JsonExport, TemperatureWriter, XmlExport}
-import bad.robot.logging._
+import bad.robot.temperature.{FixedTimeMeasurementWriter, JsonExport, TemperatureWriter, XmlExport}
+import cats.effect.IO
+
 import scala.concurrent.duration._
 import scala.language.postfixOps
-import cats.effect.IO
 
 object IOs {
 
@@ -22,11 +24,20 @@ object IOs {
     }
   }
 
-  def record(source: Host, sensors: List[SensorFile], destination: TemperatureWriter) = {
+  def gather(temperatures: AllTemperatures, destination: FixedTimeMeasurementWriter) = {
+    val frequency = 30 seconds
+    val executor = newSingleThreadScheduledExecutor(TemperatureMachineThreadFactory("rrd-writing-thread"))
+    for {
+      _     <- info(s"Writing to the RRD every $frequency (sample times may be off by +/- $frequency, maybe a little more)")
+      tasks <- IO(executor.schedule(frequency, RecordTemperatures(temperatures, destination, Log)))
+    } yield tasks
+  }
+  
+  def record(host: Host, sensors: List[SensorFile], destination: TemperatureWriter) = {
     val executor = newSingleThreadScheduledExecutor(TemperatureMachineThreadFactory("reading-thread"))
     for {
-      _     <- info(s"Monitoring sensor file(s) on '${source.name}' ${sensors.mkString("\n\t", "\n\t", "\n")}")
-      tasks <- IO(executor.schedule(30 seconds, RecordTemperature(source, SensorReader(sensors), destination, Log)))
+      _     <- info(s"Monitoring sensor file(s) on '${host.name}' ${sensors.mkString("\n\t", "\n\t", "\n")}")
+      tasks <- IO(executor.schedule(1 second, RecordTemperature(SensorReader(host, sensors), destination, Log)))
     } yield tasks
   }
 

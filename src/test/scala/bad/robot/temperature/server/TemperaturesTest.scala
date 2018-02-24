@@ -18,7 +18,7 @@ class TemperaturesTest extends Specification {
       SensorReading("28-000003dd3433", Temperature(22.8))
     ))
 
-    val temperatures = Temperatures(fixedClock(Instant.ofEpochSecond(300)))
+    val temperatures = CurrentTemperatures(fixedClock(Instant.ofEpochSecond(300)))
     temperatures.updateWith(measurement1)
     temperatures.updateWith(measurement2)
 
@@ -42,7 +42,7 @@ class TemperaturesTest extends Specification {
       SensorReading("28-000003dd3433", Temperature(22.8))
     ))
 
-    val temperatures = Temperatures(fixedClock(Instant.ofEpochSecond(300)))
+    val temperatures = CurrentTemperatures(fixedClock(Instant.ofEpochSecond(300)))
     temperatures.updateWith(measurement1)
     temperatures.updateWith(measurement2)
 
