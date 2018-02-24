@@ -8,7 +8,7 @@ import scala.concurrent.duration.Duration
 case class GenerateGraph(period: Duration)(implicit hosts: List[Host]) extends Runnable {
   def run(): Unit = {
     val currentTime = now()
-    Graph.create(currentTime - period.toSeconds, currentTime, hosts)
+    Graph.create(currentTime - period.toSeconds, currentTime, hosts, s"Last $period")
   }
 }
 

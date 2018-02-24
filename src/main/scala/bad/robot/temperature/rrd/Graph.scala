@@ -37,14 +37,14 @@ object Graph {
 
   val path = RrdFile.path
 
-  def create(from: Seconds, to: Seconds, hosts: List[Host]) = {
+  def create(from: Seconds, to: Seconds, hosts: List[Host], title: String) = {
     val graph = new RrdGraphDef()
     graph.setWidth(800)
     graph.setHeight(500)
     graph.setFilename(path / s"temperature-${(to - from).toDays}-days.png")
     graph.setStartTime(from)
     graph.setEndTime(to)
-    graph.setTitle("Temperature")
+    graph.setTitle(title)
     graph.setVerticalLabel("°C")
 
     val all = for {

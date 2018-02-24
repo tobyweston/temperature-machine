@@ -31,10 +31,10 @@ object Example extends App {
   xml.exportJson(JsonFile.filename)
   xml.exportXml("temperature.xml")
 
-  Graph.create(start, start + aDay, hosts)
-  Graph.create(start, start + aDay * 2, hosts)
-  Graph.create(start, start + aWeek, hosts)
-  Graph.create(start, start + aMonth, hosts)
+  Graph.create(start, start + aDay, hosts, "A day")
+  Graph.create(start, start + aDay * 2, hosts, "2 days")
+  Graph.create(start, start + aWeek, hosts, "A week")
+  Graph.create(start, start + aMonth, hosts, "A month")
 
   println("Done generating " + duration)
 
