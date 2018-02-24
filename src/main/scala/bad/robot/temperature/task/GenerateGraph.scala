@@ -12,7 +12,7 @@ case class GenerateGraph(period: Duration)(implicit hosts: List[Host]) extends R
   def run(): Unit = {
     val currentTime = now()
     if (period > (24 hours)) Log.debug(s"Generating RRD chart for last $period")
-    Graph.create(currentTime - period.toSeconds, currentTime, hosts)
+    Graph.create(currentTime - period.toSeconds, currentTime, hosts, s"Last $period")
   }
 }
 
