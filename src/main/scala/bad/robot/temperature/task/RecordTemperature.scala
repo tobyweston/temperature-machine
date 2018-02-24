@@ -1,5 +1,6 @@
 package bad.robot.temperature.task
 
+import bad.robot.temperature.rrd.Seconds
 import bad.robot.temperature.server.AllTemperatures
 import bad.robot.temperature.{Error, FixedTimeMeasurementWriter, TemperatureReader, TemperatureWriter}
 import org.apache.logging.log4j.Logger
@@ -23,9 +24,9 @@ case class RecordTemperature(input: TemperatureReader, output: TemperatureWriter
   */
 case class RecordTemperatures(temperatures: AllTemperatures, output: FixedTimeMeasurementWriter, log: Logger) extends Runnable {
   def run(): Unit = {
-    val measurements = FixedTimeMeasurement.measurementsAtPointInTime(temperatures.drain())
+    val measurements = FixedTimeMeasurement.measurementsAtPointInTime(temperatures.drainPartially(Seconds.now))
     measurements.foreach(measurement =>
-      output.write(measurement).leftMap(error => log.error(s"Error writing data from ${measurement.hosts.map(_.name).mkString(", ")}: ${error.toString}"))
+      output.write(measurement).leftMap(error => log.error(s"Error writing ${measurement.hosts.map(_.name).mkString(", ")}: ${error.toString}"))
     )
   }
 
