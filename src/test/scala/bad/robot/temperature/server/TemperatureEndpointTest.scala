@@ -6,12 +6,12 @@ import bad.robot.temperature.server.Requests._
 import bad.robot.temperature.test._
 import cats.effect.IO
 import org.http4s.Method._
-import org.http4s.Status.{InternalServerError, NoContent, Ok}
+import org.http4s.Status.{NoContent, Ok}
 import org.http4s.implicits._
 import org.http4s.{Request, Uri}
 import org.specs2.mutable.Specification
 
-import scalaz.{-\/, \/, \/-}
+import scalaz.{\/, \/-}
 
 object Requests {
   val Put: String => Request[IO] = (body) => Request[IO](PUT, Uri(path = s"temperature")).withBody(body).unsafeRunSync
@@ -20,38 +20,6 @@ object Requests {
 class TemperatureEndpointTest extends Specification {
 
   sequential
-
-  "Averages a single temperature" >> {
-    val request = Request[IO](GET, Uri.uri("/temperature"))
-    val reader = stubReader(\/-(List(SensorReading("28-0002343fd", Temperature(56.34)))))
-    val service = TemperatureEndpoint(reader, AllTemperatures(), Connections())
-    val response = service.orNotFound.run(request).unsafeRunSync
-
-    response.status must_== Ok
-    response.as[String].unsafeRunSync must_== "56.3 °C"
-  }
-
-  "Averages several temperatures" >> {
-    val request = Request[IO](GET, Uri.uri("/temperature"))
-    val service = TemperatureEndpoint(stubReader(\/-(List(
-      SensorReading("28-0000d34c3", Temperature(25.344)),
-      SensorReading("28-0000d34c3", Temperature(23.364)),
-      SensorReading("28-0000d34c3", Temperature(21.213))
-    ))), AllTemperatures(), Connections())
-    val response = service.orNotFound.run(request).unsafeRunSync
-
-    response.status must_== Ok
-    response.as[String].unsafeRunSync must_== "23.3 °C"
-  }
-
-  "General Error reading temperatures" >> {
-    val request = Request[IO](GET, Uri.uri("/temperature"))
-    val service = TemperatureEndpoint(stubReader(-\/(SensorError("An example error"))), AllTemperatures(), Connections())
-    val response = service.orNotFound.run(request).unsafeRunSync
-
-    response.status must_== InternalServerError
-    response.as[String].unsafeRunSync must_== "An example error"
-  }
 
   "Put some temperature data" >> {
     val service = TemperatureEndpoint(stubReader(\/-(List())), AllTemperatures(), Connections())
