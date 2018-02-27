@@ -13,30 +13,27 @@ import org.http4s.Method.GET
 import org.http4s.Status.Ok
 import org.http4s.headers.`X-Forwarded-For`
 import org.http4s.implicits._
-//import org.http4s.syntax.KleisliResponseOps
 import org.http4s.{Request, Uri}
 import org.specs2.mutable.Specification
-import org.specs2.specification.AfterEach
 
-class ConnectionsEndpointTest extends Specification with AfterEach {
+class ConnectionsEndpointTest extends Specification {
 
   sequential
 
   "No recent connections" >> {
     val request = Request[IO](GET, Uri.uri("/connections"))
-    val service = ConnectionsEndpoint(fixedClock())
+    val service = ConnectionsEndpoint(Connections())(fixedClock())
     val response: IO[Response[IO]] =  service.orNotFound.run(request)
     response.flatMap(response => response.as[String]).unsafeRunSync() must_== "[]"
-//    response.attemptAs[String].fold(throw _, identity).unsafeRunSync() must_== "[]"
-//    response.as[String].unsafeRunSync() must_== "[]"
     response.unsafeRunSync().status must_== Ok
   }
 
   "After a connection is made" >> {
-    ConnectionsEndpoint.update(Host("garage", None), Some(xForwardedFor("84.12.43.124")))
+    val connections = Connections()
+    connections.update(Host("garage", None), Some(xForwardedFor("84.12.43.124")))
 
     val request = Request[IO](GET, Uri.uri("/connections"))
-    val service = ConnectionsEndpoint(fixedClock())
+    val service = ConnectionsEndpoint(connections)(fixedClock())
     val response =  service.orNotFound.run(request)
 
     response.unsafeRunSync().status must_== Ok
@@ -55,10 +52,11 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
   }
 
   "Recent connections show up" >> {
-    val service = ConnectionsEndpoint(fixedClock(Instant.now.plus(4, minutes)))
+    val connections = Connections()
+    val service = ConnectionsEndpoint(connections)(fixedClock(Instant.now.plus(4, minutes)))
 
     val request = Request[IO](GET, Uri.uri("/connections/active/within/5/mins"))
-    ConnectionsEndpoint.update(Host("garage", None), Some(xForwardedFor("184.14.23.214")))
+    connections.update(Host("garage", None), Some(xForwardedFor("184.14.23.214")))
     val response =  service.orNotFound.run(request)
 
     response.unsafeRunSync().status must_== Ok
@@ -76,10 +74,11 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
   }
 
   "Multiple IPs" >> {
-    ConnectionsEndpoint.update(Host("garage", None), Some(xForwardedFor("84.12.43.124", "10.0.1.12")))
+    val connections = Connections()
+    connections.update(Host("garage", None), Some(xForwardedFor("84.12.43.124", "10.0.1.12")))
 
     val request = Request[IO](GET, Uri.uri("/connections"))
-    val service = ConnectionsEndpoint(fixedClock())
+    val service = ConnectionsEndpoint(connections)(fixedClock())
     val response =  service.orNotFound.run(request).unsafeRunSync()
 
     response.status must_== Ok
@@ -98,10 +97,11 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
   }
 
   "Connections expire / only recent connections show up" >> {
-    val service = ConnectionsEndpoint(fixedClock(Instant.now.plus(6, minutes)))
+    val connections = Connections()
+    val service = ConnectionsEndpoint(connections)(fixedClock(Instant.now.plus(6, minutes)))
 
     val request = Request[IO](GET, Uri.uri("/connections/active/within/5/mins"))
-    ConnectionsEndpoint.update(Host("garage", None), Some(xForwardedFor("162.34.13.113")))
+    connections.update(Host("garage", None), Some(xForwardedFor("162.34.13.113")))
     val response =  service.orNotFound.run(request).unsafeRunSync()
 
 
@@ -115,7 +115,5 @@ class ConnectionsEndpointTest extends Specification with AfterEach {
     val ips = ipAddresses.map(ip => Some(InetAddress.getByName(ip)))
     `X-Forwarded-For`(NonEmptyList(ips.head, ips.tail.toList))
   }
-
-  def after = ConnectionsEndpoint.reset()
 
 }

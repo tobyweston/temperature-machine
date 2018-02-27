@@ -16,7 +16,7 @@ import scala.concurrent.duration._
 class HttpServerTest extends Specification {
 
   "When the Http server has been started" >> {
-    val server = HttpServer(8080, List(Host("example", None)), AllTemperatures()).unsafeRunSync
+    val server = HttpServer(8080, List(Host("example", None)), AllTemperatures(), Connections()).unsafeRunSync
     val client = Http1Client[IO](config = defaultConfig.copy(idleTimeout = 30 minutes, responseHeaderTimeout = 30 minutes)).unsafeRunSync()
 
     // todo wait for server to startup, not sure how.

@@ -18,9 +18,9 @@ import org.http4s.server.middleware.CORS
 import org.http4s.server.{Server => Http4sServer}
 
 object HttpServer {
-  def apply(port: Int, monitored: List[Host], temperatures: AllTemperatures): IO[HttpServer] = IO {
+  def apply(port: Int, monitored: List[Host], temperatures: AllTemperatures, connections: Connections): IO[HttpServer] = IO {
     val server = new HttpServer(port, monitored)
-    server.build(temperatures).unsafeRunSync
+    server.build(temperatures, connections).unsafeRunSync
     server
   }
 }
@@ -37,16 +37,16 @@ class HttpServer(port: Int, monitored: List[Host]) {
     newFixedThreadPool(max(4, Runtime.getRuntime.availableProcessors), TemperatureMachineThreadFactory("http-server"))
   }
 
-  private def build(temperatures: AllTemperatures): IO[Http4sServer[IO]] = BlazeBuilder[IO]
+  private def build(temperatures: AllTemperatures, connections: Connections): IO[Http4sServer[IO]] = BlazeBuilder[IO]
     .withExecutionContext(scala.concurrent.ExecutionContext.fromExecutorService(DefaultExecutorService))
     .bindHttp(port, "0.0.0.0")
-    .mountService(services(temperatures), "/")
+    .mountService(services(temperatures, connections), "/")
     .start
 
-  private def services(temperatures: AllTemperatures): HttpService[IO] = {
+  private def services(temperatures: AllTemperatures, connections: Connections): HttpService[IO] = {
     CORS(
-      TemperatureEndpoint(SensorReader(Host.local, SensorFile.find()), temperatures) <+>
-      ConnectionsEndpoint(Clock.systemDefaultZone) <+>
+      TemperatureEndpoint(SensorReader(Host.local, SensorFile.find()), temperatures, connections) <+>
+      ConnectionsEndpoint(connections)(Clock.systemDefaultZone) <+>
       LogEndpoint() <+>
       ExportEndpoint(JsonFile.load, JsonToCsv.DefaultTimeFormatter) <+>
       VersionEndpoint() <+>

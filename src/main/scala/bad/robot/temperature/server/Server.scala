@@ -20,16 +20,16 @@ object Server extends App {
     } yield ()
   }
 
-  def http(temperatures: AllTemperatures)(implicit monitored: List[Host]): IO[HttpServer] = {
+  def http(temperatures: AllTemperatures, connections: Connections)(implicit monitored: List[Host]): IO[HttpServer] = {
     val port = 11900
     for {
-      server <- HttpServer(port, monitored, temperatures)
+      server <- HttpServer(port, monitored, temperatures, connections)
       _      <- info(s"HTTP Server started on http://${InetAddress.getLocalHost.getHostAddress}:$port")
       _      <- server.awaitShutdown()
     } yield server
   }
 
-  def server(temperatures: AllTemperatures, sensors: List[SensorFile])(implicit monitored: List[Host]) = {
+  def server(temperatures: AllTemperatures, connections: Connections, sensors: List[SensorFile])(implicit monitored: List[Host]) = {
     for {
       _ <- info("Starting temperature-machine (server mode)...")
       _ <- init(monitored)
@@ -38,7 +38,7 @@ object Server extends App {
       _ <- record(Host.local, sensors, HttpUpload(InetAddress.getLocalHost, BlazeHttpClient()))
       _ <- graphing
       _ <- exportJson
-      _ <- http(temperatures)
+      _ <- http(temperatures, connections)
     } yield ()
   }
 
@@ -56,8 +56,9 @@ object Server extends App {
     case hosts => hosts.map(host => Host(host, utcOffset = None))
   }
 
-  private val temperatures = new AllTemperatures()
-
-  findSensorsAndExecute(server(temperatures, _)(hosts)).leftMap(error => Log.error(error.message))
+  private val temperatures = AllTemperatures()
+  private val connections = Connections()
+  
+  findSensorsAndExecute(server(temperatures, connections, _)(hosts)).leftMap(error => Log.error(error.message))
 
 }
