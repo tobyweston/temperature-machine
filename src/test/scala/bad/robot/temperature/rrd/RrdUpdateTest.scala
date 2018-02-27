@@ -40,7 +40,7 @@ class RrdUpdateTest extends Specification {
     val file = createTempRrd
 
     val update = RrdUpdate(hosts, file).apply(FixedTimeMeasurement(time, List(
-      Measurement(Host("Z", None), time, List(
+      Measurement(Host("Z"), time, List(
         SensorReading("sensor-1", Temperature(19.8)),
         SensorReading("sensor-2", Temperature(19.9))
       ))
@@ -55,7 +55,7 @@ class RrdUpdateTest extends Specification {
     val file = createTempRrd
 
     val update = RrdUpdate(hosts, file).apply(FixedTimeMeasurement(time, List(
-      Measurement(Host("A", None), time, List(
+      Measurement(Host("A"), time, List(
         SensorReading("sensor-1", Temperature(19.8)),
         SensorReading("sensor-2", Temperature(19.9))
       ))
@@ -88,15 +88,15 @@ class RrdUpdateTest extends Specification {
     val file = createTempRrd
 
     val update = RrdUpdate(hosts, file).apply(FixedTimeMeasurement(time, List(
-      Measurement(Host("A", None), time, List(
+      Measurement(Host("A"), time, List(
         SensorReading("sensor-1", Temperature(19.8)),
         SensorReading("sensor-2", Temperature(19.9))
       )),
-      Measurement(Host("Z", None), time, List(
+      Measurement(Host("Z"), time, List(
         SensorReading("sensor-5", Temperature(14.8)),
         SensorReading("sensor-6", Temperature(14.9))
       )),
-      Measurement(Host("C", None), time, List(
+      Measurement(Host("C"), time, List(
         SensorReading("sensor-3", Temperature(16.8)),
         SensorReading("sensor-4", Temperature(16.9))
       ))
@@ -126,7 +126,7 @@ class RrdUpdateTest extends Specification {
   
   "Error on RRD" >> {
     val update = RrdUpdate(hosts, new File("doesnt.exist")).apply(FixedTimeMeasurement(Seconds(0), List(
-      Measurement(Host("A", None), Seconds(0), List(
+      Measurement(Host("A"), Seconds(0), List(
         SensorReading("sensor-1", Temperature(19.8)),
         SensorReading("sensor-2", Temperature(19.9))
       ))

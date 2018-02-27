@@ -19,7 +19,7 @@ class RecordTemperatureTest extends Specification {
   "Take a measurement and write it out" >> {
     val time = Seconds.now()
     val input = new TemperatureReader {
-      def read = \/-(Measurement(Host("A", None), time, List(SensorReading("example", Temperature(69.9)))))
+      def read = \/-(Measurement(Host("A"), time, List(SensorReading("example", Temperature(69.9)))))
     }
     val output = new TemperatureWriter {
       var measurements = List[Measurement]()
@@ -30,7 +30,7 @@ class RecordTemperatureTest extends Specification {
       }
     }
     RecordTemperature(input, output, null).run()
-    output.measurements must_== List(Measurement(Host("A", None), time, List(SensorReading("example", Temperature(69.9)))))
+    output.measurements must_== List(Measurement(Host("A"), time, List(SensorReading("example", Temperature(69.9)))))
   }
 
   "Fail to take a measurement" >> {
@@ -53,7 +53,7 @@ class RecordTemperatureTest extends Specification {
 
   "Take a measurement but fail to write it" >> {
     val input = new TemperatureReader {
-      def read = \/-(Measurement(Host("A", None), Seconds.now(), List(SensorReading("example", Temperature(69.9)))))
+      def read = \/-(Measurement(Host("A"), Seconds.now(), List(SensorReading("example", Temperature(69.9)))))
     }
     val output = new TemperatureWriter {
       def write(measurement: Measurement) = -\/(UnexpectedError("whatever trevor"))

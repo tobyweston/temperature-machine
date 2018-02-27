@@ -10,7 +10,8 @@ class MeasurementTest extends Specification {
     val expected = """{
                      |  "host" : {
                      |    "name" : "localhost",
-                     |    "utcOffset" : null
+                     |    "utcOffset" : null,
+                     |    "timezone" : null
                      |  },
                      |  "seconds" : 1000,
                      |  "sensors" : [
@@ -28,7 +29,7 @@ class MeasurementTest extends Specification {
                      |    }
                      |  ]
                      |}""".stripMargin
-    val json = encode(Measurement(Host("localhost", None), Seconds(1000), List(
+    val json = encode(Measurement(Host("localhost"), Seconds(1000), List(
       SensorReading("28-00000f33fdc3", Temperature(32.1)),
       SensorReading("28-00000dfg34ca", Temperature(32.8)))
     )).spaces2ps
@@ -54,7 +55,7 @@ class MeasurementTest extends Specification {
 //                 |     }
 //                 |   ]
 //                 |}""".stripMargin
-//    decodeAsDisjunction[Measurement](json) must be_\/-(Measurement(Host("localhost", None), Seconds(1000), List(
+//    decodeAsDisjunction[Measurement](json) must be_\/-(Measurement(Host("localhost"), Seconds(1000), List(
 //      SensorReading("28-00000dfg34ca", Temperature(32.1)),
 //      SensorReading("28-00000f33fdc3", Temperature(32.8)))
 //    ))
@@ -64,7 +65,8 @@ class MeasurementTest extends Specification {
     val json = """{
                  |  "host" : {
                  |    "name" : "localhost",
-                 |    "utcOffset" : "+01:00"
+                 |    "utcOffset" : "+01:00",
+                 |    "timezone" : null
                  |  },
                  |  "seconds" : 1000,
                  |  "sensors" : [
@@ -82,7 +84,7 @@ class MeasurementTest extends Specification {
                  |     }
                  |   ]
                  |}""".stripMargin
-    decodeAsDisjunction[Measurement](json) must be_\/-(Measurement(Host("localhost", Some("+01:00")), Seconds(1000), List(
+    decodeAsDisjunction[Measurement](json) must be_\/-(Measurement(Host("localhost", Some("+01:00"), None), Seconds(1000), List(
       SensorReading("28-00000dfg34ca", Temperature(32.1)),
       SensorReading("28-00000f33fdc3", Temperature(32.8)))
     ))

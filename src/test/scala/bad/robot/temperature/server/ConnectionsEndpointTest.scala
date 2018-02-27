@@ -30,7 +30,7 @@ class ConnectionsEndpointTest extends Specification {
 
   "After a connection is made" >> {
     val connections = Connections()
-    connections.update(Host("garage", None), Some(xForwardedFor("84.12.43.124")))
+    connections.update(Host("garage"), Some(xForwardedFor("84.12.43.124")))
 
     val request = Request[IO](GET, Uri.uri("/connections"))
     val service = ConnectionsEndpoint(connections)(fixedClock())
@@ -42,7 +42,8 @@ class ConnectionsEndpointTest extends Specification {
         |  {
         |    "host" : {
         |      "name" : "garage",
-        |      "utcOffset" : null
+        |      "utcOffset" : null,
+        |      "timezone" : null
         |    },
         |    "ip" : {
         |      "value" : "84.12.43.124"
@@ -56,7 +57,7 @@ class ConnectionsEndpointTest extends Specification {
     val service = ConnectionsEndpoint(connections)(fixedClock(Instant.now.plus(4, minutes)))
 
     val request = Request[IO](GET, Uri.uri("/connections/active/within/5/mins"))
-    connections.update(Host("garage", None), Some(xForwardedFor("184.14.23.214")))
+    connections.update(Host("garage"), Some(xForwardedFor("184.14.23.214")))
     val response =  service.orNotFound.run(request)
 
     response.unsafeRunSync().status must_== Ok
@@ -64,7 +65,8 @@ class ConnectionsEndpointTest extends Specification {
                                                     |  {
                                                     |    "host" : {
                                                     |      "name" : "garage",
-                                                    |      "utcOffset" : null
+                                                    |      "utcOffset" : null,
+                                                    |      "timezone" : null
                                                     |    },
                                                     |    "ip" : {
                                                     |      "value" : "184.14.23.214"
@@ -75,7 +77,7 @@ class ConnectionsEndpointTest extends Specification {
 
   "Multiple IPs" >> {
     val connections = Connections()
-    connections.update(Host("garage", None), Some(xForwardedFor("84.12.43.124", "10.0.1.12")))
+    connections.update(Host("garage"), Some(xForwardedFor("84.12.43.124", "10.0.1.12")))
 
     val request = Request[IO](GET, Uri.uri("/connections"))
     val service = ConnectionsEndpoint(connections)(fixedClock())
@@ -87,7 +89,8 @@ class ConnectionsEndpointTest extends Specification {
         |  {
         |    "host" : {
         |      "name" : "garage",
-        |      "utcOffset" : null
+        |      "utcOffset" : null,
+        |      "timezone" : null
         |    },
         |    "ip" : {
         |      "value" : "84.12.43.124, 10.0.1.12"
@@ -101,12 +104,30 @@ class ConnectionsEndpointTest extends Specification {
     val service = ConnectionsEndpoint(connections)(fixedClock(Instant.now.plus(6, minutes)))
 
     val request = Request[IO](GET, Uri.uri("/connections/active/within/5/mins"))
-    connections.update(Host("garage", None), Some(xForwardedFor("162.34.13.113")))
+    connections.update(Host("garage"), Some(xForwardedFor("162.34.13.113")))
     val response =  service.orNotFound.run(request).unsafeRunSync()
 
 
     response.status must_== Ok
     response.as[String].unsafeRunSync must_== "[]"
+  }
+  
+  "Responses include X-Forwarded-Host header" >> {
+    
+    "Getting connections" >> {
+      val request = Request[IO](GET, Uri.uri("/connections"))
+      val service = ConnectionsEndpoint(Connections())(fixedClock())
+      val response: Response[IO] =  service.orNotFound.run(request).unsafeRunSync()
+      response.headers.toList.exists(_.name == "X-Forwarded-Host".ci) must_== true
+    }
+
+    "Getting recent connections" >> {
+      val request = Request[IO](GET, Uri.uri("/connections/active/within/5/mins"))
+      val service = ConnectionsEndpoint(Connections())(fixedClock())
+      val response: Response[IO] =  service.orNotFound.run(request).unsafeRunSync()
+      response.headers.toList.exists(_.name == "X-Forwarded-Host".ci) must_== true
+    }
+
   }
 
   def fixedClock(instant: Instant = Instant.now) = Clock.fixed(instant, ZoneId.systemDefault())

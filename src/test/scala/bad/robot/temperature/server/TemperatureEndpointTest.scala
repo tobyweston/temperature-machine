@@ -26,7 +26,8 @@ class TemperatureEndpointTest extends Specification {
     val measurement = """{
                          |  "host" : {
                          |    "name" : "localhost",
-                         |    "utcOffset" : null
+                         |    "utcOffset" : null,
+                         |    "timezone" : null
                          |  },
                          |  "seconds" : 9000,
                          |  "sensors" : [
@@ -55,7 +56,8 @@ class TemperatureEndpointTest extends Specification {
     val measurement1 = s"""{
                          |  "host" : {
                          |    "name" : "lounge",
-                         |    "utcOffset" : null
+                         |    "utcOffset" : null,
+                         |    "timezone" : null
                          |  },
                          |  "seconds" : ${now.value - 10},
                          |  "sensors" : [
@@ -77,7 +79,8 @@ class TemperatureEndpointTest extends Specification {
     val measurement2 = s"""{
                          |  "host" : {
                          |    "name" : "bedroom",
-                         |    "utcOffset" : null
+                         |    "utcOffset" : null,
+                         |    "timezone" : null
                          |  },
                          |  "seconds" : ${now.value},
                          |  "sensors" : [
@@ -111,29 +114,9 @@ class TemperatureEndpointTest extends Specification {
                       |  "measurements" : [
                       |    {
                       |      "host" : {
-                      |        "name" : "bedroom",
-                      |        "utcOffset" : null
-                      |      },
-                      |      "seconds" : ${now.value},
-                      |      "sensors" : [
-                      |        {
-                      |          "name" : "28-00000f3554ds",
-                      |          "temperature" : {
-                      |            "celsius" : 21.1
-                      |          }
-                      |        },
-                      |        {
-                      |          "name" : "28-000003dd3433",
-                      |          "temperature" : {
-                      |            "celsius" : 22.8
-                      |          }
-                      |        }
-                      |      ]
-                      |    },
-                      |    {
-                      |      "host" : {
                       |        "name" : "lounge",
-                      |        "utcOffset" : null
+                      |        "utcOffset" : null,
+                      |        "timezone" : null
                       |      },
                       |      "seconds" : ${now.value - 10},
                       |      "sensors" : [
@@ -150,6 +133,28 @@ class TemperatureEndpointTest extends Specification {
                       |          }
                       |        }
                       |      ]
+                      |    },
+                      |    {
+                      |      "host" : {
+                      |        "name" : "bedroom",
+                      |        "utcOffset" : null,
+                      |        "timezone" : null
+                      |      },
+                      |      "seconds" : ${now.value},
+                      |      "sensors" : [
+                      |        {
+                      |          "name" : "28-00000f3554ds",
+                      |          "temperature" : {
+                      |            "celsius" : 21.1
+                      |          }
+                      |        },
+                      |        {
+                      |          "name" : "28-000003dd3433",
+                      |          "temperature" : {
+                      |            "celsius" : 22.8
+                      |          }
+                      |        }
+                      |      ]
                       |    }
                       |  ]
                       |}""".stripMargin
@@ -162,7 +167,8 @@ class TemperatureEndpointTest extends Specification {
     val measurement1 = s"""{
                          |  "host" : {
                          |    "name" : "lounge",
-                         |    "utcOffset" : null
+                         |    "utcOffset" : null,
+                         |    "timezone" : null
                          |  },
                          |  "seconds" : ${now.value - 10},
                          |  "sensors" : [
@@ -184,7 +190,8 @@ class TemperatureEndpointTest extends Specification {
     val measurement2 = s"""{
                          |  "host" : {
                          |    "name" : "bedroom",
-                         |    "utcOffset" : null
+                         |    "utcOffset" : null,
+                         |    "timezone" : null
                          |  },
                          |  "seconds" : ${now.value},
                          |  "sensors" : [
@@ -218,23 +225,9 @@ class TemperatureEndpointTest extends Specification {
                                       |  "measurements" : [
                                       |    {
                                       |      "host" : {
-                                      |        "name" : "bedroom",
-                                      |        "utcOffset" : null
-                                      |      },
-                                      |      "seconds" : ${now.value},
-                                      |      "sensors" : [
-                                      |        {
-                                      |          "name" : "Average",
-                                      |          "temperature" : {
-                                      |            "celsius" : 21.950000000000003
-                                      |          }
-                                      |        }
-                                      |      ]
-                                      |    },
-                                      |    {
-                                      |      "host" : {
                                       |        "name" : "lounge",
-                                      |        "utcOffset" : null
+                                      |        "utcOffset" : null,
+                                      |        "timezone" : null
                                       |      },
                                       |      "seconds" : ${now.value - 10},
                                       |      "sensors" : [
@@ -245,13 +238,29 @@ class TemperatureEndpointTest extends Specification {
                                       |          }
                                       |        }
                                       |      ]
+                                      |    },
+                                      |    {
+                                      |      "host" : {
+                                      |        "name" : "bedroom",
+                                      |        "utcOffset" : null,
+                                      |        "timezone" : null
+                                      |      },
+                                      |      "seconds" : ${now.value},
+                                      |      "sensors" : [
+                                      |        {
+                                      |          "name" : "Average",
+                                      |          "temperature" : {
+                                      |            "celsius" : 21.950000000000003
+                                      |          }
+                                      |        }
+                                      |      ]
                                       |    }
                                       |  ]
                                       |}""".stripMargin
   }
   
   def stubReader(result: Error \/ List[SensorReading]) = new TemperatureReader {
-    def read: Error \/ Measurement = result.map(x => Measurement(Host("A", None), Seconds.now(), x))
+    def read: Error \/ Measurement = result.map(x => Measurement(Host("A"), Seconds.now(), x))
   }
 
   def stubWriter(result: Error \/ Unit) = new TemperatureWriter {

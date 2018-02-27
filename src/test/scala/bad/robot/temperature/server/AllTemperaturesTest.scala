@@ -40,7 +40,7 @@ class AllTemperaturesTest extends Specification {
   }
 
   private def measurement(host: String, time: Long, temperatures: Double*) = {
-    Measurement(Host(host, None), Seconds(time), temperatures.zipWithIndex.map { case (temperature, index) =>
+    Measurement(Host(host), Seconds(time), temperatures.zipWithIndex.map { case (temperature, index) =>
       SensorReading(s"sensor-$index", Temperature(temperature))
     }.toList)
   }

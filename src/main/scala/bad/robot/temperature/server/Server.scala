@@ -53,7 +53,7 @@ object Server extends App {
 
   private val hosts = args.toList match {
     case Nil   => quit
-    case hosts => hosts.map(host => Host(host, utcOffset = None))
+    case hosts => hosts.map(host => Host(host))
   }
 
   private val temperatures = AllTemperatures()
