@@ -21,20 +21,20 @@ object TemperatureEndpoint {
     )
   }
 
-  private val lastestTemperatures = CurrentTemperatures(Clock.systemDefaultZone)
+  private val latestTemperatures = CurrentTemperatures(Clock.systemDefaultZone)
 
   def apply(sensors: TemperatureReader, allTemperatures: AllTemperatures, connections: Connections) = HttpService[IO] {
 
     case GET -> Root / "temperatures" / "average" => {
-      Ok(encode(lastestTemperatures.average))
+      Ok(encode(latestTemperatures.average))
     }
 
     case GET -> Root / "temperatures" => {
-      Ok(encode(lastestTemperatures.all))
+      Ok(encode(latestTemperatures.all))
     }
 
     case DELETE -> Root / "temperatures" => {
-      lastestTemperatures.clear()
+      latestTemperatures.clear()
       NoContent()
     }
 
@@ -43,7 +43,7 @@ object TemperatureEndpoint {
         val result = connections.update(measurement.host, request.headers.get(`X-Forwarded-For`))
         
         result.toHttpResponse(_ => {
-          lastestTemperatures.updateWith(measurement)
+          latestTemperatures.updateWith(measurement)
           allTemperatures.put(measurement)
           NoContent()
         })
