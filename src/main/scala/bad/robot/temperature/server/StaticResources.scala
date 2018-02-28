@@ -20,7 +20,7 @@ object StaticResources {
       resources(request)
 
     response.map {
-      case Successful(resp) => resp.putHeaders(`Cache-Control`(`public`, `max-age`(Duration(31536000, SECONDS))))
+      case Successful(resp) => resp.putHeaders(`Cache-Control`(`public`, `max-age`(Duration(365, DAYS))))
       case resp             => resp
     }
   })
