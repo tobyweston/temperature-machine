@@ -2,13 +2,13 @@ package bad.robot.temperature.server
 
 import cats.data.Kleisli
 import cats.effect.IO
-import org.http4s.CacheDirective.{`max-age`, `no-cache`, `no-store`}
+import org.http4s.CacheDirective.{`max-age`, `public`}
 import org.http4s.HttpService
 import org.http4s.Status.Successful
 import org.http4s.headers.`Cache-Control`
 import org.http4s.server.staticcontent._
 
-import scala.concurrent.duration.Duration._
+import scala.concurrent.duration._
 
 object StaticResources {
   def apply(): HttpService[IO] = Kleisli.apply(request => {
@@ -20,7 +20,7 @@ object StaticResources {
       resources(request)
 
     response.map {
-      case Successful(resp) => resp.putHeaders(`Cache-Control`(`no-cache`(), `no-store`, `max-age`(Zero)))
+      case Successful(resp) => resp.putHeaders(`Cache-Control`(`public`, `max-age`(Duration(31536000, SECONDS))))
       case resp             => resp
     }
   })
