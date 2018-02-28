@@ -6,9 +6,15 @@ import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.{jsonEncoder, _}
 import cats.effect.IO
 import io.circe._
+import fs2.{Sink, _}
 import org.http4s.HttpService
 import org.http4s.dsl.io._
 import org.http4s.headers.`X-Forwarded-For`
+import org.http4s.server.websocket._
+import org.http4s.websocket.WebsocketBits._
+
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
 object TemperatureEndpoint {
 
@@ -22,8 +28,10 @@ object TemperatureEndpoint {
   }
 
   private val latestTemperatures = CurrentTemperatures(Clock.systemDefaultZone)
+  
+  import scala.concurrent.ExecutionContext.Implicits.global // todo replace with explicit one
 
-  def apply(sensors: TemperatureReader, allTemperatures: AllTemperatures, connections: Connections) = HttpService[IO] {
+  def apply(scheduler: Scheduler, sensors: TemperatureReader, allTemperatures: AllTemperatures, connections: Connections) = HttpService[IO] {
 
     case GET -> Root / "temperatures" / "average" => {
       Ok(encode(latestTemperatures.average))
@@ -31,6 +39,20 @@ object TemperatureEndpoint {
 
     case GET -> Root / "temperatures" => {
       Ok(encode(latestTemperatures.all))
+    }
+
+    case GET -> Root / "temperatures" / "live" => {
+      val source: Stream[IO, WebSocketFrame] = scheduler.awakeEvery[IO](1 second).map { _ =>
+        Text(encode(latestTemperatures.average).spaces2ps)
+      }
+      
+      val sink: Sink[IO, WebSocketFrame] = _.evalMap { (ws: WebSocketFrame) =>
+        ws match {
+          case Text(fromClient, _) => IO(println(s"Client sent ws data: $fromClient"))
+          case frame               => IO(println(s"Unknown type sent from ws client: $frame"))
+        }
+      }
+      WebSocketBuilder[IO].build(source, sink)
     }
 
     case DELETE -> Root / "temperatures" => {
@@ -41,7 +63,7 @@ object TemperatureEndpoint {
     case request @ PUT -> Root / "temperature" => {
       request.decode[Measurement](measurement => {
         val result = connections.update(measurement.host, request.headers.get(`X-Forwarded-For`))
-        
+
         result.toHttpResponse(_ => {
           latestTemperatures.updateWith(measurement)
           allTemperatures.put(measurement)
