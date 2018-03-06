@@ -17,6 +17,7 @@ package object server {
 
     val errors = PartialFunction[Error, IO[Response[IO]]] {
       case error @ CrcFailure()        => InternalServerError(error.message)
+      case error @ CommandLineError()  => InternalServerError(error.message)
       case error @ FailedToFindFile(_) => NotFound(error.message)
       case error @ FileError(_)        => InternalServerError(error.message)
       case error @ SensorError(_)      => InternalServerError(error.message)

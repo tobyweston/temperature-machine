@@ -2,7 +2,6 @@ package bad.robot.temperature.server
 
 import java.io._
 
-import bad.robot.logging._
 import bad.robot.temperature.rrd.{Host, RrdFile}
 import cats.effect.IO
 import org.http4s.Method.GET
@@ -16,12 +15,14 @@ import scala.concurrent.duration._
 class HttpServerTest extends Specification {
 
   "When the Http server has been started" >> {
-    val server = HttpServer(8080, List(Host("example")), AllTemperatures(), Connections()).unsafeRunSync
+    startServer()
+    
     val client = Http1Client[IO](config = defaultConfig.copy(idleTimeout = 30 minutes, responseHeaderTimeout = 30 minutes)).unsafeRunSync()
 
     // todo wait for server to startup, not sure how.
 
     "index.html can be loaded" >> {
+      println("furst test")
       assertOk(Request(GET, path("")))
     }
 
@@ -124,12 +125,13 @@ class HttpServerTest extends Specification {
     }
 
     step {
-      val shutdown = for {
-        _ <- server.shutdown()
-        _ <- info(s"HTTP Server shutting down")
-      } yield ()
-      shutdown.unsafeRunSync
+      // how do I shutdown the server?
+      ()
     }
+  }
+
+  private def startServer() = {
+    HttpServer(8080, List(Host("example")), AllTemperatures(), Connections()).compile.last.unsafeRunAsync(_ => ())
   }
 
   def startingWith(startsWith: String, extension: String): FileFilter = (file: File) => file.getName.startsWith(startsWith) && file.getName.endsWith(extension)

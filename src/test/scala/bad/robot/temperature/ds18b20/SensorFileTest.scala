@@ -3,8 +3,6 @@ package bad.robot.temperature.ds18b20
 import org.specs2.matcher.DisjunctionMatchers._
 import org.specs2.mutable.Specification
 
-import cats.effect.IO
-
 class SensorFileTest extends Specification {
 
   sequential
@@ -27,7 +25,7 @@ class SensorFileTest extends Specification {
   "Find some sensor files (using system property) and execute" >> {
     sys.props += ("sensor.location" -> "src/test/resources/examples")
 
-    val result = SensorFile.findSensorsAndExecute[List[SensorFile]](sensors => IO.pure(sensors))
+    val result = SensorFile.findSensors
 
     sys.props -= "sensor.location"
 
@@ -40,7 +38,7 @@ class SensorFileTest extends Specification {
   "Fail to find some sensor files (using system property) and not execute" >> {
     sys.props += ("sensor.location" -> "missing")
 
-    val result = SensorFile.findSensorsAndExecute(sensors => IO.pure(sensors))
+    val result = SensorFile.findSensors
 
     sys.props -= "sensor.location"
 

@@ -2,11 +2,9 @@ package bad.robot.temperature.ds18b20
 
 import java.io.{File, FileFilter}
 
-import bad.robot.temperature.FileOps
-import bad.robot.temperature.{Error, FailedToFindFile}
+import bad.robot.temperature.{Error, FailedToFindFile, FileOps}
 
 import scalaz.\/
-import cats.effect.IO
 import scalaz.syntax.either.ToEitherOps
 
 object SensorFile {
@@ -19,12 +17,12 @@ object SensorFile {
     def accept(file: File): Boolean = function(file)
   }
 
-  def findSensorsAndExecute[A](task: List[SensorFile] => IO[A]): Error \/ A = {
+  def findSensors: Error \/ List[SensorFile] = {
     val location = sys.props.getOrElse("sensor.location", BaseFolder)
 
     SensorFile.find(location) match {
       case Nil     => FailedToFindFile(location).left
-      case sensors => task(sensors).unsafeRunSync.right
+      case sensors => sensors.right
     }
   }
 
