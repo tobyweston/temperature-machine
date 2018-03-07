@@ -30,7 +30,7 @@ object Server extends StreamApp[IO] {
   def http(temperatures: AllTemperatures, connections: Connections)(implicit hosts: List[Host]): Stream[IO, ExitCode] = {
     val port = 11900
     for {
-      server <- HttpServer(port, hosts, temperatures, connections)
+      server <- HttpServer(port, hosts).asStream(temperatures, connections)
       _      <- Stream.eval(info(s"HTTP Server started on http://${InetAddress.getLocalHost.getHostAddress}:$port"))
     } yield server
   }
@@ -48,7 +48,7 @@ object Server extends StreamApp[IO] {
     } yield exitCode
   }
 
-  override def stream(args: List[String], shutdown: IO[Unit]): Stream[IO, ExitCode] = {
+  override def stream(args: List[String], requestShutdown: IO[Unit]): Stream[IO, ExitCode] = {
     val application = for {
       hosts        <- extractHosts(args)
       sensors      <- findSensors

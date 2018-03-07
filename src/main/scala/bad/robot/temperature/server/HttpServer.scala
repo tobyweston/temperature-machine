@@ -21,8 +21,8 @@ import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.server.middleware.CORS
 
 object HttpServer {
-  def apply(port: Int, monitored: List[Host], temperatures: AllTemperatures, connections: Connections): Stream[IO, ExitCode] = {
-    new HttpServer(port, monitored).build(temperatures, connections) 
+  def apply(port: Int, monitored: List[Host]): HttpServer = {
+    new HttpServer(port, monitored)
   }
 }
 
@@ -32,19 +32,21 @@ class HttpServer(port: Int, monitored: List[Host]) {
     newFixedThreadPool(max(4, Runtime.getRuntime.availableProcessors), TemperatureMachineThreadFactory("http-server"))
   }
 
-  private def build(temperatures: AllTemperatures, connections: Connections): Stream[IO, ExitCode] = {
+  def asStream(temperatures: AllTemperatures, connections: Connections): Stream[IO, ExitCode] = {
     import scala.concurrent.ExecutionContext.Implicits.global // todo replace with explicit one
     
     for {
       scheduler <- Scheduler[IO](corePoolSize = 1)
-      _ = println("Startng sererser")
-      exitCode  <- BlazeBuilder[IO]
-                    .withWebSockets(true)
-                    .withExecutionContext(ExecutionContext.fromExecutorService(DefaultHttpExecutorService))
-                    .bindHttp(port, "0.0.0.0")
-                    .mountService(services(scheduler, temperatures, connections), "/")
-                    .serve
+      exitCode  <- build(temperatures, connections, scheduler).serve
     } yield exitCode
+  }
+
+  private[server] def build(temperatures: AllTemperatures, connections: Connections, scheduler: Scheduler): BlazeBuilder[IO] = {
+    BlazeBuilder[IO]
+      .withWebSockets(true)
+      .withExecutionContext(ExecutionContext.fromExecutorService(DefaultHttpExecutorService))
+      .bindHttp(port, "0.0.0.0")
+      .mountService(services(scheduler, temperatures, connections), "/")
   }
 
   private def services(scheduler: Scheduler, temperatures: AllTemperatures, connections: Connections): HttpService[IO] = {
