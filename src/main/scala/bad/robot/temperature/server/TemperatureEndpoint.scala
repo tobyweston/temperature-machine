@@ -29,12 +29,10 @@ object TemperatureEndpoint {
 
   private val latestTemperatures = CurrentTemperatures(Clock.systemDefaultZone)
   
-  private val sink: Sink[IO, WebSocketFrame] = _.evalMap { (ws: WebSocketFrame) =>
-    ws match {
-      case Text(fromClient, _) => IO(println(s"Client sent ws data: $fromClient"))
-      case frame               => IO(println(s"Unknown type sent from ws client: $frame"))
-    }
-  }
+  private val sink: Sink[IO, WebSocketFrame] = _.evalMap { (ws: WebSocketFrame) => ws match {
+    case Text(fromClient, _) => IO(println(s"Client sent ws data: $fromClient"))
+    case frame               => IO(println(s"Unknown type sent from ws client: $frame"))
+  }}
   
   
   import scala.concurrent.ExecutionContext.Implicits.global // todo replace with explicit one
