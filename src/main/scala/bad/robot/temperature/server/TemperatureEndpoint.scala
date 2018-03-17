@@ -55,7 +55,7 @@ object TemperatureEndpoint {
       Ok(encode(latestTemperatures.all))
     }
 
-    case GET -> Root / "temperatures" / "live" / "average" => {
+    case GET -> Root / "temperatures" / "live" => {
       val source: Stream[IO, WebSocketFrame] = scheduler.awakeEvery[IO](1 second).map { _ =>
         Text(encode(latestTemperatures.all).spaces2ps)
       }
