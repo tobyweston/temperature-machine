@@ -2,6 +2,7 @@ package bad.robot.temperature.server
 
 import java.time.Clock
 
+import bad.robot.logging.Log
 import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.{jsonEncoder, _}
 import cats.effect.IO
@@ -30,8 +31,8 @@ object TemperatureEndpoint {
   private val latestTemperatures = CurrentTemperatures(Clock.systemDefaultZone)
   
   private val sink: Sink[IO, WebSocketFrame] = _.evalMap { (ws: WebSocketFrame) => ws match {
-    case Text(fromClient, _) => IO(println(s"Client sent ws data: $fromClient"))
-    case frame               => IO(println(s"Unknown type sent from ws client: $frame"))
+    case Text(fromClient, _) => IO(Log.debug(s"Client sent ws data: $fromClient"))
+    case frame               => IO(Log.debug(s"Unknown type sent from ws client: $frame"))
   }}
   
   
