@@ -1,6 +1,8 @@
+import scala.sys.process._
+
 val latestSha = settingKey[String]("latest-sha")
 
-latestSha in ThisBuild := Process("git rev-parse HEAD").lines.head.take(6)
+latestSha in ThisBuild := "git rev-parse HEAD".lineStream_!.head.take(6)
 
 lazy val root = (project in file(".")).
   enablePlugins(BuildInfoPlugin).
