@@ -63,3 +63,31 @@ Package with `sbt debian:packageBin`.
 When the `.deb` package is built, the same scripts are created in `temperature-machine_2.1-SNAPSHOT_all.deb/data/usr/bin`.
 
 The "log" folder seems to default to `/var/lig/temperature-machine` although I don't know what will go in there.
+
+Including 'systemd' will create a default service wrapper under `temperature-machine_2.1_all.deb/data/lib/systemd/system` looking something like this.
+
+    [Unit]
+    Description=temperature-machine
+    Requires=network.target
+    
+    [Service]
+    Type=simple
+    WorkingDirectory=/usr/share/temperature-machine
+    EnvironmentFile=/etc/default/temperature-machine
+    ExecStart=/usr/share/temperature-machine/bin/temperature-machine
+    ExecReload=/bin/kill -HUP $MAINPID
+    Restart=always
+    RestartSec=60
+    SuccessExitStatus=
+    User=temperature-machine
+    ExecStartPre=/bin/mkdir -p /run/temperature-machine
+    ExecStartPre=/bin/chown temperature-machine:temperature-machine /run/temperature-machine
+    ExecStartPre=/bin/chmod 755 /run/temperature-machine
+    PermissionsStartOnly=true
+    LimitNOFILE=1024
+    
+    [Install]
+    WantedBy=multi-user.target
+
+
+See [Debian Binary Package Building How-To](http://tldp.org/HOWTO/html_single/Debian-Binary-Package-Building-HOWTO/#AEN60) for the full package contents.
