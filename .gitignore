@@ -25,3 +25,4 @@ project/plugins/project/
 .DS_Store
 
 temperature-machine.pid
+${sys:log.location}
