@@ -127,6 +127,11 @@ Using http://github.com/rtomayko/ronn, having installed via `gem install ronn`.
 
 It turns markdown into roff. Woof!
 
+Need to figure out how to remove the `.md` files from the package though as these get copied over and result in the following warning.
+
+    man: warning: /usr/share/man/man1/temperature-machine.1.md: ignoring bogus filename
+
+
 ## Success
 
     $ sudo apt-get install temperature-machine
