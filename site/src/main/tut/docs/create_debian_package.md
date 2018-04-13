@@ -11,11 +11,19 @@ Releases are done as binary via debian packages.
 
 ## Release (Developers only)
 
-## Install via `apt-get`
+## Setup `apt-get`
+
+Do this only once to get `apt-get` to recognise the temperature-machine repository.
 
     sudo bash -c 'echo "deb http://robotooling.com/debian ./" >> /etc/apt/sources.list'
+
+## Install via `apt-get`
+
     sudo apt-get update
     sudo apt-get install temperature-machine
+
+
+# Developer Notes
 
 ## sbt-native-packager
 
