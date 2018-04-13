@@ -1,43 +1,22 @@
 .\" generated with Ronn/v0.7.3
 .\" http://github.com/rtomayko/ronn/tree/0.7.3
 .
-.TH "RONN" "1" "April 2018" "" ""
+.TH "TEMPERATURE\-MACHINE" "1" "April 2018" "" ""
 .
 .SH "NAME"
-\fBronn\fR \- convert markdown files to manpages
+\fBtemperature\-machine\fR \- The homebrew data logger
 .
 .SH "SYNOPSIS"
-\fBronn\fR [\fIformat\fR\.\.\.] \fIfile\fR\.\.\.
-.
-.br
-\fBronn\fR \fB\-m\fR|\fB\-\-man\fR \fIfile\fR\.\.\.
-.
-.br
-\fBronn\fR \fB\-S\fR|\fB\-\-server\fR \fIfile\fR\.\.\.
-.
-.br
-\fBronn\fR \fB\-\-pipe\fR \fIfile\fR
-.
-.br
-\fBronn\fR < \fIfile\fR
+\fBtemperature\-machine\fR \fB\-s\fR|\fB\-\-server\fR \fBtemperature\-machine\fR \fB\-c\fR|\fB\-\-client\fR
 .
 .SH "DESCRIPTION"
-\fBRonn\fR converts textfiles to standard roff\-formatted UNIX manpages or HTML\. ronn\-format(7) is based on markdown(7) but includes additional rules and syntax geared toward authoring manuals\.
+\fBtemperature\-machine\fR logs temperature data from one or more DS18b20 temperature probes and displays some pretty graphs\.
 .
 .P
-In its default mode, \fBronn\fR converts one or more input \fIfile\fRs to HTML or roff output files\. The \fB\-\-roff\fR, \fB\-\-html\fR, and \fB\-\-fragment\fR options dictate which output files are generated\. Multiple format arguments may be specified to generate multiple output files\. Output files are named after and written to the same directory as input \fIfile\fRs\.
+Run on multiple machines in a client\-server model\.
 .
-.P
-The \fB\-\-server\fR and \fB\-\-man\fR options change the output behavior from file generation to serving dynamically generated HTML manpages or viewing \fIfile\fR as with man(1)\.
-.
-.P
-With no \fIfile\fR arguments, \fBronn\fR acts as simple filter\. Ronn source text is read from standard input and roff output is written to standard output\. Use the \fB\-\-html\fR, \fB\-\-roff\fR, and/or \fB\-\-fragment\fR options to select the output format\.
-.
-.SH "FILES"
-The \fBronn\fR command expects input to be valid ronn\-format(7) text\. Source files are typically named \fIname\fR\.\fIsection\fR\.ronn (e\.g\., \fBexample\.1\.ronn\fR)\. The \fIname\fR and \fIsection\fR should match the name and section defined in the \fIfile\fR\'s heading\.
-.
-.P
-When building roff or HTML output files, destination filenames are determined by taking the basename of the input \fIfile\fR and adding the appropriate file extension (or removing the file extension in the case of roff output)\. For example, executing \fBronn example\.1\.ronn\fR generates \fBexample\.1\fR with roff output and \fBexample\.1\.html\fR with HTML output\.
+.SH "FIND OUT MORE"
+See the \fBtemperature\-machine\fR website at \fI\fR\.
 .
 .SH "OPTIONS"
 These options control whether output is written to file(s), standard output, or directly to a man pager\.
@@ -48,7 +27,7 @@ Don\'t generate files, display \fIfile\fRs as if man(1) were invoked on the roff
 .
 .TP
 \fB\-S\fR, \fB\-\-server\fR
-Don\'t generate files, start an HTTP server at \fIhttp://localhost:1207/\fR and serve dynamically generated HTML for the set of input \fIfile\fRs\. A file named \fIexample\.2\.ronn\fR is served as \fI/example\.2\.html\fR\. There\'s also an index page at the root with links to each \fIfile\fR\.
+Don\'t generate files, start an HTTP server at \fIhttp://localhost:1207/\fR and serve dynamically generated HTML for the set of input \fIfile\fRs\. A file named \fIexample\.2\.temperature\-machine\fR is served as \fI/example\.2\.html\fR\. There\'s also an index page at the root with links to each \fIfile\fR\.
 .
 .IP
 The server respects the \fB\-\-style\fR and document attribute options (\fB\-\-manual\fR, \fB\-\-date\fR, etc\.)\. These same options can be varied at request time by giving them as query parameters: \fB?manual=FOO&style=dark,toc\fR
@@ -58,14 +37,14 @@ The server respects the \fB\-\-style\fR and document attribute options (\fB\-\-m
 .
 .TP
 \fB\-\-pipe\fR
-Don\'t generate files, write generated output to standard output\. This is the default behavior when ronn source text is piped in on standard input and no \fIfile\fR arguments are provided\.
+Don\'t generate files, write generated output to standard output\. This is the default behavior when temperature\-machine source text is piped in on standard input and no \fIfile\fR arguments are provided\.
 .
 .P
-Format options control the files \fBronn\fR generates, or the output format when the \fB\-\-pipe\fR argument is specified\. When no format options are given, both \fB\-\-roff\fR and \fB\-\-html\fR are assumed\.
+Format options control the files \fBtemperature\-machine\fR generates, or the output format when the \fB\-\-pipe\fR argument is specified\. When no format options are given, both \fB\-\-roff\fR and \fB\-\-html\fR are assumed\.
 .
 .TP
 \fB\-r\fR, \fB\-\-roff\fR
-Generate roff output\. This is the default behavior when no \fIfile\fRs are given and ronn source text is read from standard input\.
+Generate roff output\. This is the default behavior when no \fIfile\fRs are given and temperature\-machine source text is read from standard input\.
 .
 .TP
 \fB\-5\fR, \fB\-\-html\fR
@@ -98,7 +77,7 @@ HTML output can be customized through the use of CSS stylesheets:
 The list of CSS stylesheets to apply to the document\. Multiple \fImodule\fR arguments may be specified, but must be separated by commas or spaces\.
 .
 .IP
-When \fImodule\fR is a simple word, search for files named \fImodule\fR\fB\.css\fR in all directories listed in the \fI\fBRONN_STYLE\fR\fR environment variable, and then search internal styles\.
+When \fImodule\fR is a simple word, search for files named \fImodule\fR\fB\.css\fR in all directories listed in the \fI\fBtemperature\-machine_STYLE\fR\fR environment variable, and then search internal styles\.
 .
 .IP
 When \fImodule\fR includes a \fI/\fR character, use it as the full path to a stylesheet file\.
@@ -111,7 +90,7 @@ Miscellaneous options:
 .
 .TP
 \fB\-w\fR, \fB\-\-warnings\fR
-Show troff warnings on standard error when performing roff conversion\. Warnings are most often the result of a bug in ronn\'s HTML to roff conversion logic\.
+Show troff warnings on standard error when performing roff conversion\. Warnings are most often the result of a bug in temperature\-machine\'s HTML to roff conversion logic\.
 .
 .TP
 \fB\-W\fR
@@ -119,18 +98,18 @@ Disable troff warnings\. Warnings are disabled by default\. This option can be u
 .
 .TP
 \fB\-v\fR, \fB\-\-version\fR
-Show ronn version and exit\.
+Show temperature\-machine version and exit\.
 .
 .SH "LINK INDEXES"
-When generating HTML output, \fBronn\fR hyperlinks manual references (like \fBgrep(1)\fR, \fBls(1)\fR, \fBmarkdown(7)\fR) in source text based on reference name to URL mappings defined in an \fBindex\.txt\fR file\. Each line of the index file describes a single reference link, with whitespace separating the reference\'s \fIid\fR from its \fIlocation\fR\. Blank lines are allowed; lines beginning with a \fB#\fR character are ignored:
+When generating HTML output, \fBtemperature\-machine\fR hyperlinks manual references (like \fBgrep(1)\fR, \fBls(1)\fR, \fBmarkdown(7)\fR) in source text based on reference name to URL mappings defined in an \fBindex\.txt\fR file\. Each line of the index file describes a single reference link, with whitespace separating the reference\'s \fIid\fR from its \fIlocation\fR\. Blank lines are allowed; lines beginning with a \fB#\fR character are ignored:
 .
 .IP "" 4
 .
 .nf
 
 # manuals included in this project:
-whisky(1)    whisky\.1\.ronn
-tango(5)     tango\.5\.ronn
+whisky(1)    whisky\.1\.temperature\-machine
+tango(5)     tango\.5\.temperature\-machine
 
 # external manuals
 grep(1)      http://man\.cx/grep(1)
@@ -157,7 +136,7 @@ These styles are included with the distribution:
 .
 .TP
 \fBman\fR
-Basic manpage styles: typography, definition lists, indentation\. This is always included regardless of \fB\-\-style\fR argument\. It is however possible to replace the default \fBman\fR module with a custom one by placing a \fBman\.css\fR file on the \fBRONN_STYLE\fR path\.
+Basic manpage styles: typography, definition lists, indentation\. This is always included regardless of \fB\-\-style\fR argument\. It is however possible to replace the default \fBman\fR module with a custom one by placing a \fBman\.css\fR file on the \fBtemperature\-machine_STYLE\fR path\.
 .
 .TP
 \fBprint\fR
@@ -184,7 +163,7 @@ The manual page container element\. Present on full documents and document fragm
 .
 .TP
 \fBbody#manpage\fR
-Signifies that the page was fully\-generated by Ronn and contains a single manual page (\fB\.mp\fR element)\.
+Signifies that the page was fully\-generated by temperature\-machine and contains a single manual page (\fB\.mp\fR element)\.
 .
 .TP
 \fB\.man\-decor\fR
@@ -199,7 +178,7 @@ The heading and footing, respectively\.
 The main \fB<h1>\fR element\. Hidden by default unless the manual has no \fIname\fR or \fIsection\fR attributes\.
 .
 .P
-See the builtin style sources \fIhttp://github\.com/rtomayko/ronn/tree/master/lib/ronn/template\fR for examples\.
+See the builtin style sources \fIhttp://github\.com/rtomayko/temperature\-machine/tree/master/lib/temperature\-machine/template\fR for examples\.
 .
 .SH "EXAMPLES"
 Build roff and HTML output files and view the roff manpage using man(1):
@@ -208,7 +187,7 @@ Build roff and HTML output files and view the roff manpage using man(1):
 .
 .nf
 
-$ ronn some\-great\-program\.1\.ronn
+$ temperature\-machine some\-great\-program\.1\.temperature\-machine
 roff: some\-great\-program\.1
 html: some\-great\-program\.1\.html
 $ man \./some\-great\-program\.1
@@ -218,13 +197,13 @@ $ man \./some\-great\-program\.1
 .IP "" 0
 .
 .P
-Build only the roff manpage for all \fB\.ronn\fR files in the current directory:
+Build only the roff manpage for all \fB\.temperature\-machine\fR files in the current directory:
 .
 .IP "" 4
 .
 .nf
 
-$ ronn \-\-roff *\.ronn
+$ temperature\-machine \-\-roff *\.temperature\-machine
 roff: mv\.1
 roff: ls\.1
 roff: cd\.1
@@ -241,7 +220,7 @@ Build only the HTML manpage for a few files and apply the \fBdark\fR and \fBtoc\
 .
 .nf
 
-$ ronn \-\-html \-\-style=dark,toc mv\.1\.ronn ls\.1\.ronn
+$ temperature\-machine \-\-html \-\-style=dark,toc mv\.1\.temperature\-machine ls\.1\.temperature\-machine
 html: mv\.1\.html
 html: ls\.1\.html
 .
@@ -256,33 +235,33 @@ Generate roff output on standard output and write to file:
 .
 .nf
 
-$ ronn <hello\.1\.ronn >hello\.1
+$ temperature\-machine <hello\.1\.temperature\-machine >hello\.1
 .
 .fi
 .
 .IP "" 0
 .
 .P
-View a ronn file in the same way as man(1) without building a roff file:
+View a temperature\-machine file in the same way as man(1) without building a roff file:
 .
 .IP "" 4
 .
 .nf
 
-$ ronn \-\-man hello\.1\.ronn
+$ temperature\-machine \-\-man hello\.1\.temperature\-machine
 .
 .fi
 .
 .IP "" 0
 .
 .P
-Serve HTML manpages at \fIhttp://localhost:1207/\fR for all \fB*\.ronn\fR files under a \fBman/\fR directory:
+Serve HTML manpages at \fIhttp://localhost:1207/\fR for all \fB*\.temperature\-machine\fR files under a \fBman/\fR directory:
 .
 .IP "" 4
 .
 .nf
 
-$ ronn \-\-server man/*\.ronn
+$ temperature\-machine \-\-server man/*\.temperature\-machine
 $ open http://localhost:1207/
 .
 .fi
@@ -292,19 +271,19 @@ $ open http://localhost:1207/
 .SH "ENVIRONMENT"
 .
 .TP
-\fBRONN_MANUAL\fR
+\fBtemperature\-machine_MANUAL\fR
 A default manual name to be displayed in the top\-center header area\. The \fB\-\-manual\fR option takes precedence over this value\.
 .
 .TP
-\fBRONN_ORGANIZATION\fR
+\fBtemperature\-machine_ORGANIZATION\fR
 The default manual publishing group, organization, or individual to be displayed in the bottom\-left footer area\. The \fB\-\-organization\fR option takes precedence over this value\.
 .
 .TP
-\fBRONN_DATE\fR
+\fBtemperature\-machine_DATE\fR
 The default manual date in \fBYYYY\-MM\-DD\fR format\. Displayed in the bottom\-center footer area\. The \fB\-\-date\fR option takes precedence over this value\.
 .
 .TP
-\fBRONN_STYLE\fR
+\fBtemperature\-machine_STYLE\fR
 A \fBPATH\fR\-style list of directories to check for stylesheets given to the \fB\-\-style\fR option\. Directories are separated by a \fI:\fR; blank entries are ignored\. Use \fI\.\fR to include the current working directory\.
 .
 .TP
@@ -316,10 +295,10 @@ The paging program used for man pages\. This is typically set to something like 
 Used instead of \fBMANPAGER\fR when \fBMANPAGER\fR is not defined\.
 .
 .SH "BUGS"
-\fBRonn\fR is written in Ruby and depends on hpricot and rdiscount, extension libraries that are non\-trivial to install on some systems\. A more portable version of this program would be welcome\.
+\fBtemperature\-machine\fR is written in Ruby and depends on hpricot and rdiscount, extension libraries that are non\-trivial to install on some systems\. A more portable version of this program would be welcome\.
 .
 .SH "COPYRIGHT"
-Ronn is Copyright (C) 2009 Ryan Tomayko \fIhttp://tomayko\.com/about\fR
+temperature\-machine is Copyright (C) 2009 Ryan Tomayko \fIhttp://tomayko\.com/about\fR
 .
 .SH "SEE ALSO"
-groff(1), man(1), pandoc(1), manpages(5), markdown(7), roff(7), ronn\-format(7)
+groff(1), man(1), pandoc(1), manpages(5), markdown(7), roff(7), temperature\-machine\-format(7)
