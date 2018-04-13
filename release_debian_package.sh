@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -ex # e exit on error and x output commands to run prefixed with +
+set -e # e exit on error and x output commands to run prefixed with +
 set -u
 
 # pre-conditions
@@ -30,14 +30,16 @@ mkdir -p ${TARGET_FOLDER}/${TARGET_DISTRIBUTION}
 cp ${ROOT_FOLDER}/target/temperature-machine_*.deb ${TARGET_FOLDER}/${TARGET_DISTRIBUTION}
 cp ${ROOT_FOLDER}/target/temperature-machine_*.changes ${TARGET_FOLDER}/${TARGET_DISTRIBUTION}
 
-# git add the new files? 
-# git add ${TARGET_FOLDER}
-
 # create debian package file (perquisite required `brew install dpkg`)
 cd ${TARGET_FOLDER}
 dpkg-scanpackages -m . | gzip -c > Packages.gz
 
-# run the robotooling update html and push scripts? ./update.sh
+# git add the new files? 
+git add .
+git commit -m "update temperature-machine debian package"
 
-cd ${ROOT_FOLDER}
-echo "Ok. Now just push the changes"
+# run the robotooling scripts to update html and push the release to gh-pages
+cd ${ROOT_FOLDER}/${RELEASE_FOLDER}/robotooling
+./update.sh
+
+echo "Ok."
