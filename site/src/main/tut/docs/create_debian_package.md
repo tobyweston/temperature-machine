@@ -1,4 +1,22 @@
 
+# Releasing
+
+Releases are done as binary via debian packages.
+
+1. `sbt-native-packager` creates the debian package
+1. `release_debian_package.sh` will call the above and then publish to web (via the [robotooling](http://robotooling.com/maven/bad/robot/temperature-machine/debian/) repository)
+1. User's add the repository to their `/etc/apt/sources.list` then update and install via `apt-get`
+
+## Package (Developers only)
+
+## Release (Developers only)
+
+## Install via `apt-get`
+
+    sudo bash -c 'echo "deb http://robotooling.com/debian ./" >> /etc/apt/sources.list'
+    sudo apt-get update
+    sudo apt-get install temperature-machine
+
 ## sbt-native-packager
 
 [https://www.scala-sbt.org/sbt-native-packager](https://www.scala-sbt.org/sbt-native-packager)
@@ -91,3 +109,38 @@ Including 'systemd' will create a default service wrapper under `temperature-mac
 
 
 See [Debian Binary Package Building How-To](http://tldp.org/HOWTO/html_single/Debian-Binary-Package-Building-HOWTO/#AEN60) for the full package contents.
+
+## Generating `man` pages
+
+Using http://github.com/rtomayko/ronn, having installed via `gem install ronn`.
+
+    $ cd src/linux/
+    $ ronn --roff temperature-machine*.md
+
+It turns markdown into roff. Woof!
+
+## Success
+
+    $ sudo apt-get install temperature-machine
+    Reading package lists... Done
+    Building dependency tree       
+    Reading state information... Done
+    The following NEW packages will be installed:
+      temperature-machine
+    0 upgraded, 1 newly installed, 0 to remove and 1 not upgraded.
+    Need to get 41.0 MB of archives.
+    After this operation, 41.0 MB of additional disk space will be used.
+    WARNING: The following packages cannot be authenticated!
+      temperature-machine
+    Install these packages without verification? [y/N] y
+    Get:1 http://robotooling.com/debian ./ temperature-machine 2.1 [41.0 MB]
+    Fetched 41.0 MB in 33s (1,223 kB/s)                                                                                                                                      
+    Selecting previously unselected package temperature-machine.
+    (Reading database ... 36516 files and directories currently installed.)
+    Preparing to unpack .../temperature-machine_2.1_all.deb ...
+    Unpacking temperature-machine (2.1) ...
+    Setting up temperature-machine (2.1) ...
+    Creating system group: temperature-machine
+    Creating system user: temperature-machine in temperature-machine with temperature-machine daemon-user and shell /bin/false
+    Created symlink /etc/systemd/system/multi-user.target.wants/temperature-machine.service → /lib/systemd/system/temperature-machine.service.
+    Processing triggers for man-db (2.7.6.1-2) ...
