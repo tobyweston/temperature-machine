@@ -4,11 +4,12 @@ import bad.robot.temperature.rrd.{Host, Seconds}
 import org.specs2.matcher.DisjunctionMatchers._
 import org.specs2.matcher.MatchResult
 import org.specs2.mutable.Specification
+import org.specs2.specification.AfterAll
 
 import scala.Double._
 import scalaz.{\/, \/-}
 
-class ErrorOnTemperatureSpikeTest extends Specification {
+class ErrorOnTemperatureSpikeTest extends Specification with AfterAll {
 
   val SensorError: PartialFunction[Error, MatchResult[Any]] = {
     case _: SensorSpikeError => ok
@@ -172,10 +173,9 @@ class ErrorOnTemperatureSpikeTest extends Specification {
   
   "Toggle the use based on system property" >> {
     ErrorOnTemperatureSpike(new StubWriter()) must haveClass[StubWriter]
-    sys.props += ("avoid.spikes" -> "6")
+    sys.props += ("avoid.spikes" -> "true")
     ErrorOnTemperatureSpike(new StubWriter()) must haveClass[ErrorOnTemperatureSpike]
   }
-
 
   class StubWriter extends TemperatureWriter {
     var temperatures: List[Measurement] = List()
@@ -185,4 +185,7 @@ class ErrorOnTemperatureSpikeTest extends Specification {
       \/-(())
     }
   }
+
+  override def afterAll(): Unit = sys.props -= "avoid.spikes"
+
 }
