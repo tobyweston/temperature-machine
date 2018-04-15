@@ -29,32 +29,3 @@ proguardInputFilter in Proguard := { file =>
     case _                               => Some("!META-INF/MANIFEST.MF")   // avoid proguard merge conflicts
   }
 }  
-
-//
-//ProguardKeys.proguardVersion in Proguard := "5.2.1"
-//
-//ProguardKeys.options in Proguard ++= Seq(
-//  "-dontwarn scala.**",
-//  "-dontwarn com.google.code.tempusfugit.**",
-//  "-dontwarn org.apache.**",
-//  "-dontwarn scodec.bits.**",
-//  "-dontwarn scalaparsers.**",
-
-//  """
-//    -keep public class bad.robot.** {
-//      *;
-//    }
-//
-//    -keep public class org.apache.commons.** {
-//      *;
-//     }
-//
-//    -keepclassmembers class * {
-//      ** MODULE$;
-//    }
-//
-//  """
-//)
-//
-//
-//
