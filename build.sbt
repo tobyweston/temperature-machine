@@ -6,8 +6,6 @@ version := "2.1"
 
 organization := "bad.robot"
 
-assemblyJarName in assembly := s"${name.value}-${version.value}.jar"
-
 scalaVersion := "2.12.4"
 
 mainClass in Compile := Some("bad.robot.temperature.Main")
@@ -32,10 +30,3 @@ libraryDependencies ++= Seq(
 
 scalacOptions := Seq("-Xlint", "-Xfatal-warnings", "-deprecation", "-feature", "-language:implicitConversions,reflectiveCalls,higherKinds", "-Ypartial-unification")
 
-// fixes https://github.com/tobyweston/temperature-machine/issues/39
-assemblyMergeStrategy in assembly := {
-  case PathList(xs @ _*) if xs.last == "module-info.class" => MergeStrategy.first
-  case x =>
-    val oldStrategy = (assemblyMergeStrategy in assembly).value
-    oldStrategy(x)
-}
