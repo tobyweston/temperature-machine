@@ -13,7 +13,14 @@ ROOT_FOLDER=$(pwd)
 TARGET_FOLDER=debian
 TARGET_DISTRIBUTION=stable
 
+# build man pages
+echo "Building man pages..."
+cd src/linux/usr/share/man/man1/
+ronn --roff temperature-machine*.md
+cd ${ROOT_FOLDER}
+
 # build package
+echo "Building debian package..."
 sbt clean debian:packageBin
 
 # download robotooling
@@ -26,19 +33,22 @@ cd robotooling
 git checkout gh-pages
 
 # copy package into robotooling ready to server via HTTP
+echo "Copy package into robotooling..."
 mkdir -p ${TARGET_FOLDER}/${TARGET_DISTRIBUTION}
 cp ${ROOT_FOLDER}/target/temperature-machine_*.deb ${TARGET_FOLDER}/${TARGET_DISTRIBUTION}
 cp ${ROOT_FOLDER}/target/temperature-machine_*.changes ${TARGET_FOLDER}/${TARGET_DISTRIBUTION}
 
 # create debian package file (perquisite required `brew install dpkg`)
+echo "Create dpkg package..."
 cd ${TARGET_FOLDER}
 dpkg-scanpackages -m . | gzip -c > Packages.gz
 
-# git add the new files? 
+# git add the new files
 git add .
 git commit -m "update temperature-machine debian package"
 
 # run the robotooling scripts to update html and push the release to gh-pages
+echo "Pushing robotooling to Github gh-pages..."
 cd ${ROOT_FOLDER}/${RELEASE_FOLDER}/robotooling
 ./update.sh
 
