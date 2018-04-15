@@ -40,3 +40,16 @@ mappings in (Compile, packageSrc) := Seq()
 //    _.mappings.nonEmpty
 //  }
 //}
+
+// remove all jar mappings in universal and append the "fat" jar
+mappings in Universal := {
+  val universalMappings = (mappings in Universal).value
+  val fatJar = (assembly in Compile).value
+  val filtered = universalMappings filter {
+    case (_, name) =>  ! name.endsWith(".jar")
+  }
+  filtered :+ (fatJar -> ("lib/" + fatJar.getName))
+}
+
+// the bash scripts classpath only needs the fat jar
+scriptClasspath := Seq((assemblyJarName in assembly).value)
