@@ -23,6 +23,10 @@ linuxPackageMappings in Debian += packageDirectoryAndContentsMapping(
   (sourceDirectory.value / "debian" / "conf") -> s"/usr/share/${packageName.value}/conf"
 ) withUser "pi" withGroup "pi" withPerms "644"
 
+// don't package JavaDoc or source
+mappings in (Compile, packageDoc) := Seq()
+mappings in (Compile, packageSrc) := Seq()
+
 //linuxPackageMappings := {
 //  val mappings = linuxPackageMappings.value
 //  mappings map { mapping =>
