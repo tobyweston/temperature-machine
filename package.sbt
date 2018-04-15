@@ -41,15 +41,14 @@ mappings in (Compile, packageSrc) := Seq()
 //  }
 //}
 
-// remove all jar mappings in universal and append the "fat" jar
-mappings in Universal := {
-  val universalMappings = (mappings in Universal).value
-  val fatJar = (assembly in Compile).value
-  val filtered = universalMappings filter {
+// filter out jar files from the list of generated files
+mappings in Universal := (mappings in Universal).value.
+  filter {
     case (_, name) =>  ! name.endsWith(".jar")
   }
-  filtered :+ (fatJar -> ("lib/" + fatJar.getName))
-}
 
-// the bash scripts classpath only needs the fat jar
-scriptClasspath := Seq((assemblyJarName in assembly).value)
+// append the proguard jar file
+mappings in Universal ++= (proguard in Proguard).value.map(jar => jar -> ("lib/" + jar.getName))
+
+// point the classpath to the output from the proguard task
+scriptClasspath := (proguard in Proguard).value.map(jar => jar.getName)
