@@ -10,4 +10,6 @@ addSbtPlugin("io.get-coursier" % "sbt-coursier" % "1.0.1")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.3.3")
 
-libraryDependencies += "org.vafer" % "jdeb" % "1.6" artifacts (Artifact("jdeb", "jar", "jar"))
+addSbtPlugin("com.lightbend.sbt" % "sbt-proguard" % "0.3.0")
+
+libraryDependencies += "org.vafer" % "jdeb" % "1.6" artifacts Artifact("jdeb", "jar", "jar") 
