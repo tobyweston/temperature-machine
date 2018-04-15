@@ -5,18 +5,13 @@ proguardOptions in Proguard ++= Seq(
   "-dontwarn",
   "-ignorewarnings",
   "-dontobfuscate",
-//  "-dontoptimize",
+  "-dontoptimize",
   "-printusage unused-code.txt",
   "-printconfiguration proguard.conf",
-  """
-    -keep public class bad.robot.** {
-      *;
-    }    
-    
-    -keepclassmembers class * {
-      ** MODULE$;
-    }
-  """
+  "-keep class bad.robot.** { *; }",
+  "-keep class scala.Symbol { *; }",
+  "-keep enum ** { *; }",
+  "-keepclassmembers class * { ** MODULE$; }"
 )
 
 proguardOptions in Proguard += ProguardOptions.keepMain("bad.robot.temperature.Main")
@@ -29,8 +24,9 @@ javaOptions in(Proguard, proguard) := Seq("-Xmx2G")       // avoids out of memor
 
 proguardInputFilter in Proguard := { file =>
   file.name match {
-    case "log4j-api-2.11.0.jar" => Some("!META-INF/**")   // https://sourceforge.net/p/proguard/bugs/665/
-    case _                      => None
+    case "log4j-api-2.11.0.jar"          => Some("!META-INF/**")            // https://sourceforge.net/p/proguard/bugs/665/
+    case jar if jar.contains(name.value) => None                            // leave temperature-machine alone
+    case _                               => Some("!META-INF/MANIFEST.MF")   // avoid proguard merge conflicts
   }
 }  
 
