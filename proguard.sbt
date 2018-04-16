@@ -9,6 +9,8 @@ proguardOptions in Proguard ++= Seq(
   "-printusage unused-code.txt",
   "-printconfiguration proguard.conf",
   "-keep class bad.robot.** { *; }",
+  "-keep class org.apache.logging.** { *; }",
+  "-keep class org.slf4j.** { *; }",
   "-keep class scala.Symbol { *; }",
   "-keep enum ** { *; }",
   "-keepclassmembers class * { ** MODULE$; }"
