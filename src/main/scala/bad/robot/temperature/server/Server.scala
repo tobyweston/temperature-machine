@@ -20,14 +20,14 @@ import scalaz.syntax.either.ToEitherOps
 
 object Server extends StreamApp[IO] {
 
-  def discovery(implicit hosts: List[Host]): IO[Unit] = {
+  private def discovery(implicit hosts: List[Host]): IO[Unit] = {
     for {
       _        <- info(s"Starting Discovery Server, listening for ${hosts.map(_.name).mkString("'", "', '", "'")}...")
       listener <- IO(TemperatureMachineThreadFactory("machine-discovery-server").newThread(new DiscoveryServer()).start())
     } yield ()
   }
 
-  def http(temperatures: AllTemperatures, connections: Connections)(implicit hosts: List[Host]): Stream[IO, ExitCode] = {
+  private def http(temperatures: AllTemperatures, connections: Connections)(implicit hosts: List[Host]): Stream[IO, ExitCode] = {
     val port = 11900
     for {
       server <- HttpServer(port, hosts).asStream(temperatures, connections)
@@ -35,7 +35,7 @@ object Server extends StreamApp[IO] {
     } yield server
   }
 
-  def server(temperatures: AllTemperatures, connections: Connections, sensors: List[SensorFile])(implicit hosts: List[Host]): Stream[IO, ExitCode] = {
+  private def server(temperatures: AllTemperatures, connections: Connections, sensors: List[SensorFile])(implicit hosts: List[Host]): Stream[IO, ExitCode] = {
     for {
       _        <- Stream.eval(info("Starting temperature-machine (server mode)..."))
       _        <- Stream.eval(init(hosts))
@@ -48,6 +48,11 @@ object Server extends StreamApp[IO] {
     } yield exitCode
   }
 
+  private def extractHosts(args: List[String]): Error \/ List[Host] = args match {
+    case Nil   => CommandLineError().left
+    case hosts => hosts.map(host => Host(host)).right
+  }
+
   override def stream(args: List[String], requestShutdown: IO[Unit]): Stream[IO, ExitCode] = {
     val application = for {
       hosts        <- extractHosts(args)
@@ -57,10 +62,5 @@ object Server extends StreamApp[IO] {
     } yield server(temperatures, connections, sensors)(hosts)
     
     application.leftMap(error => Log.error(error.message)).getOrElse(Stream.emit(ExitCode(1)))
-  }
-
-  private def extractHosts(args: List[String]): Error \/ List[Host] = args match {
-    case Nil   => CommandLineError().left
-    case hosts => hosts.map(host => Host(host)).right
   }
 }
