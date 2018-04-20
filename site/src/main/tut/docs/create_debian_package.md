@@ -18,11 +18,13 @@ To create the Debian package, run the following:
 
     ./release_debian_package.sh
 
+
 ## Setup `apt-get`
 
 Do this only once to get `apt-get` to recognise the temperature-machine repository.
 
     sudo bash -c 'echo "deb http://robotooling.com/debian ./" >> /etc/apt/sources.list'
+
 
 ## Install via `apt-get`
 
@@ -30,6 +32,14 @@ You have to run the `update` command to pick up any changes.
 
     sudo apt-get update
     sudo apt-get install temperature-machine
+
+Run with the following.
+
+    temperature-machine
+    
+You can add arguments, for example:
+
+    temperature-machine -Dsensor.location=/home/pi/
 
 
 # Developer Notes
