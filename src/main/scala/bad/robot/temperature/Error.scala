@@ -20,3 +20,4 @@ case class SensorSpikeError(spikes: List[Spike]) extends Error(
      | spiked temperatures   : ${spikes.map(_.current).map(_.asCelsius).mkString(", ")}
      |""".stripMargin
 )
+case class ConfigurationError(details: String) extends Error(details)

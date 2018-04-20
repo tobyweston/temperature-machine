@@ -12,4 +12,6 @@ package object logging {
   val Log = LogManager.getLogger("bad.robot.temperature")
 
   def info(message: String) = IO(Log.info(message))
+  
+  def error(message: String) = IO(Log.error(message))
 }
