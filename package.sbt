@@ -52,3 +52,5 @@ mappings in Universal ++= (proguard in Proguard).value.map(jar => jar -> ("lib/"
 
 // point the classpath to the output from the proguard task
 scriptClasspath := (proguard in Proguard).value.map(jar => jar.getName)
+
+bashScriptExtraDefines ++= IO.readLines(sourceDirectory.value / "universal" / "conf" / "find_ip.sh")
