@@ -9,7 +9,14 @@ Releases are done as binary via debian packages.
 
 ## Package (Developers only)
 
+To create the Debian package, run the following:
+       
+    sbt clean debian:packageBin
+    
+
 ## Release (Developers only)
+
+    ./release_debian_package.sh
 
 ## Setup `apt-get`
 
@@ -18,6 +25,8 @@ Do this only once to get `apt-get` to recognise the temperature-machine reposito
     sudo bash -c 'echo "deb http://robotooling.com/debian ./" >> /etc/apt/sources.list'
 
 ## Install via `apt-get`
+
+You have to run the `update` command to pick up any changes.
 
     sudo apt-get update
     sudo apt-get install temperature-machine
