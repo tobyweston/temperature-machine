@@ -2,7 +2,7 @@ package bad.robot.temperature.client
 
 import java.net.InetAddress
 
-import bad.robot.logging._
+import bad.robot.logging.{error, _}
 import bad.robot.temperature.ds18b20.SensorFile
 import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.rrd.Host
@@ -11,10 +11,10 @@ import bad.robot.temperature.task.IOs._
 import cats.implicits._
 import cats.effect.IO
 import fs2.StreamApp._
-import fs2.{Stream, StreamApp}
+import fs2.Stream
 import scalaz.{-\/, \/-}
 
-object Client extends StreamApp[IO] {
+object Client {
 
   private val clientHttpPort = 11900
 
@@ -29,10 +29,10 @@ object Client extends StreamApp[IO] {
     } yield exitCode
   }
 
-  override def stream(args: List[String], requestShutdown: IO[Unit]): Stream[IO, ExitCode] = {
+  def stream(args: List[String], requestShutdown: IO[Unit]): Stream[IO, ExitCode] = {
     findSensors match {
       case \/-(sensors) => client(sensors)
-      case -\/(error)   => Log.error(error.message); Stream.emit(ExitCode(1))
+      case -\/(cause)   => Stream.eval(error(cause.message)).flatMap(_ => Stream.emit(ExitCode(1)))
     }
   }
 }

@@ -13,12 +13,11 @@ import bad.robot.temperature.task.IOs._
 import bad.robot.temperature.task.TemperatureMachineThreadFactory
 import cats.effect.IO
 import fs2.Stream
-import fs2.StreamApp
 import fs2.StreamApp.ExitCode
-import scalaz.\/
+import scalaz.{-\/, \/, \/-}
 import scalaz.syntax.either.ToEitherOps
 
-object Server extends StreamApp[IO] {
+object Server {
 
   private def discovery(implicit hosts: List[Host]): IO[Unit] = {
     for {
@@ -53,14 +52,17 @@ object Server extends StreamApp[IO] {
     case hosts => hosts.map(host => Host(host)).right
   }
 
-  override def stream(args: List[String], requestShutdown: IO[Unit]): Stream[IO, ExitCode] = {
+  def stream(args: List[String], requestShutdown: IO[Unit]): Stream[IO, ExitCode] = {
     val application = for {
       hosts        <- extractHosts(args)
       sensors      <- findSensors
       temperatures  = AllTemperatures()
       connections   = Connections()
     } yield server(temperatures, connections, sensors)(hosts)
-    
-    application.leftMap(error => Log.error(error.message)).getOrElse(Stream.emit(ExitCode(1)))
+
+    application match {
+      case \/-(ok)    => ok
+      case -\/(cause) => Stream.eval(error(cause.message)).flatMap(_ => Stream.emit(ExitCode(1)))
+    }
   }
 }
