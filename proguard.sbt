@@ -11,7 +11,7 @@ proguardOptions in Proguard ++= Seq(
   "-keep class bad.robot.** { *; }",
   "-keep class org.apache.logging.** { *; }",
   "-keep class org.slf4j.** { *; }",
-  "-keep class scala.collection.** { *; }",   // the TreiMap (MapLike) will disappear without this
+  "-keep class scala.collection.** { *; }",   // the TrieMap (MapLike) will disappear without this
   "-keep class org.http4s.** { *; }",         // no connections/logs show up without this
 //  "-keep class cats.** { *; }",
 //  "-keep class shapeless.** { *; }",
