@@ -10,6 +10,7 @@ import bad.robot.temperature.server.AllTemperatures
 import bad.robot.temperature.task.Scheduler.ScheduledExecutorServiceOps
 import bad.robot.temperature.{FixedTimeMeasurementWriter, JsonExport, TemperatureWriter, XmlExport}
 import cats.effect.IO
+import cats.implicits._
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -17,11 +18,12 @@ import scala.language.postfixOps
 object IOs {
 
   def init(hosts: List[Host]) = {
-    Log.info(s"RRD initialising for ${hosts.map(_.name).mkString("'", "', '", "'")} (with up to $MaxSensors sensors each)...")
-    RrdFile.exists.map {
-      case false => RrdFile(hosts, 30 seconds).create()
-      case _     => Log.info("Ok")
-    }
+    for {
+      exists <- RrdFile.exists
+      _      <- info(s"Creating RRD for ${hosts.map(_.name).mkString("'", "', '", "'")} (with up to $MaxSensors sensors each)...").unlessA(exists)
+      _      <- IO(RrdFile(hosts, 30 seconds).create()).unlessA(exists)
+      _      <- info("RRD created Ok").unlessA(exists)
+    } yield ()
   }
 
   def gather(temperatures: AllTemperatures, destination: FixedTimeMeasurementWriter) = {
