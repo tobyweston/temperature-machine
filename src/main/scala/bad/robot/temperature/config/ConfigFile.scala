@@ -92,3 +92,6 @@ case object BootstrapConfig {
     def hosts: List[String] = List(Host.local.name, "study", "bedroom1", "bedroom2", "bedroom3", "outside", "kitchen", "lounge")
   }
 }
+
+// todo if the hosts are bootstrapped, and someone edits them, the RRD file wont be updated with new archives.
+// need a way to detect changes in the hosts and blast the RRD file (maybe) or something neater

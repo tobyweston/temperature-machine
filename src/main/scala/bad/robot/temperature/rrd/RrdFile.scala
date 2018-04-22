@@ -28,7 +28,7 @@ object RrdFile {
 
 case class RrdFile(hosts: List[Host], frequency: Seconds = Duration(30, "seconds"), file: File = RrdFile.file) {
 
-  def create(start: Seconds = now() - Seconds(1)) {
+  def create(start: Seconds = now() - Seconds(1)) = {
 
     val heartbeat = frequency + Seconds(5)
 
@@ -49,7 +49,7 @@ case class RrdFile(hosts: List[Host], frequency: Seconds = Duration(30, "seconds
     createFile(definition)
   }
 
-  private def createFile(definition: RrdDef) {
+  private def createFile(definition: RrdDef) = {
     val database = new RrdDb(definition)
     database.close()
     Log.info(definition.dump())
