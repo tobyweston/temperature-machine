@@ -4,10 +4,11 @@ import java.io.{File, PrintWriter}
 
 import bad.robot.logging
 import bad.robot.logging.info
-import bad.robot.temperature.{ConfigurationError, _}
 import bad.robot.temperature.rrd.Host
+import bad.robot.temperature.{ConfigurationError, _}
 import cats.effect.IO
 import cats.implicits._
+import fs2.Stream
 import knobs._
 
 object ConfigFile {
@@ -18,25 +19,33 @@ object ConfigFile {
 
   private def fileExists = path.exists() && path.length() != 0
 
-  def init(): IO[Boolean] = {
-    for {
-      exists <- IO(fileExists)
-      _      <- info(s"Creating config file at ${path.getAbsoluteFile}...").unlessA(exists)
-      _      <- store(BootstrapConfig()).unlessA(exists)
-      _      <- info(s"Using config ${path.getAbsoluteFile}").whenA(exists)
-    } yield !exists
+  def initWithUserInput: Stream[IO, Boolean] = {
+    def ask(question: String, options: List[String]): IO[String] = {
+      for {
+        _     <- IO(print(s"$question ${options.mkString("[", "/", "]: ")}"))
+        input <- IO(scala.io.StdIn.readLine())
+        valid <- if (options.contains(input)) IO(input) else ask(question, options)
+      } yield valid
+    }
+    
+    def init(config: ConfigFile): IO[Boolean] = {
+      for {
+        exists <- IO(fileExists)
+        _      <- info(s"Creating config file at ${path.getAbsoluteFile}...").unlessA(exists)
+        _      <- store(config).unlessA(exists)
+        _      <- info(s"Config ${path.getAbsoluteFile} already exists, please edit it manually").whenA(exists)
+      } yield !exists
+    }
+    
+    Stream.eval(for {
+      mode    <- ask("Do you want to run the temperature-machine as a server or client?", List("server", "client"))
+      created <- init(BootstrapConfig.configFor(mode))
+    } yield created)
   }
 
-  def loadOrCreate(resource: KnobsResource = Required(FileResource.unwatched(path))): IO[Either[ConfigurationError, ConfigFile]] = {
-    for {
-      _       <- init()
-      config  <- load(resource)
-    } yield config
-  }
-  
   def load(resource: KnobsResource = Required(FileResource.unwatched(path))): IO[Either[ConfigurationError, ConfigFile]] = {
     knobs.loadImmutable[IO](List(resource)).attempt.map(_.leftMap(error => {
-      ConfigurationError(s"There was an error loading config from ${path.getAbsolutePath}; ${error.getMessage}")
+      ConfigurationError(s"There was an error loading config; ${error.getMessage}")
     }).map(readConfigFile))
   }
 
@@ -86,12 +95,23 @@ object Template {
         |""".stripMargin
 }
 
-case object BootstrapConfig {
-  def apply(): ConfigFile = new ConfigFile {
-    def mode: String = "server"
-    def hosts: List[String] = List(Host.local.name, "study", "bedroom1", "bedroom2", "bedroom3", "outside", "kitchen", "lounge")
+private object BootstrapConfig {
+  def configFor(mode: String) = mode match {
+    case "client" => ClientBootstrapConfig()
+    case _        => ServerBootstrapConfig()
+  }
+
+  case object ServerBootstrapConfig {
+    def apply(): ConfigFile = new ConfigFile {
+      def mode: String = "server"
+      def hosts: List[String] = List(Host.local.name, "study", "bedroom1", "bedroom2", "bedroom3", "outside", "kitchen", "lounge")
+    }
+  }
+
+  case object ClientBootstrapConfig {
+    def apply(): ConfigFile = new ConfigFile {
+      def mode: String = "client"
+      def hosts: List[String] = Nil
+    }
   }
 }
-
-// todo if the hosts are bootstrapped, and someone edits them, the RRD file wont be updated with new archives.
-// need a way to detect changes in the hosts and blast the RRD file (maybe) or something neater
