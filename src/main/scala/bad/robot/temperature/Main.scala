@@ -15,6 +15,7 @@ object Main extends StreamApp[IO] {
     args match {
       case option :: Nil if List("-v", "--version").contains(option) => printVersion
       case option :: Nil if List("-h", "--help").contains(option)    => printUsage
+      case option :: Nil if List("-i", "--init").contains(option)    => exitAfter(ConfigFile.initWithUserInput)
       case Nil                                                       => startupBasedOnConfigFile(requestShutdown)
       case options                                                   => Stream
                                                                           .eval(IO(print(s"Invalid option: ${options.mkString(" ")}")))
@@ -32,7 +33,7 @@ object Main extends StreamApp[IO] {
     }
 
     Stream
-      .eval(ConfigFile.loadOrCreate())
+      .eval(ConfigFile.load())
       .flatMap(_.fold(printErrorAndExit, start(_)(requestShutdown)))
   }
 }
