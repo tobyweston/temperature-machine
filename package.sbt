@@ -54,3 +54,5 @@ mappings in Universal ++= (proguard in Proguard).value.map(jar => jar -> ("lib/"
 scriptClasspath := (proguard in Proguard).value.map(jar => jar.getName)
 
 bashScriptExtraDefines ++= IO.readLines(sourceDirectory.value / "universal" / "conf" / "find_ip.sh")
+
+bashScriptExtraDefines += """addJava "-Djava.rmi.server.hostname=$(getIpAddress)""""
