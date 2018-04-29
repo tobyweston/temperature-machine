@@ -43,13 +43,21 @@ object ConfigFile {
     } yield created)
   }
 
-  def load(resource: KnobsResource = Required(FileResource.unwatched(path))): IO[Either[ConfigurationError, ConfigFile]] = {
+  def loadOrWarn(resource: KnobsResource = Required(FileResource.unwatched(path))): IO[Either[ConfigurationError, ConfigFile]] = {
+    for {
+      exists  <- IO(fileExists)
+      _       <- info(s"""The config file ${path.getAbsoluteFile} doesn't exist, run "temperature-machine --init" to create it.""").unlessA(exists)
+      config  <- load(resource)
+    } yield config
+  }
+  
+  private def load(resource: KnobsResource): IO[Either[ConfigurationError, ConfigFile]] = {
     knobs.loadImmutable[IO](List(resource)).attempt.map(_.leftMap(error => {
       ConfigurationError(s"There was an error loading config; ${error.getMessage}")
     }).map(readConfigFile))
   }
 
-  // todo maybe use 'lookup' rather than 'require' to avoid a thrown exception?
+  // todo maybe use 'lookup' rather than 'require' to avoid an exception being thrown?
   private val readConfigFile = (config: Config) => new ConfigFile {
     def mode: String = config.require[String]("mode")
     def hosts: List[String] = config.require[List[String]]("hosts")

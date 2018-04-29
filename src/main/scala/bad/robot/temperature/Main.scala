@@ -33,7 +33,7 @@ object Main extends StreamApp[IO] {
     }
 
     Stream
-      .eval(ConfigFile.load())
+      .eval(ConfigFile.loadOrWarn())
       .flatMap(_.fold(printErrorAndExit, start(_)(requestShutdown)))
   }
 }
