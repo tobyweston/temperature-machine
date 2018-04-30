@@ -20,24 +20,23 @@ linuxPackageMappings in Debian += packageDirectoryAndContentsMapping(
 mappings in (Compile, packageDoc) := Seq()
 mappings in (Compile, packageSrc) := Seq()
 
-//linuxPackageMappings := {
-//  val mappings = linuxPackageMappings.value
-//  mappings map { mapping =>
-//    val filtered = mapping.mappings filter {
-//      case (file, name) if file.getParent == "man1" => name.endsWith(".txt")
-//      case (file, name) if file.getParent == "man1" => name.endsWith(".md")
-//      case _                                        => false
-//    }
-//    mapping.copy(mappings = filtered)
-//  } filter {
-//    _.mappings.nonEmpty
-//  }
-//}
+linuxPackageMappings := {
+  val mappings = linuxPackageMappings.value
+  mappings map { mapping =>
+    val filtered = mapping.mappings filter {
+      case (file, _) => !(file.getName == "temperature-machine.1.md")
+      case _         => true
+    }
+    mapping.copy(mappings = filtered)
+  } filter {
+    _.mappings.nonEmpty
+  }
+}
 
 // filter out jar files from the list of generated files
 mappings in Universal := (mappings in Universal).value.
   filter {
-    case (_, name) =>  ! name.endsWith(".jar")
+    case (_, name) => !name.endsWith(".jar")
   }
 
 // append the proguard jar file
