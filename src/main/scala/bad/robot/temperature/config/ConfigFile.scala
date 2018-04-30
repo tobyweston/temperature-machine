@@ -64,7 +64,6 @@ object ConfigFile {
   }
 
   private def store(config: ConfigFile): IO[Either[ConfigurationError, Boolean]] = {
-    
     def write: Either[ConfigurationError, Boolean] = {
       if (!fileExists) {
         val writer = new PrintWriter(path)
@@ -97,6 +96,7 @@ trait ConfigFile {
 object Template {
   def apply(config: ConfigFile): String =
     s"""|
+        |# valid values "client" or "server" only
         |mode = "${config.mode}"
         |hosts = ${config.hosts.mkString("[\"", "\", \"", "\"]")}
         |
