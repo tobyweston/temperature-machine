@@ -3,15 +3,15 @@ temperature-machine(1) -- The homebrew data logger
 
 ## SYNOPSIS
 
-`temperature-machine` `-i`|`--init`
+`temperature-machine` `-i` | `--init`
 
 ## SPECIAL OPTIONS
 
 These options must include a double-dash (`--`) prefix to escape the parent scripts options. For example, omitting `--`
 for the version option will display the parent script version and not the temperature-machine's version.
  
-`temperature-machine` `-- -v`|`-- --version`
-`temperature-machine` `-- -h`|`-- --help`
+`temperature-machine` `-- -v` | `-- --version`
+`temperature-machine` `-- -h` | `-- --help`
 
 
 ## DESCRIPTION
