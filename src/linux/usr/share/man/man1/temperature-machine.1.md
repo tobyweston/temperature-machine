@@ -3,15 +3,26 @@ temperature-machine(1) -- The homebrew data logger
 
 ## SYNOPSIS
 
-`temperature-machine` `-s`|`--server` 
-`temperature-machine` `-c`|`--client`
+`temperature-machine` `-i`|`--init`
+
+## SPECIAL OPTIONS
+
+These options must include a double-dash (`--`) prefix to escape the parent scripts options. For example, omitting `--`
+for the version option will display the parent script version and not the temperature-machine's version.
+ 
+`temperature-machine` `-- -v`|`-- --version`
+`temperature-machine` `-- -h`|`-- --help`
+
 
 ## DESCRIPTION
 
 Homebrew temperature data logger based on the DS18B20 sensor. Logs temperature data from one or 
 more temperature probes and displays some pretty graphs via the web server.
 
-Run a **single** server node and as many **clients** as you like.
+Requires a configuration file to exist before running. Create one with the `--init` option. 
+
+Run just a **single** server node but as many **clients** as you like.
+
 
 ## FIND OUT MORE
 
@@ -21,50 +32,35 @@ See the `temperature-machine` website at [temperature-machine.com](http://temper
 
 These options control whether the temperature-machine runes in client or server mode.
 
-  * `-s`, `--server`:
-    Run the **temperature-machine** server, accessible at http://localhost:11900. One or more DS18B20 probes should be 
-    connected and data from these will be logged.
+  * NO OPTIONS:
+    Run the **temperature-machine** as either a **server** or **client** as set in the configuration file. 
+    
+    When run as a **server**, the temperature-machine will be accessible at http://localhost:11900. One or 
+    more DS18B20 probes must be connected and data from these will be logged.
+    
+    When run as a **client** (and a server is run on another machine) the temperature-machine will auto-discover 
+    the server's location and start sending temperature data to it (again, one or more DS18B20 probes must be 
+    connected). 
 
-    When <module> is a simple word, search for files named <module>`.css` in all
-    directories listed in the [`temperature-machine_STYLE`](#ENVIRONMENT) environment variable,
-    and then search internal styles.
-
-  * `-c`, `--client`:
-    Run as a **client** - when a server is run (on another machine) the client will auto-discover it's location and 
-    start sending temperature data to it (assuming one or more DS18B20 probes are connected). 
-
+  * `-i`, `--init`:
+    Create the `temperature-machine.cfg` file under `~/.temperature`. This is required to run the program.
+  
 Miscellaneous options:
 
-  * `-w`, `--warnings`:
-    Show troff warnings on standard error when performing roff conversion.
-    Warnings are most often the result of a bug in temperature-machine's HTML to roff conversion
-    logic.
+  * `-- -v`, `-- --version`:
+    Display the current version. This option must be prefixed with the special option `--` to stop parsing 
+    built-in commands from the parent script (sbt-native-packager).
 
-  * `-W`:
-    Disable troff warnings. Warnings are disabled by default. This option can be
-    used to revert the effect of a previous `-w` argument.
-
-  * `-v`, `--version`:
-    Show temperature-machine version and exit.
-
+  * `-- -h`, `-- --help`:
+    Display some help. This option must be prefixed with the special option `--` to stop parsing 
+    built-in commands from the parent script (sbt-native-packager).
 
 ## EXAMPLES
 
-Build roff and HTML output files and view the roff manpage using man(1):
-
-    $ temperature-machine some-great-program.1.temperature-machine
-    roff: some-great-program.1
-    html: some-great-program.1.html
-    $ man ./some-great-program.1
-
-Build only the roff manpage for all `.temperature-machine` files in the current directory:
-
-    $ temperature-machine --roff *.temperature-machine
-    roff: mv.1
-    roff: ls.1
-    roff: cd.1
-    roff: sh.1
-
+    $ temperature-machine --init
+    $ temperature-machine --v 
+    $ temperature-machine -- --help 
+    
 
 ## SOURCE
 
