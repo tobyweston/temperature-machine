@@ -8,13 +8,6 @@ packageDescription := """Homebrew temperature data logger based on the DS18B20 s
 
 debianPackageDependencies in Debian ++= Seq("java8-runtime | oracle-java8-jdk")
 
-//linuxPackageMappings in Debian += {
-//  val file = sourceDirectory.value / "debian" / "bin" / "start-server.sh"
-//  packageMapping( 
-//    (file, "/usr/share/temperature-machine/bin/start-server.sh") 
-//  ) withUser "pi" withGroup "pi" withPerms "644"
-//}
-
 linuxPackageMappings in Debian += packageDirectoryAndContentsMapping(
   (sourceDirectory.value / "debian" / "bin") -> s"/usr/share/${packageName.value}/bin"
 )
@@ -53,6 +46,6 @@ mappings in Universal ++= (proguard in Proguard).value.map(jar => jar -> ("lib/"
 // point the classpath to the output from the proguard task
 scriptClasspath := (proguard in Proguard).value.map(jar => jar.getName)
 
+// add some custom stuff to the startup scripts
 bashScriptExtraDefines ++= IO.readLines(sourceDirectory.value / "universal" / "conf" / "find_ip.sh")
-
 bashScriptExtraDefines += """addJava "-Djava.rmi.server.hostname=$(getIpAddress)""""
