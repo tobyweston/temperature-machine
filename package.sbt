@@ -8,10 +8,6 @@ packageDescription := """Homebrew temperature data logger based on the DS18B20 s
 
 debianPackageDependencies in Debian ++= Seq("java8-runtime | oracle-java8-jdk")
 
-linuxPackageMappings in Debian += packageDirectoryAndContentsMapping(
-  (sourceDirectory.value / "debian" / "bin") -> s"/usr/share/${packageName.value}/bin"
-)
-
 
 // don't package JavaDoc or source
 mappings in (Compile, packageDoc) := Seq()
