@@ -88,7 +88,7 @@ We use [`systemd`](https://en.wikipedia.org/wiki/Systemd) as our service wrapper
  
 If you see temperature-machine is enabled, there's nothing else to do: it will start on boot.
 
-If it's disabled, run `systemctl enable temperature-machine`.
+If it's disabled, run `sudo systemctl enable temperature-machine`.
 
 You can find out more about the current status with `systemctl status temperature-machine`.
 

@@ -15,6 +15,8 @@ mappings in (Compile, packageSrc) := Seq()
 
 // todo add a mapping from /var/log/temperature-machine/xxx.log to symlink /home/pi/.temperature/temperature-machine.log
 
+daemonUser in Linux := "pi"
+
 linuxPackageMappings := {
   val mappings = linuxPackageMappings.value
   mappings map { mapping =>
