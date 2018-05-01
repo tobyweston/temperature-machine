@@ -7,13 +7,22 @@
 \fBtemperature\-machine\fR \- The homebrew data logger
 .
 .SH "SYNOPSIS"
-\fBtemperature\-machine\fR \fB\-s\fR|\fB\-\-server\fR \fBtemperature\-machine\fR \fB\-c\fR|\fB\-\-client\fR
+\fBtemperature\-machine\fR \fB\-i\fR | \fB\-\-init\fR
+.
+.SH "SPECIAL OPTIONS"
+These options must include a double\-dash (\fB\-\-\fR) prefix to escape the parent scripts options\. For example, omitting \fB\-\-\fR for the version option will display the parent script version and not the temperature\-machine\'s version\.
+.
+.P
+\fBtemperature\-machine\fR \fB\-\- \-v\fR | \fB\-\- \-\-version\fR \fBtemperature\-machine\fR \fB\-\- \-h\fR | \fB\-\- \-\-help\fR
 .
 .SH "DESCRIPTION"
 Homebrew temperature data logger based on the DS18B20 sensor\. Logs temperature data from one or more temperature probes and displays some pretty graphs via the web server\.
 .
 .P
-Run a \fBsingle\fR server node and as many \fBclients\fR as you like\.
+Requires a configuration file to exist before running\. Create one with the \fB\-\-init\fR option\.
+.
+.P
+Run just a \fBsingle\fR server node but as many \fBclients\fR as you like\.
 .
 .SH "FIND OUT MORE"
 See the \fBtemperature\-machine\fR website at temperature\-machine\.com \fIhttp://temperature\-machine\.com\fR\.
@@ -22,63 +31,39 @@ See the \fBtemperature\-machine\fR website at temperature\-machine\.com \fIhttp:
 These options control whether the temperature\-machine runes in client or server mode\.
 .
 .TP
-\fB\-s\fR, \fB\-\-server\fR
-Run the \fBtemperature\-machine\fR server, accessible at http://localhost:11900\. One or more DS18B20 probes should be connected and data from these will be logged\.
+NO OPTIONS
+Run the \fBtemperature\-machine\fR as either a \fBserver\fR or \fBclient\fR as set in the configuration file\.
 .
 .IP
-When \fImodule\fR is a simple word, search for files named \fImodule\fR\fB\.css\fR in all directories listed in the \fI\fBtemperature\-machine_STYLE\fR\fR environment variable, and then search internal styles\.
+When run as a \fBserver\fR, the temperature\-machine will be accessible at http://localhost:11900\. One or more DS18B20 probes must be connected and data from these will be logged\.
+.
+.IP
+When run as a \fBclient\fR (and a server is run on another machine) the temperature\-machine will auto\-discover the server\'s location and start sending temperature data to it (again, one or more DS18B20 probes must be connected)\.
 .
 .TP
-\fB\-c\fR, \fB\-\-client\fR
-Run as a \fBclient\fR \- when a server is run (on another machine) the client will auto\-discover it\'s location and start sending temperature data to it (assuming one or more DS18B20 probes are connected)\.
+\fB\-i\fR, \fB\-\-init\fR
+Create the \fBtemperature\-machine\.cfg\fR file under \fB~/\.temperature\fR\. This is required to run the program\.
 .
 .P
 Miscellaneous options:
 .
 .TP
-\fB\-w\fR, \fB\-\-warnings\fR
-Show troff warnings on standard error when performing roff conversion\. Warnings are most often the result of a bug in temperature\-machine\'s HTML to roff conversion logic\.
+\fB\-\- \-v\fR, \fB\-\- \-\-version\fR
+Display the current version\. This option must be prefixed with the special option \fB\-\-\fR to stop parsing built\-in commands from the parent script (sbt\-native\-packager)\.
 .
 .TP
-\fB\-W\fR
-Disable troff warnings\. Warnings are disabled by default\. This option can be used to revert the effect of a previous \fB\-w\fR argument\.
-.
-.TP
-\fB\-v\fR, \fB\-\-version\fR
-Show temperature\-machine version and exit\.
+\fB\-\- \-h\fR, \fB\-\- \-\-help\fR
+Display some help\. This option must be prefixed with the special option \fB\-\-\fR to stop parsing built\-in commands from the parent script (sbt\-native\-packager)\.
 .
 .SH "EXAMPLES"
-Build roff and HTML output files and view the roff manpage using man(1):
-.
-.IP "" 4
 .
 .nf
 
-$ temperature\-machine some\-great\-program\.1\.temperature\-machine
-roff: some\-great\-program\.1
-html: some\-great\-program\.1\.html
-$ man \./some\-great\-program\.1
+$ temperature\-machine \-\-init
+$ temperature\-machine \-\-v
+$ temperature\-machine \-\- \-\-help
 .
 .fi
-.
-.IP "" 0
-.
-.P
-Build only the roff manpage for all \fB\.temperature\-machine\fR files in the current directory:
-.
-.IP "" 4
-.
-.nf
-
-$ temperature\-machine \-\-roff *\.temperature\-machine
-roff: mv\.1
-roff: ls\.1
-roff: cd\.1
-roff: sh\.1
-.
-.fi
-.
-.IP "" 0
 .
 .SH "SOURCE"
 \fBtemperature\-machine\fR is open source and developed in the open at http://github\.com/tobyweston/temperature\-machine\.

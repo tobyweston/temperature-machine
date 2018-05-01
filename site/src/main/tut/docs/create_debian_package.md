@@ -176,3 +176,11 @@ Need to figure out how to remove the `.md` files from the package though as thes
     Creating system user: temperature-machine in temperature-machine with temperature-machine daemon-user and shell /bin/false
     Created symlink /etc/systemd/system/multi-user.target.wants/temperature-machine.service → /lib/systemd/system/temperature-machine.service.
     Processing triggers for man-db (2.7.6.1-2) ...
+
+
+
+## Fix Debian Repository
+
+    W: The repository 'http://robotooling.com/debian ./ Release' does not have a Release file.
+    N: Data from such a repository can't be authenticated and is therefore potentially dangerous to use.
+    N: See apt-secure(8) manpage for repository creation and user configuration details.

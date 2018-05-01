@@ -7,6 +7,8 @@ options:
     section: getting_started
 
     nested_options:
+     - title: Installing
+       url: docs/getting_started/installing.html
      - title: Build from Source
        url: docs/getting_started/build_from_source.html
      - title: Pre-installed Image
