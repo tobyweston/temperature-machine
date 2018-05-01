@@ -13,6 +13,8 @@ debianPackageDependencies in Debian ++= Seq("java8-runtime | oracle-java8-jdk")
 mappings in (Compile, packageDoc) := Seq()
 mappings in (Compile, packageSrc) := Seq()
 
+// todo add a mapping from /var/log/temperature-machine/xxx.log to symlink /home/pi/.temperature/temperature-machine.log
+
 linuxPackageMappings := {
   val mappings = linuxPackageMappings.value
   mappings map { mapping =>
