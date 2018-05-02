@@ -11,10 +11,8 @@ options:
        url: docs/getting_started/installing.html
      - title: Build from Source
        url: docs/getting_started/build_from_source.html
-     - title: Pre-installed Image
-       url: docs/getting_started/preinstalled_image.html
-     - title: Download Binary
-       url: docs/getting_started/download.html
+     - title: Raspbian Setup
+       url: docs/getting_started/raspbian_setup.html
 
   - title: Configuration
     url: docs/configuration.html
