@@ -5,69 +5,76 @@ title: Installing
 
 # Installing
 
-The general approach is as follows.
-
-1. Setup 1-wire support
-1. Setup `apt-get` with my Debian repository
-1. Install via `apt-get`
-1. Create a configuration file before the first run
-1. Restart the service
-
-
-## Setup 1-wire Support
-
-<p class="bg-danger">
-You can skip this step if <code>dtoverlay=w1-gpio</code> is already present in <code>config.txt</code>.
-</p>
-
-You will need to enable 1-wire support by adding `dtoverlay=w1-gpio` to [`/boot/config.txt`](https://www.raspberrypi.org/documentation/configuration/config-txt/README.md).
-   
+1. Setup 1-wire Support by adding `dtoverlay=w1-gpio` to [`/boot/config.txt`](https://www.raspberrypi.org/documentation/configuration/config-txt/README.md). <span class="bg-danger">You can skip this step if it's already present.</span>
+    
+    ```
     sudo bash -c 'echo "dtoverlay=w1-gpio" >> /boot/config.txt'
+    ```
+    
+    Reboot to take effect.
 
-Reboot for this to take effect.
-
-
-## Setup `apt-get`
-
-Do this only once to get `apt-get` to recognise the temperature-machine repository.
-
+1. Setup `apt-get` to recognise the temperature-machine repository.
+    ```
     sudo bash -c 'echo "deb http://robotooling.com/debian ./" >> /etc/apt/sources.list'
+    ```
+1. Stop any running versions already built from source (not required for a fresh install)
 
+    ```
+    cd ~/code/temperature-machine   
+    ./stop.sh
+    ```
 
-## Install 
-
+1. Install. 
+    ```
     sudo apt-get update
     sudo apt-get install temperature-machine
+    ```
 
+1. Decide if you will be running the temperature-machine as a **server** or **client**.
 
+    If you have a single machine, you want a **server**. If you already have a server running and want to monitor more rooms with more machines, add each of these as clients.
 
-## Before you Run
-
-Decide if you will be running the temperature-machine as a **server** or **client**.
-
-If you have a single machine, you want a **server**. If you already have a server running and want to monitor more rooms with more machines, add each of these as clients.
-
-Run the following before you startup the temperature-machine for the first time.
-
+    Run the following before you startup the temperature-machine for the first time.
+    
+    ```
     temperature-machine --init
+    ```
+    
+    It will ask you to choose and create the configuration file as `~/.temperature/temperature-machine.cfg`.
 
-It will create the configuration file as `~/.temperature/temperature-machine.cfg` after prompting and encode your decision.
+1. If you created a server configuration file above, update the default hosts.
 
+    The default configuration will list some default values for `hosts`, such as:
 
-### Server Configuration
-
-If you created a server configuration file, it will list some default values for `hosts`. For example:
-
+    ```
     hosts = ["garage", "lounge", "study"]
+    ```
 
-These are the machines you will be using in your final setup. <span class="bg-warning">Ensure these match the host names of each machine you plan to add</span>. The values are used to initialise the RRD database on the server. If you need to change this later, you will have to delete the `~/.temperature/temperature.rrd` file, losing historic data. It's worth adding in some spares.
+    These are the machines you will be using in your final setup. <span class="bg-warning">Ensure these match the host names of each machine you plan to add</span>. The values are used to initialise the RRD database on the server. If you need to change this later, you will have to delete the `~/.temperature/temperature.rrd` file, losing historic data. It's worth adding in some spares.
 
-<p class="bg-warning">
-After setting up the configuration, you can either restart the service manually (run <code>sudo systemctl restart temperature-machine</code>) or wait for it to restart itself.
-</p>
+    <p class="bg-warning">
+    After setting up the configuration, you can either restart the service manually (run <code>sudo systemctl restart temperature-machine</code>) or wait about a minute and it will restart automatically.
+    </p>
+
+1. Check the logs for activity (to check it's all running ok)
+
+    ```
+    cat ~/.temperature/temperature-machine.log
+    ```
+
+1. Try it out. Goto http://your_hostname:11900 from your favorite browser.
 
 
-## Running
+## Updating
+
+Run the `apt-get update` command to update your Raspberry Pi's package lists with the latest versions of software, then upgrade temperature-machine:
+
+    sudo apt-get update
+    sudo apt-get install --only-upgrade temperature-machine
+    
+    
+
+## Miscellaneous
 
 ### Running as a Service
 
@@ -100,12 +107,3 @@ You can also run `man temperature-machine` to read about more options.
 The log file can be found in <code>~/.temperature/temperature-machine.log</code>. The conventional <code>/var/log/temperature-machine</code> is currently unused.
 </p>
 
-
-## Updating
-
-Run the `apt-get update` command to update your Raspberry Pi's package lists with the latest versions of software, then upgrade temperature-machine:
-
-    sudo apt-get update
-    sudo apt-get install --only-upgrade temperature-machine
-    
-    
