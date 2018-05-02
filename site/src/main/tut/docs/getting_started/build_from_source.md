@@ -134,6 +134,12 @@ If you want to skip running the tests as part of the assembly process, use the f
 ### Starting and Stopping
 
 If you build from source, you'll have to start and stop the application manually. 
+
+Use the following commands respectively.
+
+    ./start.sh
+    ./stop.sh
+    
  
 ### Starting Automatically
 
