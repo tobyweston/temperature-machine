@@ -31,11 +31,10 @@ Older tutorials on the web will also say you have to load the `w1-therm` module 
 
 ## Setup the Software
 
-In terms of deployment (running the temperature-machine software), you have three options here.
+In terms of installing, you have two options here.
 
+1. Install via `apt-get` (recommended)
 1. Build and run from source
-1. Download a pre-installed Raspian image with the above pre-done
-1. Download the binary distribution (e.g. `temperature-machine-2.1.jar`) and run manually
 
 
 ## Prerequisites
