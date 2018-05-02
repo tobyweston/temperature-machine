@@ -14,9 +14,6 @@ options:
      - title: Raspbian Setup
        url: docs/getting_started/raspbian_setup.html
 
-  - title: Configuration
-    url: docs/configuration.html
-
   - title: Getting Help
     url: docs/getting_help.html
     
