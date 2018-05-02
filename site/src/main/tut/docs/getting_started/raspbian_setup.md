@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: Download Pre-installed Image
+title: Raspbian Quick Start Guide
 ---
 
 # Raspbian Quick Start Guide
