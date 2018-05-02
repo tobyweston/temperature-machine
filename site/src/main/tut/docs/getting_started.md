@@ -21,7 +21,9 @@ Soldering a resistor inline can be a bit tricky, so I build a add-on board to ma
 
 ## Setup the Pi
 
-Make sure you have the following line in your `/boot/config.txt`. It will load the GPIO [1-wire](https://pinout.xyz/pinout/1_wire) driver and any attached temperature sensor should be automatically detected.
+For a quick start guide in setting up a new Raspberry Pi, see the [Raspbian Setup](getting_started/raspbian_setup) section.
+
+Once setup, make sure you have the following line in your `/boot/config.txt`. It will load the GPIO [1-wire](https://pinout.xyz/pinout/1_wire) driver and any attached temperature sensor should be automatically detected.
 
     dtoverlay=w1-gpio§
 
@@ -33,5 +35,5 @@ Older tutorials on the web will also say you have to load the `w1-therm` module 
 
 In terms of installing, you have two options here.
 
-1. Install via `apt-get` (recommended)
-1. Build and run from source
+1. [Install](getting_started/installing.html) via `apt-get` (recommended)
+1. [Build](getting_started/build_from_source.html) and run from source
