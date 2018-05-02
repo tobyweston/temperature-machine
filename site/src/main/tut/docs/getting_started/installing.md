@@ -62,7 +62,7 @@ title: Installing
     cat ~/.temperature/temperature-machine.log
     ```
 
-1. Try it out. Goto http://your_hostname:11900 from your favorite browser.
+1. Try it out. Goto [http://your_hostname:11900]() from your favorite browser.
 
 
 ## Updating
