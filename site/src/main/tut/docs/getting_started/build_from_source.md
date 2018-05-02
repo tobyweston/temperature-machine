@@ -5,9 +5,44 @@ title: Build From Source
 
 # Build From Source ![](https://travis-ci.org/tobyweston/temperature-machine.svg?branch=master)
 
-To get the software on the box, I tend to do the following (having setup Java and SBT on the box);
+## Prerequisites
 
-1. Clone the repository on the Pi
+If you build from source or intend to download and run the the binary, you'll need Java installed on your Pi (`sudo apt-get install oracle-java8-jdk`). The keep up to date you'll need `git` (`sudo apt-get install git`) and if you want to build yourself, you'll need SBT. 
+
+### Install SBT
+
+To setup `sbt` manually, follow these steps from the terminal.
+
+    cd /usr/local/bin
+    sudo wget https://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/0.13.16/sbt-launch.jar
+    sudo chown pi sbt-launch.jar
+    sudo chgrp pi sbt-launch.jar
+
+Create a file `/usr/local/bin/sbt` (change the owner and group as above) and paste the following in (take note that the max memory is set to 512 MB for the Pi Zero). Change the owner and group as above.
+
+    #!/bin/bash
+    SBT_OPTS="-Xms512M -Xmx512M"
+    java $SBT_OPTS -jar `dirname $0`/sbt-launch.jar "$@"
+    
+Then make it executable.
+
+    chmod u+x /usr/local/bin/sbt
+
+
+Or if you prefer the official install, these steps (from [scala-sbt.org](http://www.scala-sbt.org/0.13/docs/Installing-sbt-on-Linux.html)).
+
+    echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+    sudo apt-get install dirmngr --install-recommends
+    sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+    sudo apt-get update
+    sudo apt-get install sbt
+
+
+## Building 
+
+The general approach to get the software on the box, I tend to do the following.
+
+1. Clone the Git repository on the Pi
 1. (Recommended) increase your swap file size (see [below](build_from_source.html#increase-swap-file-size))
 1. Run `sbt -J-Xmx512m -J-Xms512m assembly` from a terminal (memory set low for the Pi Zero). This might take around 30m on the Pi Zero.
 1. Run `./start.sh &`, `./start-server.sh room1 room2 room3` or `./start-client.sh` from the checked out folder
