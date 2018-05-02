@@ -7,7 +7,7 @@ title: Build From Source
 
 ## Prerequisites
 
-If you build from source or intend to download and run the the binary, you'll need Java installed on your Pi (`sudo apt-get install oracle-java8-jdk`). The keep up to date you'll need `git` (`sudo apt-get install git`) and if you want to build yourself, you'll need SBT. 
+You'll need Java installed on your Pi (`sudo apt-get install oracle-java8-jdk`), `git` (`sudo apt-get install git`) and SBT. 
 
 ### Install SBT
 
@@ -45,7 +45,7 @@ The general approach to get the software on the box, I tend to do the following.
 1. Clone the Git repository on the Pi
 1. (Recommended) increase your swap file size (see [below](build_from_source.html#increase-swap-file-size))
 1. Run `sbt -J-Xmx512m -J-Xms512m assembly` from a terminal (memory set low for the Pi Zero). This might take around 30m on the Pi Zero.
-1. Run `./start.sh &`, `./start-server.sh room1 room2 room3` or `./start-client.sh` from the checked out folder
+1. Run `./start.sh &` from the checked out folder
 
 > Don't forget to enable 1-wire support by adding `dtoverlay=w1-gpio` to `/boot/config.txt`
 
@@ -129,4 +129,22 @@ If it's a compilation or test failure, you'll need to reach out (see the [Gettin
 If you want to skip running the tests as part of the assembly process, use the following command:
 
     sbt 'set test in assembly := {}' assembly 
+    
+    
+### Starting and Stopping
+
+If you build from source, you'll have to start and stop the application manually. 
+ 
+### Starting Automatically
+
+There are lots of different ways to start software automatically after a reboot. You might choose to add following to `/etc/rc.local`. 
+
+    su pi -c 'cd /home/pi/code/temperature-machine && ./start.sh &'
+
+It uses the configuration file (see [Installing](getting_started/installing.html) section) to select between server and clients so ensure it exists in the `~/.temperature` folder.
+
+The command runs the start script as the user `pi` and assumes you’ve cloned the code as to `/home/pi/code/temperature-machine`. After a reboot, it will execute and you should see a log file in `~/.temperature` and pid file in the startup folder.
+
+To stop, just run the `stop.sh` script.
+
     

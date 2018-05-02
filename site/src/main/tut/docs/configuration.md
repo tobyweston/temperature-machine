@@ -29,20 +29,6 @@ Just run the following to start the client. You must have a server running on yo
     ./start-client.sh
 
 
-## Start Automatically
-
-There are different ways to start software automatically after a reboot. I chose to add the following to `/etc/rc.local` on the server. Replace `garage` and `bedroom` with the names of the machines you want to monitor (the default name of a new Raspberry Pi install will be `raspberrypi` but you might want to change each host name to reflect the room the Pi sits in).
-
-    su pi -c 'cd /home/pi/code/temperature-machine && ./start-server.sh garage bedroom &'
-
-...and the following to the client(s).
-
-    su pi -c 'cd /home/pi/code/temperature-machine && ./start-client.sh &'
-
-They run the startup scripts as the user `pi` and assumes you’ve cloned the code as to `/home/pi/code/temperature-machine`. After rebooting, you should see a log file in `~/.temperature` and pid file in the startup folder.
-
-To stop, just run the `stop.sh` script.
-
 
 ## Avoid Spikes in Charts
 
