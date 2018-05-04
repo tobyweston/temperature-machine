@@ -22,9 +22,9 @@ The server broadcasts it's address over the network. When clients start up, they
 
 The following uses three physical Pi Zeros setup in the following configuration. Each has the room name set as the machine's `hostname`.
 
- * Study has the _server_ with one sensor
- * Bedroom 1 has a _client_ with two sensors
- * Kitchen has a _client_ with one sensor
+ * `study` has the _server_ with one sensor
+ * `bedroom 1` has a _client_ with two sensors
+ * `kitchen` has a _client_ with one sensor
  
 <img src="../img/temperature-machine-alt.png" alt="" width="667" height="517" style="max-width:100%;">
 
