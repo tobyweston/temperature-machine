@@ -7,7 +7,7 @@ title: Build From Source
 
 ## Prerequisites
 
-You'll need Java installed on your Pi (`sudo apt-get install oracle-java8-jdk`), `git` (`sudo apt-get install git`) and SBT. 
+You'll need Java installed on your Pi (`sudo apt-get install oracle-java8-jdk`), Git (`sudo apt-get install git`) and SBT. 
 
 ### Install SBT
 
@@ -143,11 +143,11 @@ Use the following commands respectively.
  
 ### Starting Automatically
 
-There are lots of different ways to start software automatically after a reboot. You might choose to add following to `/etc/rc.local`. 
+There are lots of different ways to start software automatically after a reboot. You might choose to add following to `/etc/rc.local` (for a longer term solution, follow the [installation](installing.html) instructions and run as a service). 
 
     su pi -c 'cd /home/pi/code/temperature-machine && ./start.sh &'
 
-It uses the configuration file (see [Installing](getting_started/installing.html) section) to select between server and clients so ensure it exists in the `~/.temperature` folder.
+It uses the configuration file (see [Installing](getting_started/installing.html) section) to select between server and clients so ensure the configuration file exists in the `~/.temperature` folder.
 
 The command runs the start script as the user `pi` and assumes you’ve cloned the code as to `/home/pi/code/temperature-machine`. After a reboot, it will execute and you should see a log file in `~/.temperature` and pid file in the startup folder.
 
