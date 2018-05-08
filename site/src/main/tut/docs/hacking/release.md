@@ -33,12 +33,14 @@ SHA updates are generally used to get small increments out without the overhead 
 
 ## Tag and Release
 
-To do release, draft a new release via the Github [release page](https://github.com/tobyweston/temperature-machine/releases).
+To do release:
+ 
+1. draft a new release via the Github [release page](https://github.com/tobyweston/temperature-machine/releases)
+1. Tag the release consistently with the `version` field in `build.sbt`
+1. Ceate and deploy the Debian package (see below)
+1. Update the `version` field in `build.sbt` (don't bother with a `SNAPSHOT` postfix, we use the SHA to discriminate)
 
-We could look into automating this with the `sbt-release` plugin at some point. This would usually prepare a JAR, tag and copy the JAR to a local maven repo. We're not interested in publishing the JAR via a Maven repository, instead we want to create a Debian package and publish that.
-
-
-When done, create and deploy the Debian package (see below).
+NB. We could look into automating this with the `sbt-release` plugin at some point. This would usually prepare a JAR, tag and copy the JAR to a local maven repo. We're not interested in publishing the JAR via a Maven repository, instead we want to create a Debian package and publish that (so could delegate to our bash script from within a custom release "step").
 
 
 ## Debian Package
