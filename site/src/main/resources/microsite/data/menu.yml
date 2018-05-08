@@ -29,6 +29,12 @@ options:
   - title: Hacking
     url: docs/hacking.html
 
+    nested_options:
+     - title: SBT Plugins
+       url: docs/hacking/sbt_plugins.html
+     - title: Releasing
+       url: docs/hacking/release.html
+
   - title: Ansible Automation
     url: docs/ansible.html
     section: ansible
