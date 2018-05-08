@@ -1,0 +1,118 @@
+<html><head><title>Temperature Machine</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Toby Weston" /><meta name="description" content="The homebrew data logger" /><meta name="og:image" content="/img/poster.png" /><meta name="og:title" content="Temperature Machine" /><meta name="og:site_name" content="Temperature Machine" /><meta name="og:url" content="http://temperature-machine.com" /><meta name="og:type" content="website" /><meta name="og:description" content="The homebrew data logger" /><link rel="icon" type="image/png" href="/img/favicon.png" /><meta name="twitter:title" content="Temperature Machine" /><meta name="twitter:image" content="http://temperature-machine.comimg/poster.png" /><meta name="twitter:description" content="The homebrew data logger" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/img/favicon32x32.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/highlight/styles/atom-one-light.css" /><link rel="stylesheet" href="/css/style.css" /><link rel="stylesheet" href="/css/palette.css" /><link rel="stylesheet" href="/css/codemirror.css" /><link rel="stylesheet" href="/css/overrides.css" /><script async="async">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-3327317-12' , 'auto');
+ga('send', 'pageview');
+      </script></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/" class="brand"><div class="brand-wrapper"><span>Temperature Machine</span></div></a></li> <li><a href="/docs/index.html" class="">Introduction</a></li> <li><a href="/docs/getting_started.html" class="">Getting Started</a> <ul class="sub_section"> <li><a href="/docs/getting_started/installing.html" class="">Installing</a></li> <li><a href="/docs/getting_started/build_from_source.html" class="">Build from Source</a></li> <li><a href="/docs/getting_started/raspbian_setup.html" class="">Raspbian Setup</a></li></ul></li> <li><a href="/docs/getting_help.html" class="">Getting Help</a></li> <li><a href="/docs/ds18b20_sensor.html" class="">DS18B20 Sensor</a></li> <li><a href="/docs/add-on_board.html" class="">Add-on Board</a></li> <li><a href="/docs/rrd.html" class="">RRD</a></li> <li><a href="/docs/hacking.html" class="">Hacking</a> <ul class="sub_section"> <li><a href="/docs/hacking/sbt_plugins.html" class="">SBT Plugins</a></li> <li><a href="/docs/hacking/release.html" class="">Releasing</a></li></ul></li> <li><a href="/docs/ansible.html" class="">Ansible Automation</a> <ul class="sub_section"> <li><a href="/docs/ansible/getting_started.html" class="">Getting Started</a></li> <li><a href="/docs/ansible/useful_commands.html" class="">Useful Ad-hoc Commands</a></li></ul></li> <li><a href="/docs/resources.html" class="">Resources</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/tobyweston/temperature-machine"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/tobyweston/temperature-machine"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('Temperature Machine The homebrew data logger');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('Temperature Machine The homebrew data logger');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="tobyweston" data-github-repo="temperature-machine"><div class="content-wrapper"><section><h1 id="installing">Installing</h1>
+
+<ol>
+  <li>
+    <p>Setup 1-wire Support by adding <code class="highlighter-rouge">dtoverlay=w1-gpio</code> to <a href="https://www.raspberrypi.org/documentation/configuration/config-txt/README.md"><code class="highlighter-rouge">/boot/config.txt</code></a>. <span class="bg-danger">You can skip this step if it’s already present.</span></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo bash -c 'echo "dtoverlay=w1-gpio" &gt;&gt; /boot/config.txt'
+</code></pre></div>    </div>
+
+    <p>Reboot to take effect.</p>
+  </li>
+  <li>Setup <code class="highlighter-rouge">apt-get</code> to recognise the temperature-machine repository.
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo bash -c 'echo "deb http://robotooling.com/debian ./" &gt;&gt; /etc/apt/sources.list'
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Stop any running versions already built from source (not required for a fresh install)</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd ~/code/temperature-machine   
+ ./stop.sh
+</code></pre></div>    </div>
+  </li>
+  <li>Install.
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo apt-get update
+ sudo apt-get install temperature-machine
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Decide if you will be running the temperature-machine as a <strong>server</strong> or <strong>client</strong>.</p>
+
+    <p>If you have a single machine, you want a <strong>server</strong>. If you already have a server running and want to monitor more rooms with more machines, add each of these as clients.</p>
+
+    <p>Run the following before you startup the temperature-machine for the first time.</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> temperature-machine --init
+</code></pre></div>    </div>
+
+    <p>It will ask you to choose and create the configuration file as <code class="highlighter-rouge">~/.temperature/temperature-machine.cfg</code>.</p>
+  </li>
+  <li>
+    <p>If you created a server configuration file above, update the default hosts.</p>
+
+    <p>The default configuration will list some default values for <code class="highlighter-rouge">hosts</code>, such as:</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> hosts = ["garage", "lounge", "study"]
+</code></pre></div>    </div>
+
+    <p>These are the machines you will be using in your final setup. <span class="bg-warning">Ensure these match the host names of each machine you plan to add</span>. The values are used to initialise the RRD database on the server. If you need to change this later, you will have to delete the <code class="highlighter-rouge">~/.temperature/temperature.rrd</code> file, losing historic data. It’s worth adding in some spares.</p>
+
+    <p class="bg-warning">
+ After setting up the configuration, you can either restart the service manually (run <code>sudo systemctl restart temperature-machine</code>) or wait about a minute and it will restart automatically.
+ </p>
+  </li>
+  <li>
+    <p>Check the logs for activity (to check it’s all running ok)</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cat ~/.temperature/temperature-machine.log
+</code></pre></div>    </div>
+  </li>
+  <li>Try it out. Goto <a href="">http://your_hostname:11900</a> from your favorite browser.</li>
+</ol>
+
+<h2 id="updating">Updating</h2>
+
+<p>Run the <code class="highlighter-rouge">apt-get update</code> command to update your Raspberry Pi’s package lists with the latest versions of software, then upgrade temperature-machine:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get update
+sudo apt-get install --only-upgrade temperature-machine
+</code></pre></div></div>
+
+<h2 id="miscellaneous">Miscellaneous</h2>
+
+<h3 id="running-as-a-service">Running as a Service</h3>
+
+<p>By default, the temperature-machine runs as a service in the background - it should be running as soon as you’ve installed it with <code class="highlighter-rouge">apt-get</code>. It will start on boot and restart if it develops a problem. We use <a href="https://en.wikipedia.org/wiki/Systemd"><code class="highlighter-rouge">systemd</code></a> to achieve this.</p>
+
+<p>You can list all the services with <code class="highlighter-rouge">systemctl list-unit-files</code> and verify temperature-machine is <code class="highlighter-rouge">enabled</code>. If it’s disabled, run <code class="highlighter-rouge">sudo systemctl enable temperature-machine</code> to enable (and start) it.</p>
+
+<p>Check the current status at any time with <code class="highlighter-rouge">systemctl status temperature-machine</code>.</p>
+
+<p>If you want to disable it running as a service, run <code class="highlighter-rouge">sudo systemctl disable temperature-machine</code> and take a look at the <a href="#running-manually">section below</a> to start manually.</p>
+
+<p class="bg-warning">
+If there is a problem, the service will attempt to restart after 60 seconds. That means, if it can't start up (for example, becuase there are no sensors attached), it will keep trying until the problem is resolved.
+</p>
+
+<h3 id="running-manually">Running Manually</h3>
+
+<p>Assuming it isn’t running already (stop it with <code class="highlighter-rouge">sudo systemctl stop temperature-machine</code>), you can start it manually with the following (stopping with <kbd>ctrl + c</kbd>).</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>temperature-machine
+</code></pre></div></div>
+
+<p>If you want to check the version you’re running (a good way to check it’s installed), try the following.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>temperature-machine -- -v
+</code></pre></div></div>
+
+<p>You can also run <code class="highlighter-rouge">man temperature-machine</code> to read about more options.</p>
+
+<p class="bg-warning">
+The log file can be found in <code>~/.temperature/temperature-machine.log</code>. The conventional <code>/var/log/temperature-machine</code> is currently unused.
+</p>
+
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script>((window.gitter = {}).chat = {}).options = {
+room: 'temperature-machine/Lobby'};</script><script src="https://sidecar.gitter.im/dist/sidecar.v1.js"></script><script src="/js/main.js"></script></body></html>
