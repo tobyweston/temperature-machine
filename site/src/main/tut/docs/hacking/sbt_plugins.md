@@ -24,14 +24,6 @@ Run the following to get an idea of test coverage.
 
 Check out the generated report under `target/scala-2.12/scoverage-report`. Remember good coverage doesn't always mean good tests!
 
-## sbt-release 
-
-<p class="bg-warning">
-Configured in <code>release.sbt</code>.
-</p>
-
-Used minimally as a convenience to tag a release.
-
 
 ## sbt-assembly
 
