@@ -3,10 +3,10 @@ set -e # e exit on error and x output commands to run prefixed with +
 set -u
 
 # pre-conditions
-#if ! git diff-index --quiet HEAD --; then
-#    echo "Outstanding changes, commit or revert with git before deploying the web-app"
-#    exit -1
-#fi
+if ! git diff-index --quiet HEAD --; then
+    echo "Outstanding changes, commit or revert with git before deploying the web-app"
+    exit -1
+fi
 
 RELEASE_FOLDER=target/release-debian-package
 ROOT_FOLDER=$(pwd)
