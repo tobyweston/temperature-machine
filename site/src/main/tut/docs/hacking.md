@@ -12,11 +12,13 @@ Aka the `DEVELOPERS` readme, if you want to get your hands dirty with the code, 
 
 ## Quick Start (in an IDE)
 
-If you want to play with the source, you can build some test data by running the `Example` app from within IntelliJ.
+You can then start up the app from the `Main` class. 
 
-You can then start up the app from the `Main` class. If you want to override the sensor file location (for the case when you're testing without sensors), use `-Dsensor.location=src/test/resources/examples`.
+To override the sensor file location (for the case when you're testing without sensors), use `-Dsensor.location=src/test/resources/examples`.
 
 Check the web page with [http://localhost:11900](http://localhost:11900).
+
+If you want to add some test data, you can run the `Example` app (say, from within IntelliJ).
 
 
 ## Build the Web App

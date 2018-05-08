@@ -15,7 +15,7 @@ Each is managed separately but should be consistent in terms of the release arti
 
 To do this, we:
 
-1. Tag and release from the backend project using the `sbt-release` plugin and [Github releases](https://github.com/tobyweston/temperature-machine/releases)
+1. Tag and release from the backend project using [Github releases](https://github.com/tobyweston/temperature-machine/releases)
 1. As the UI project is copied into the backend project as JavaScript assets (using `build-webapp.sh`), the UI project is not tagged or released via Github
 1. After tagging, immediately run `release-debian-package.sh` to publish the tagged version to the debian repository
 
@@ -33,12 +33,19 @@ SHA updates are generally used to get small increments out without the overhead 
 
 ## Tag and Release
 
-To do release, run the following
+To do release, draft a new release via the Github [release page](https://github.com/tobyweston/temperature-machine/releases).
 
-    sbt release
+We could look into automating this with the `sbt-release` plugin at some point. This would usually prepare a JAR, tag and copy the JAR to a local maven repo. We're not interested in publishing the JAR via a Maven repository, instead we want to create a Debian package and publish that.
 
-This would usually prepare a JAR, tag and copy the JAR to a local maven repo. We're not interested in publishing the JAR via a Maven repository, instead we want to create a Debian package and publish that.
+
+When done, create and deploy the Debian package (see below).
 
 
 ## Debian Package
+
+To create the Debian package and push it to the [Robotooling](http://robotooling.com/debian) repository, run the following:
+
+    ./release_debian_package.sh
+    
+
 
