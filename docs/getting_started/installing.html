@@ -27,6 +27,11 @@ ga('send', 'pageview');
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd ~/code/temperature-machine   
  ./stop.sh
 </code></pre></div>    </div>
+
+    <p>You might also want to disable any previous automatic startup (for example, if you built from source). Check the contents of <code class="highlighter-rouge">/etc/rc.local</code> and remove the following line if it exists (you might see <code class="highlighter-rouge">start-server.sh</code> instead of <code class="highlighter-rouge">start-client.sh</code>).</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start-client.sh &amp;'
+</code></pre></div>    </div>
   </li>
   <li>Install.
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo apt-get update
@@ -58,6 +63,8 @@ ga('send', 'pageview');
     <p class="bg-warning">
  After setting up the configuration, you can either restart the service manually (run <code>sudo systemctl restart temperature-machine</code>) or wait about a minute and it will restart automatically.
  </p>
+
+    <p>If you had previously built from source and modified your <code class="highlighter-rouge">/etc/rc.local</code> referencing the <code class="highlighter-rouge">start-server.sh</code> script. You can use the values here to populate your configuration. It would have includes the list of hosts after the <code class="highlighter-rouge">start-server.sh</code> command.</p>
   </li>
   <li>
     <p>Check the logs for activity (to check it’s all running ok)</p>
