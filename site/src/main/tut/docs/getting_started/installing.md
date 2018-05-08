@@ -24,6 +24,12 @@ title: Installing
     ./stop.sh
     ```
 
+    You might also want to disable any previous automatic startup (for example, if you built from source). Check the contents of `/etc/rc.local` and remove the following line if it exists (you might see `start-server.sh` instead of `start-client.sh`).
+    
+    ```
+    su pi -c 'cd /home/pi/code/temperature-machine && ./start-client.sh &'
+    ```
+
 1. Install. 
     ```
     sudo apt-get update
@@ -55,6 +61,8 @@ title: Installing
     <p class="bg-warning">
     After setting up the configuration, you can either restart the service manually (run <code>sudo systemctl restart temperature-machine</code>) or wait about a minute and it will restart automatically.
     </p>
+    
+    If you had previously built from source and modified your `/etc/rc.local` referencing the `start-server.sh` script. You can use the values here to populate your configuration. It would have includes the list of hosts after the `start-server.sh` command. 
 
 1. Check the logs for activity (to check it's all running ok)
 
