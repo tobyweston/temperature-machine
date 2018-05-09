@@ -2,7 +2,7 @@ enablePlugins(JavaServerAppPackaging, DebianPlugin, JDebPackaging, SystemdPlugin
 
 maintainer := "Toby Weston <toby@temperature-machine.com>"
 
-packageSummary := "temperature-machine"
+packageSummary := "temperature data logger based on the DS18B20 sensor"
 
 packageDescription := """Homebrew temperature data logger based on the DS18B20 sensor."""
 
