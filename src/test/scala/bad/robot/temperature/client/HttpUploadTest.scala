@@ -3,7 +3,7 @@ package bad.robot.temperature.client
 import java.net.InetAddress
 
 import bad.robot.temperature.rrd.{Host, Seconds}
-import bad.robot.temperature.{Measurement, SensorReading, Temperature, UnexpectedError, jsonEncoder}
+import bad.robot.temperature.{IpAddress, Measurement, SensorReading, Temperature, UnexpectedError, jsonEncoder}
 import cats.data.Kleisli
 import cats.effect.IO
 import org.http4s.Method.PUT
@@ -15,8 +15,8 @@ import org.specs2.mutable.Specification
 
 class HttpUploadTest extends Specification {
 
-  "Ip address" >> {
-    HttpUpload.currentIpAddress.size must be_>(0)
+  "Ip address pre-check" >> {
+    IpAddress.currentIpAddress.size must be_>(0)
   }
   
   "Encode a measurement for the wire" >> {

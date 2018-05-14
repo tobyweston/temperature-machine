@@ -15,6 +15,7 @@ import org.http4s.headers.`X-Forwarded-For`
 import org.http4s.implicits._
 import org.http4s.{Request, Uri}
 import org.specs2.mutable.Specification
+import cats.implicits._
 
 class ConnectionsEndpointTest extends Specification {
 
@@ -126,6 +127,15 @@ class ConnectionsEndpointTest extends Specification {
       val service = ConnectionsEndpoint(Connections())(fixedClock())
       val response: Response[IO] =  service.orNotFound.run(request).unsafeRunSync()
       response.headers.toList.exists(_.name == "X-Forwarded-Host".ci) must_== true
+    }
+    
+    "Multiple IPs" >> {
+      val request = Request[IO](GET, Uri.uri("/connections/active/within/5/mins"))
+      val addresses = List("127.0.1.1", "127.0.1.2").map(ip => Option(InetAddress.getByName(ip))).toNel.get
+      val service = ConnectionsEndpoint(Connections(), addresses)(fixedClock())
+      val response: Response[IO] =  service.orNotFound.run(request).unsafeRunSync()
+      val headers = response.headers.toList
+      headers.contains(Header("X-Forwarded-Host", "127.0.1.1, 127.0.1.2")) must_== true
     }
 
   }

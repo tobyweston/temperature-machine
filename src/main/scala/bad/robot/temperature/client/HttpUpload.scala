@@ -4,8 +4,6 @@ import java.net.{InetAddress, NetworkInterface}
 
 import bad.robot.temperature.IpAddress._
 import bad.robot.temperature._
-import bad.robot.temperature.client.HttpUpload.currentIpAddress
-import cats.data.NonEmptyList
 import cats.effect.IO
 import org.http4s.Status.Successful
 import org.http4s.Uri.{Authority, IPv4, Scheme}
@@ -14,10 +12,9 @@ import org.http4s.client.{Client => Http4sClient}
 import org.http4s.dsl.io._
 import org.http4s.headers.`X-Forwarded-For`
 import org.http4s.{Uri, _}
+import scalaz.{-\/, \/, \/-}
 
 import scala.collection.JavaConverters._
-import scalaz.Scalaz._
-import scalaz.{-\/, \/, \/-}
 
 case class HttpUpload(address: InetAddress, client: Http4sClient[IO]) extends TemperatureWriter {
 
@@ -57,13 +54,4 @@ object HttpUpload {
       .filterNot(_.isLoopback)
   }
 
-  val currentIpAddress: NonEmptyList[Option[InetAddress]] = {
-    val addresses = for {
-      interface <- allNetworkInterfaces
-      address   <- interface.getInetAddresses.asScala
-      ip        <- isIpAddress(address.getHostAddress).option(address)
-    } yield Some(ip)
-
-    NonEmptyList(addresses.head, addresses.tail)
-  }
 }
