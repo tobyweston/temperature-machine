@@ -18,7 +18,7 @@ import scala.concurrent.ExecutionContext
 import cats.effect.IO
 import org.http4s.HttpService
 import org.http4s.server.blaze.BlazeBuilder
-import org.http4s.server.middleware.CORS
+import org.http4s.server.middleware.{CORS, GZip}
 
 object HttpServer {
   def apply(port: Int, monitored: List[Host]): HttpServer = {
@@ -34,7 +34,7 @@ class HttpServer(port: Int, monitored: List[Host]) {
 
   def asStream(temperatures: AllTemperatures, connections: Connections): Stream[IO, ExitCode] = {
     import scala.concurrent.ExecutionContext.Implicits.global // todo replace with explicit one
-    
+
     for {
       scheduler <- Scheduler[IO](corePoolSize = 1)
       exitCode  <- build(temperatures, connections, scheduler).serve
@@ -50,14 +50,16 @@ class HttpServer(port: Int, monitored: List[Host]) {
   }
 
   private def services(scheduler: Scheduler, temperatures: AllTemperatures, connections: Connections): HttpService[IO] = {
-    CORS(
-      TemperatureEndpoint(scheduler, SensorReader(Host.local, SensorFile.find()), temperatures, connections) <+>
-      ConnectionsEndpoint(connections)(Clock.systemDefaultZone) <+>
-      LogEndpoint() <+>
-      ExportEndpoint(JsonFile.load, JsonToCsv.DefaultTimeFormatter) <+>
-      VersionEndpoint() <+>
-      StaticFiles() <+>
-      StaticResources()
+    GZip(
+      CORS(
+        TemperatureEndpoint(scheduler, SensorReader(Host.local, SensorFile.find()), temperatures, connections) <+>
+          ConnectionsEndpoint(connections)(Clock.systemDefaultZone) <+>
+          LogEndpoint() <+>
+          ExportEndpoint(JsonFile.load, JsonToCsv.DefaultTimeFormatter) <+>
+          VersionEndpoint() <+>
+          StaticFiles() <+>
+          StaticResources()
+      )
     )
   }
 }

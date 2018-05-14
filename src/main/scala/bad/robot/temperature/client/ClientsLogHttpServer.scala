@@ -9,7 +9,7 @@ import cats.effect.IO
 import fs2.Stream
 import fs2.StreamApp.ExitCode
 import org.http4s.server.blaze.BlazeBuilder
-import org.http4s.server.middleware.CORS
+import org.http4s.server.middleware.{CORS, GZip}
 import cats.implicits._
 
 import scala.concurrent.ExecutionContext
@@ -29,9 +29,11 @@ class ClientsLogHttpServer(port: Int) {
       .withExecutionContext(DefaultExecutorService)
       .bindHttp(port, "0.0.0.0")
       .mountService(
-        CORS(
-          LogEndpoint() <+>
-            VersionEndpoint()
+        GZip(
+          CORS(
+            LogEndpoint() <+>
+              VersionEndpoint()
+          )
         ), "/")
       .serve
   }
