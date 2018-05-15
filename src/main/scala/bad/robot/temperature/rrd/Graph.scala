@@ -1,7 +1,6 @@
 package bad.robot.temperature.rrd
 
 import java.awt.Color
-import java.awt.Color._
 
 import bad.robot.temperature.rrd.RpnGenerator._
 import bad.robot.temperature.rrd.RrdFile.MaxSensors
