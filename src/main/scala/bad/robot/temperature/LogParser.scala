@@ -21,7 +21,7 @@ object LogParser extends RegexParsers {
   private def digits3: Parser[Int] ="""\d{3}""".r ^^ {_.toInt}
   private def digits4: Parser[Int] ="""\d{4}""".r ^^ {_.toInt}
   private def thread: Parser[String] = """\[(.*?)\]""".r
-  private def level: Parser[String] = """INFO|WARN|ERROR|TRACE|DEBUG""".r
+  private def level: Parser[String] = """INFO|WARN|ERROR|TRACE|DEBUG|CONFIG""".r
   private def words: Parser[String] = """(?s:.*)""".r
   
   def instant: Parser[Instant] = {

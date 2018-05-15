@@ -24,6 +24,10 @@ class LogParserTest extends Specification {
       "2017-10-31 10:40:12:743+0000 [main] INFO Monitoring sensor file(s) on 'study'\n  /sys/bus/w1/devices/28-031591c760ff/w1_slave", 
       LogMessage(Instant.parse("2017-10-31T10:40:12.743Z"), "[main]", "INFO", "Monitoring sensor file(s) on 'study'\n  /sys/bus/w1/devices/28-031591c760ff/w1_slave")
     )
+    assert(
+      "2018-05-15 20:44:05:358+0100 [sun.management.jmxremote] CONFIG JMX Connector ready at: service:jmx:rmi:///jndi/rmi://10.0.1.20:64493/jmxrmi",
+      LogMessage(Instant.parse("2018-05-15T19:44:05.358Z"), "[sun.management.jmxremote]", "CONFIG", "JMX Connector ready at: service:jmx:rmi:///jndi/rmi://10.0.1.20:64493/jmxrmi")
+    )
   }
   
   "Example log messages (not interested in the date etc)" >> {
