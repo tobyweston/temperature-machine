@@ -60,7 +60,6 @@ object Graph {
 
     graph.comment("\\l")
     graph.hrule(0, new Color(51, 153, 255), "Freezing")
-    graph.hspan(16, 20, transparent(green), "Optimal\\j")
 
     hosts.map(host => host -> sensors.filter(_.contains(host.name))).foreach({
       case (_, Nil)                => ()
