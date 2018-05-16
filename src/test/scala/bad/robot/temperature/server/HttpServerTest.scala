@@ -3,7 +3,8 @@ package bad.robot.temperature.server
 import java.io._
 
 import bad.robot.logging.info
-import bad.robot.temperature.rrd.{Host, RrdFile}
+import bad.robot.temperature.Files
+import bad.robot.temperature.rrd.Host
 import cats.effect.IO
 import fs2.Scheduler
 import org.http4s.Method.GET
@@ -122,7 +123,7 @@ class HttpServerTest extends Specification with AfterAll {
   }
 
   def maybeCreateFile(filename: String) = {
-    val file = new File(s"${RrdFile.path}/$filename")
+    val file = new File(s"${Files.path}/$filename")
     if (!file.exists()) {
       val writer = new BufferedWriter(new FileWriter(file))
       writer.close()

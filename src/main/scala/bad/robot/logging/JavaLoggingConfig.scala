@@ -1,9 +1,9 @@
 package bad.robot.logging
 
+import java.util.logging.Level._
 import java.util.logging._
 
-import bad.robot.temperature.rrd.RrdFile
-import bad.robot.temperature.FileOps
+import bad.robot.temperature.Files._
 
 /**
   * Capture the following properties programmatically
@@ -19,19 +19,19 @@ import bad.robot.temperature.FileOps
 class JavaLoggingConfig {
 
   System.setProperty("java.util.logging.SimpleFormatter.format", "\u0000%1$tF %1$tH:%1$tM:%1$tS:%1$tL%1$tz [%3$s] %4$s %5$s %n")
-  setHandler(Logger.getLogger("sun.management.jmxremote"), Level.CONFIG, createConsoleHandler)
-  setHandler(Logger.getLogger("sun.management.jmxremote"), Level.CONFIG, createFileHandler)
+  setHandler(Logger.getLogger("sun.management.jmxremote"), CONFIG, createConsoleHandler)
+  setHandler(Logger.getLogger("sun.management.jmxremote"), CONFIG, createFileHandler)
 
   private def createFileHandler: Handler = {
-    val file = new FileHandler((RrdFile.path / "temperature-machine.log").getAbsolutePath)
-    file.setLevel(Level.CONFIG)
+    val file = new FileHandler(LogFile.file)
+    file.setLevel(CONFIG)
     file.setFormatter(new SimpleFormatter)
     file
   }
   
   private def createConsoleHandler: Handler = {
     val consoleHandler = new ConsoleHandler
-    consoleHandler.setLevel(Level.CONFIG)
+    consoleHandler.setLevel(CONFIG)
     consoleHandler.setFormatter(new SimpleFormatter)
     consoleHandler
   }

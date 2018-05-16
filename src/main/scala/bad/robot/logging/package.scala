@@ -1,13 +1,12 @@
 package bad.robot
 
-import bad.robot.temperature.rrd.{RrdFile, _}
-import bad.robot.temperature.FileOps
+import bad.robot.temperature.Files._
 import cats.effect.IO
 import org.apache.logging.log4j.LogManager
 
 package object logging {
 
-  sys.props += ("log.location" -> RrdFile.path / "temperature-machine.log")
+  sys.props += ("log.location" -> LogFile.file)
 
   val Log = LogManager.getLogger("bad.robot.temperature")
 

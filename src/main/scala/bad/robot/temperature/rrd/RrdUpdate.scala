@@ -9,6 +9,7 @@ import org.rrd4j.core.RrdDb
 
 import scalaz.\/
 import scalaz.\/.fromTryCatchNonFatal
+import bad.robot.temperature.Files._
 
 case class RrdUpdate(monitored: List[Host], rrd: File = RrdFile.file) {
 

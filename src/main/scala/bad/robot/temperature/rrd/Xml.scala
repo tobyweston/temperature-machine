@@ -2,24 +2,21 @@ package bad.robot.temperature.rrd
 
 import java.io.{BufferedWriter, FileWriter}
 
-import bad.robot.temperature.FileOps
-import bad.robot.temperature.encode
+import bad.robot.temperature.{FileOps, Files, JsonOps, encode}
 import bad.robot.temperature.rrd.ChartJson._
 import org.rrd4j.ConsolFun._
 import org.rrd4j.core.RrdDb
-
+import bad.robot.temperature.Files._
 import scala.collection.JavaConverters._
 import scala.xml.{Elem, XML}
-import bad.robot.temperature.JsonOps
 
 case class Xml(xml: Elem) {
   def exportXml(filename: String) = {
-    XML.save(RrdFile.path / filename, xml)
+    XML.save(Files.path / filename, xml)
   }
 
   def exportJson(filename: String) = {
-    val file = RrdFile.path / filename
-    val writer = new BufferedWriter(new FileWriter(file))
+    val writer = new BufferedWriter(new FileWriter(Files.path / filename))
     writer.write(toJson())
     writer.close()
   }

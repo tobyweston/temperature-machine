@@ -1,7 +1,5 @@
 package bad.robot.temperature
 
-import java.io.File
-
 import org.rrd4j.core.{RrdDb, Sample}
 
 import scala.Double._
@@ -13,9 +11,7 @@ package object rrd {
   val aDay = Duration(24, "hours")
   val aWeek = Duration(7, "days")
   val aMonth = Duration(30, "days")
-
-  implicit def fileToString(file: File): String = file.getAbsolutePath
-
+  
   implicit class RrdDbOps(database: RrdDb) {
     def hasValuesFor(datasource: String): Boolean = {
       DataSources.updated.contains(database.getDatasource(database.getDsIndex(datasource)).getName)

@@ -9,6 +9,7 @@ import org.specs2.specification.BeforeEach
 
 import scala.Double._
 import scala.util.{Failure, Success, Try}
+import bad.robot.temperature.Files._
 
 class RrdDbOpsTest extends Specification with BeforeEach {
   sequential

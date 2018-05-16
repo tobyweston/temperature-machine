@@ -1,6 +1,6 @@
 package bad.robot.temperature.config
 
-import java.io.{File, PrintWriter}
+import java.io.PrintWriter
 
 import bad.robot.logging
 import bad.robot.logging.info
@@ -15,10 +15,11 @@ object ConfigFile {
 
   import scala.concurrent.ExecutionContext.Implicits.global     // todo replace with explicit one
 
-  private val path = new File(sys.props("user.home")) / ".temperature" / "temperature-machine.cfg"
+  private val file = Files.path / "temperature-machine.cfg"
 
-  private def fileExists = path.exists() && path.length() != 0
+  private def exists = file.exists() && file.length() != 0
 
+  
   def initWithUserInput: Stream[IO, Boolean] = {
     def ask(question: String, options: List[String]): IO[String] = {
       for {
@@ -30,10 +31,10 @@ object ConfigFile {
     
     def init(config: ConfigFile): IO[Boolean] = {
       for {
-        exists <- IO(fileExists)
-        _      <- info(s"Creating config file at ${path.getAbsoluteFile}...").unlessA(exists)
+        exists <- IO(ConfigFile.exists)
+        _      <- info(s"Creating config file at ${file.getAbsoluteFile}...").unlessA(exists)
         _      <- store(config).unlessA(exists)
-        _      <- info(s"Config ${path.getAbsoluteFile} already exists, please edit it manually").whenA(exists)
+        _      <- info(s"Config ${file.getAbsoluteFile} already exists, please edit it manually").whenA(exists)
       } yield !exists
     }
     
@@ -43,10 +44,10 @@ object ConfigFile {
     } yield created)
   }
 
-  def loadOrWarn(resource: KnobsResource = Required(FileResource.unwatched(path))): IO[Either[ConfigurationError, ConfigFile]] = {
+  def loadOrWarn(resource: KnobsResource = Required(FileResource.unwatched(file))): IO[Either[ConfigurationError, ConfigFile]] = {
     for {
-      exists  <- IO(fileExists)
-      _       <- info(s"""The config file ${path.getAbsoluteFile} doesn't exist, run "temperature-machine --init" to create it.""").unlessA(exists)
+      exists  <- IO(ConfigFile.exists)
+      _       <- info(s"""The config file ${file.getAbsoluteFile} doesn't exist, run "temperature-machine --init" to create it.""").unlessA(exists)
       config  <- load(resource)
     } yield config
   }
@@ -65,10 +66,10 @@ object ConfigFile {
 
   private def store(config: ConfigFile): IO[Either[ConfigurationError, Boolean]] = {
     def write: Either[ConfigurationError, Boolean] = {
-      if (!fileExists) {
-        val writer = new PrintWriter(path)
+      if (!ConfigFile.exists) {
+        val writer = new PrintWriter(file)
         val written = Either.catchNonFatal(writer.write(Template(config)))
-          .leftMap(error => ConfigurationError(s"Failed to create new config file ${path.getAbsolutePath}; ${error.getMessage}"))
+          .leftMap(error => ConfigurationError(s"Failed to create new config file ${file.getAbsolutePath}; ${error.getMessage}"))
           .map(_ => true)
         writer.close()
         written

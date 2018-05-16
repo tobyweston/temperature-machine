@@ -1,21 +1,16 @@
 package bad.robot.temperature.server
 
-import java.io.File
-
-import bad.robot.temperature.{Error, FileError, FileOps}
-
-import scala.io.Source
+import bad.robot.temperature.{Error, FileError, FileOps, Files}
 import scalaz.\/
 import scalaz.\/.fromTryCatchNonFatal
 
+import scala.io.Source
+
 object JsonFile {
 
-  val path = new File(sys.props("user.home")) / ".temperature"
   val filename = "temperature.json"
-  val file = path / filename
+  val file = Files.path / filename
   
-  path.mkdirs()
-
 
   def exists = file.exists()
 
