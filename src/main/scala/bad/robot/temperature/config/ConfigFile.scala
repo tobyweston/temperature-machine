@@ -113,7 +113,7 @@ private object BootstrapConfig {
   case object ServerBootstrapConfig {
     def apply(): ConfigFile = new ConfigFile {
       def mode: String = "server"
-      def hosts: List[String] = List(Host.local.name, "study", "bedroom1", "bedroom2", "bedroom3", "outside", "kitchen", "lounge")
+      def hosts: List[String] = Set(Host.local.name, "study", "bedroom1", "bedroom2", "bedroom3", "outside", "kitchen", "lounge").toList
     }
   }
 
