@@ -14,7 +14,7 @@ ga('send', 'pageview');
   <li>Download the image of <a href="https://www.raspberrypi.org/downloads/raspbian/">Raspbian Stretch Lite</a></li>
   <li>On Mac, use <a href="https://etcher.io/">Etcher</a> to flash a new SD card with the image. Refer to <a href="https://www.raspberrypi.org/documentation/installation/installing-images/">raspberrypi.org</a> for other platforms.</li>
   <li>
-    <p>Setup your wifi by inserting your new SD card to your machine and creating a file <code class="highlighter-rouge">wpa_supplicant.conf</code> under <code class="highlighter-rouge">/boot</code>. Mine looks like this (the <code class="highlighter-rouge">scan_ssid=1</code> is only needed if you’re using a hidden network).</p>
+    <p>Setup your wifi by inserting your new SD card to your machine and creating a file <code class="highlighter-rouge">wpa_supplicant.conf</code> under <code class="highlighter-rouge">/boot</code>. Mine looks like this (the <code class="highlighter-rouge">scan_ssid=1</code> is only needed if you’re using a hidden network). On Mac, it’s under ``.</p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
  update_config=1
@@ -42,8 +42,32 @@ ga('send', 'pageview');
 <p>You may want some optional extras:</p>
 
 <ul>
-  <li>Disable the activity light (edit <code class="highlighter-rouge">/boot/config.txt</code> to disable)</li>
-  <li>Disable LED for Edimax wifi adapters (disable under <code class="highlighter-rouge">/lib/modules/$(uname -r)/kernel/drivers/net/wireless/realtek/rtl8192cu/</code>)</li>
+  <li>
+    <p>To disable the activity light, add the following to <code class="highlighter-rouge">/boot/config.txt</code> (tested on the Pi Zero only).</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # disable the activity LED (intended for the Pi Zero)
+  dtparam=act_led_trigger=none
+  dtparam=act_led_activelow=on 
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Share the disk with Mac OSX</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  sudo apt-get install netatalk
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Set the timezone (for UK)</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  sudo cp /usr/share/zoneinfo/Europe/London /etc/localtime
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Fix <code class="highlighter-rouge">vi</code> being weird</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  echo 'set nocompatible' &gt; ~/.vimrc
+</code></pre></div>    </div>
+  </li>
 </ul>
 </section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({
 languages:['scala','java','bash']
