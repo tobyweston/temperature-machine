@@ -9,7 +9,7 @@ Follow these steps to get up and running with a fresh install of Raspbian Lite, 
 
 1. Download the image of [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/)
 1. On Mac, use [Etcher](https://etcher.io/) to flash a new SD card with the image. Refer to [raspberrypi.org](https://www.raspberrypi.org/documentation/installation/installing-images/) for other platforms.
-1. Setup your wifi by inserting your new SD card to your machine and creating a file `wpa_supplicant.conf` under `/boot`. Mine looks like this (the `scan_ssid=1` is only needed if you're using a hidden network). 
+1. Setup your wifi by inserting your new SD card to your machine and creating a file `wpa_supplicant.conf` under `/boot`. Mine looks like this (the `scan_ssid=1` is only needed if you're using a hidden network). On Mac, it's under ``.
 
     ```
     ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
@@ -33,5 +33,25 @@ Follow these steps to get up and running with a fresh install of Raspbian Lite, 
 
 You may want some optional extras:
  
-* Disable the activity light (edit `/boot/config.txt` to disable)
-* Disable LED for Edimax wifi adapters (disable under `/lib/modules/$(uname -r)/kernel/drivers/net/wireless/realtek/rtl8192cu/`)
+* To disable the activity light, add the following to `/boot/config.txt` (tested on the Pi Zero only).
+
+    ```                                 
+    # disable the activity LED (intended for the Pi Zero)
+    dtparam=act_led_trigger=none
+    dtparam=act_led_activelow=on 
+    ```
+* Share the disk with Mac OSX
+
+    ```
+    sudo apt-get install netatalk
+    ```
+* Set the timezone (for UK)
+
+    ```
+    sudo cp /usr/share/zoneinfo/Europe/London /etc/localtime
+    ```
+* Fix `vi` being weird
+
+    ```
+    echo 'set nocompatible' > ~/.vimrc
+    ```
