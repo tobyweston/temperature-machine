@@ -22,6 +22,7 @@ Follow these steps to get up and running with a fresh install of Raspbian Lite, 
     }
     ```
 1. Whilst you're there, add `dtoverlay=w1-gpio` to the `/boot/config.txt` file.
+1. Also run the following `touch ssh` against the `boot` folder (e.g. `touch /Volume/boot/ssh` on Mac)
 1. Unmount and stick the card in the Pi. Power up. 
 1. On the Pi (`ssh pi@raspberrypi.local`), run `raspi-config` to:
     1. Set the hostname to the room name (`garage`, `study` etc) 
