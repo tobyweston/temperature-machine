@@ -9,7 +9,7 @@ Follow these steps to get up and running with a fresh install of Raspbian Lite, 
 
 1. Download the image of [Raspbian Stretch Lite](https://www.raspberrypi.org/downloads/raspbian/)
 1. On Mac, use [Etcher](https://etcher.io/) to flash a new SD card with the image. Refer to [raspberrypi.org](https://www.raspberrypi.org/documentation/installation/installing-images/) for other platforms.
-1. Setup your wifi by inserting your new SD card to your machine and creating a file `wpa_supplicant.conf` under `/boot`. Mine looks like this (the `scan_ssid=1` is only needed if you're using a hidden network). On Mac, it's under ``.
+1. Setup your wifi by inserting your new SD card to your machine and creating a file `wpa_supplicant.conf` under `/boot`. Mine looks like this (the `scan_ssid=1` is only needed if you're using a hidden network). On Mac, it's under `/Volumes/boot`.
 
     ```
     ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
