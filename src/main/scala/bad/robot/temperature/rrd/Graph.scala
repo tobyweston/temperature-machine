@@ -1,17 +1,18 @@
 package bad.robot.temperature.rrd
 
 import java.awt.Color
-import java.awt.Color._
 
 import bad.robot.temperature.rrd.RpnGenerator._
 import bad.robot.temperature.rrd.RrdFile.MaxSensors
+import bad.robot.temperature.{FileOps, Files}
 import org.rrd4j.ConsolFun._
 import org.rrd4j.core.RrdDb
 import org.rrd4j.graph.{RrdGraph, RrdGraphDef}
+import bad.robot.temperature.Files._
 
 object Graph {
 
-  class CircularArray[T](array: Array[T]) {
+  private class CircularArray[T](array: Array[T]) {
     private var index = -1
     def next: T = {
       if (index == array.length - 1)
@@ -34,16 +35,14 @@ object Graph {
     new Color(0, 0, 0)    // was (181, 202, 146) #B5CA92 sprout
   ))
 
-  val path = RrdFile.path
-
-  def create(from: Seconds, to: Seconds, hosts: List[Host]) = {
+  def create(from: Seconds, to: Seconds, hosts: List[Host], title: String) = {
     val graph = new RrdGraphDef()
     graph.setWidth(800)
     graph.setHeight(500)
-    graph.setFilename(path / s"temperature-${(to - from).toDays}-days.png")
+    graph.setFilename(Files.path / s"temperature-${(to - from).toDays}-days.png")
     graph.setStartTime(from)
     graph.setEndTime(to)
-    graph.setTitle("Temperature")
+    graph.setTitle(title)
     graph.setVerticalLabel("°C")
 
     val all = for {
@@ -59,14 +58,13 @@ object Graph {
 
     graph.comment("\\l")
     graph.hrule(0, new Color(51, 153, 255), "Freezing")
-    graph.hspan(18, 23, transparent(green), "Optimal\\j")
 
     hosts.map(host => host -> sensors.filter(_.contains(host.name))).foreach({
-      case (_, Nil)               => ()
-      case (host, (sensor :: Nil))     =>
+      case (_, Nil)                => ()
+      case (host, sensor :: Nil)   =>
         graph.gprint(sensor, MIN, s"${host.name} min = %.2f%s °C")
         graph.gprint(sensor, MAX, s"${host.name} max = %.2f%s °C\\j")
-      case (host, sensorsForHost) =>
+      case (host, sensorsForHost)  =>
         graph.datasource(s"${host.name}-max", generateRpn(sensorsForHost, Max))
         graph.datasource(s"${host.name}-min", generateRpn(sensorsForHost, Min))
         graph.gprint(s"${host.name}-min", MIN, s"${host.name} min = %.2f%s °C")
