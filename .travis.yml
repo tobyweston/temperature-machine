@@ -3,6 +3,7 @@ scala:
    - 2.12.4
 jdk:
    - openjdk8
+   - openjdk11
    
 notifications:
   webhooks:
