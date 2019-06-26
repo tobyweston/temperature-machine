@@ -26,6 +26,7 @@ libraryDependencies ++= Seq(
   "org.apache.logging.log4j" % "log4j-slf4j-impl" % log4j,
   "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.0",
   "io.verizon.knobs" %% "core" % "6.0.33",
+  "com.paulgoldbaum" %% "scala-influxdb-client" % "0.6.0",
   "org.specs2" %% "specs2-core" % "3.9.5" % "test"
 )
 
