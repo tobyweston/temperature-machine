@@ -32,7 +32,7 @@ title: Installing
 
 1. Install. 
     ```
-    sudo apt-get update
+    sudo apt-get update --allow-insecure-repositories
     sudo apt-get install temperature-machine
     ```
 
