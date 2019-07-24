@@ -22,8 +22,9 @@ Configured in <code>version.sbt</code>.
 
 <p>Run the following to get an idea of test coverage.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sbt clean coverage test coverageReport
-</code></pre></div></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>sbt clean coverage test coverageReport
+</code></pre>
+</div>
 
 <p>Check out the generated report under <code class="highlighter-rouge">target/scala-2.12/scoverage-report</code>. Remember good coverage doesn’t always mean good tests!</p>
 
@@ -35,8 +36,9 @@ Configured in <code>assembly.sbt</code>.
 
 <p>The Assembly plugin will generate a “fat” jar. Run:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sbt assembly
-</code></pre></div></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>sbt assembly
+</code></pre>
+</div>
 
 <p>…to create (for example) <code class="highlighter-rouge">target/</code>.</p>
 
@@ -50,8 +52,9 @@ Configured in <code>package.sbt</code>.
 
 <p>To prepare a package, run the following:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sbt debian:packageBin
-</code></pre></div></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>sbt debian:packageBin
+</code></pre>
+</div>
 
 <p>To perform a traditional “release”, see the <a href="release.html">Release</a> section.</p>
 
@@ -73,9 +76,10 @@ Configured in <code>site.sbt</code>.
 
 <p>You should be able to preview the site using Jekyll to serve it.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd site/target/jekyll
+<div class="highlighter-rouge"><pre class="highlight"><code>$ cd site/target/jekyll
 $ jekyll serve
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <p>If you’re going to publish it (<code class="highlighter-rouge">sbt site/publishMicrosite</code>), make sure you <code class="highlighter-rouge">site/makeMicrosite</code> first (otherwise you’ll see a commit on the <a href="https://github.com/tobyweston/temperature-machine/commit/7aa09f7612f3ff38d86de9ab6ae2fe6ba03223c0"><code class="highlighter-rouge">gh-pages</code></a> branch with <code class="highlighter-rouge">0 commits</code>)</p>
 

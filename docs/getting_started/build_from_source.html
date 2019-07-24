@@ -16,32 +16,36 @@ ga('send', 'pageview');
 
 <p>To setup <code class="highlighter-rouge">sbt</code> manually, follow these steps from the terminal.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd /usr/local/bin
+<div class="highlighter-rouge"><pre class="highlight"><code>cd /usr/local/bin
 sudo wget https://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/0.13.16/sbt-launch.jar
 sudo chown pi sbt-launch.jar
 sudo chgrp pi sbt-launch.jar
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <p>Create a file <code class="highlighter-rouge">/usr/local/bin/sbt</code> (change the owner and group as above) and paste the following in (take note that the max memory is set to 512 MB for the Pi Zero). Change the owner and group as above.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
 <span class="nv">SBT_OPTS</span><span class="o">=</span><span class="s2">"-Xms512M -Xmx512M"</span>
-java <span class="nv">$SBT_OPTS</span> <span class="nt">-jar</span> <span class="sb">`</span><span class="nb">dirname</span> <span class="nv">$0</span><span class="sb">`</span>/sbt-launch.jar <span class="s2">"</span><span class="nv">$@</span><span class="s2">"</span>
-</code></pre></div></div>
+java <span class="nv">$SBT_OPTS</span> -jar <span class="sb">`</span>dirname <span class="nv">$0</span><span class="sb">`</span>/sbt-launch.jar <span class="s2">"</span><span class="nv">$@</span><span class="s2">"</span>
+</code></pre>
+</div>
 
 <p>Then make it executable.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chmod u+x /usr/local/bin/sbt
-</code></pre></div></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>chmod u+x /usr/local/bin/sbt
+</code></pre>
+</div>
 
 <p>Or if you prefer the official install, these steps (from <a href="http://www.scala-sbt.org/0.13/docs/Installing-sbt-on-Linux.html">scala-sbt.org</a>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+<div class="highlighter-rouge"><pre class="highlight"><code>echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
 sudo apt-get install dirmngr --install-recommends
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
 sudo apt-get update
 sudo apt-get install sbt
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <h2 id="building">Building</h2>
 
@@ -86,31 +90,36 @@ sudo apt-get install sbt
 
 <p>Edit <code class="highlighter-rouge">/etc/dphys-swapfile</code> to increase the swap file size:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo nano /etc/dphys-swapfile
-</code></pre></div></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>$ sudo nano /etc/dphys-swapfile
+</code></pre>
+</div>
 
 <p>Replace:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CONF_SWAPSIZE=100
-</code></pre></div></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>CONF_SWAPSIZE=100
+</code></pre>
+</div>
 
 <p>with…</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CONF_SWAPSIZE=512
-</code></pre></div></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>CONF_SWAPSIZE=512
+</code></pre>
+</div>
 
 <p>Recreate the swap file with the following.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo /etc/init.d/dphys-swapfile restart
-</code></pre></div></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>sudo /etc/init.d/dphys-swapfile restart
+</code></pre>
+</div>
 
 <p>Check by running <code class="highlighter-rouge">free -m</code>. The total value for swap should be <code class="highlighter-rouge">512</code> (ish) (and not <code class="highlighter-rouge">99</code>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ free -m
+<div class="highlighter-rouge"><pre class="highlight"><code>$ free -m
               total        used        free      shared  buff/cache   available
 Mem:            434          98         174           3         161         285
 Swap:           511           0          511
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <p>Thanks to Cristian Arezzini for this tip.</p>
 
@@ -118,22 +127,24 @@ Swap:           511           0          511
 
 <p>An SBT build should end with a success message. Something like this.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>...
+<div class="highlighter-rouge"><pre class="highlight"><code>...
 [warn] Strategy 'discard' was applied to 11 files
 [info] SHA-1: 5f0a3316b670b1249256892d76322b0ddec9e47a
 [info] Packaging /home/pi/code/temperature-machine/target/scala-2.12/temperature-machine-2.1.jar ...
 [info] Done packaging.
 [success] Total time: 1688 s, completed 18-Jan-2018 19:29:18
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <p>Anything else is a failure.</p>
 
 <p>Failures will be either environmental (problems with the Pi like memory or general flakeyness) or problems with the code (doesn’t compile or tests fail). If it’s environmental, follow the steps above: rerun and/or increase the swap file size. Here’s an example of a environmental failure during compilation.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>...
+<div class="highlighter-rouge"><pre class="highlight"><code>...
 Compiling 29 Scala sources to /home/pi/code/temperature-machine/target/scala-2.12/test-classes...
 /usr/local/bin/sbt: line 3:  6014 Killed                  java $SBT_OPTS -jar `dirname $0`/sbt-launch.jar "$@"
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <p>If it’s a compilation or test failure, you’ll need to reach out (see the <a href="../getting_help.html">Getting Help</a> section).</p>
 
@@ -141,8 +152,9 @@ Compiling 29 Scala sources to /home/pi/code/temperature-machine/target/scala-2.1
 
 <p>If you want to skip running the tests as part of the assembly process, use the following command:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sbt 'set test in assembly := {}' assembly 
-</code></pre></div></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>sbt 'set test in assembly := {}' assembly 
+</code></pre>
+</div>
 
 <h3 id="starting-and-stopping">Starting and Stopping</h3>
 
@@ -150,16 +162,18 @@ Compiling 29 Scala sources to /home/pi/code/temperature-machine/target/scala-2.1
 
 <p>Use the following commands respectively.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./start.sh
+<div class="highlighter-rouge"><pre class="highlight"><code>./start.sh
 ./stop.sh
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <h3 id="starting-automatically">Starting Automatically</h3>
 
 <p>There are lots of different ways to start software automatically after a reboot. You might choose to add following to <code class="highlighter-rouge">/etc/rc.local</code> (for a longer term solution, follow the <a href="installing.html">installation</a> instructions and run as a service).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start.sh &amp;'
-</code></pre></div></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start.sh &amp;'
+</code></pre>
+</div>
 
 <p>It uses the configuration file (see <a href="getting_started/installing.html">Installing</a> section) to select between server and clients so ensure the configuration file exists in the <code class="highlighter-rouge">~/.temperature</code> folder.</p>
 

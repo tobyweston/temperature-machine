@@ -12,31 +12,36 @@ ga('send', 'pageview');
   <li>
     <p>Setup 1-wire Support by adding <code class="highlighter-rouge">dtoverlay=w1-gpio</code> to <a href="https://www.raspberrypi.org/documentation/configuration/config-txt/README.md"><code class="highlighter-rouge">/boot/config.txt</code></a>. <span class="bg-danger">You can skip this step if it’s already present.</span></p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo bash -c 'echo "dtoverlay=w1-gpio" &gt;&gt; /boot/config.txt'
-</code></pre></div>    </div>
+    <div class="highlighter-rouge"><pre class="highlight"><code> sudo bash -c 'echo "dtoverlay=w1-gpio" &gt;&gt; /boot/config.txt'
+</code></pre>
+    </div>
 
     <p>Reboot to take effect.</p>
   </li>
   <li>Setup <code class="highlighter-rouge">apt-get</code> to recognise the temperature-machine repository.
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo bash -c 'echo "deb http://robotooling.com/debian ./" &gt;&gt; /etc/apt/sources.list'
-</code></pre></div>    </div>
+    <div class="highlighter-rouge"><pre class="highlight"><code> sudo bash -c 'echo "deb http://robotooling.com/debian ./" &gt;&gt; /etc/apt/sources.list'
+</code></pre>
+    </div>
   </li>
   <li>
     <p>Stop any running versions already built from source (not required for a fresh install)</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd ~/code/temperature-machine   
+    <div class="highlighter-rouge"><pre class="highlight"><code> cd ~/code/temperature-machine   
  ./stop.sh
-</code></pre></div>    </div>
+</code></pre>
+    </div>
 
     <p>You might also want to disable any previous automatic startup (for example, if you built from source). Check the contents of <code class="highlighter-rouge">/etc/rc.local</code> and remove the following line if it exists (you might see <code class="highlighter-rouge">start-server.sh</code> instead of <code class="highlighter-rouge">start-client.sh</code>).</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start-client.sh &amp;'
-</code></pre></div>    </div>
+    <div class="highlighter-rouge"><pre class="highlight"><code> su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start-client.sh &amp;'
+</code></pre>
+    </div>
   </li>
   <li>Install.
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo apt-get update
+    <div class="highlighter-rouge"><pre class="highlight"><code> sudo apt-get update
  sudo apt-get install temperature-machine
-</code></pre></div>    </div>
+</code></pre>
+    </div>
   </li>
   <li>
     <p>Decide if you will be running the temperature-machine as a <strong>server</strong> or <strong>client</strong>.</p>
@@ -45,8 +50,9 @@ ga('send', 'pageview');
 
     <p>Run the following before you startup the temperature-machine for the first time.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> temperature-machine --init
-</code></pre></div>    </div>
+    <div class="highlighter-rouge"><pre class="highlight"><code> temperature-machine --init
+</code></pre>
+    </div>
 
     <p>It will ask you to choose and create the configuration file as <code class="highlighter-rouge">~/.temperature/temperature-machine.cfg</code>.</p>
   </li>
@@ -55,8 +61,9 @@ ga('send', 'pageview');
 
     <p>The default configuration will list some default values for <code class="highlighter-rouge">hosts</code>, such as:</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> hosts = ["garage", "lounge", "study"]
-</code></pre></div>    </div>
+    <div class="highlighter-rouge"><pre class="highlight"><code> hosts = ["garage", "lounge", "study"]
+</code></pre>
+    </div>
 
     <p>These are the machines you will be using in your final setup. <span class="bg-warning">Ensure these match the host names of each machine you plan to add</span>. The values are used to initialise the RRD database on the server. If you need to change this later, you will have to delete the <code class="highlighter-rouge">~/.temperature/temperature.rrd</code> file, losing historic data. It’s worth adding in some spares.</p>
 
@@ -69,8 +76,9 @@ ga('send', 'pageview');
   <li>
     <p>Check the logs for activity (to check it’s all running ok)</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cat ~/.temperature/temperature-machine.log
-</code></pre></div>    </div>
+    <div class="highlighter-rouge"><pre class="highlight"><code> cat ~/.temperature/temperature-machine.log
+</code></pre>
+    </div>
   </li>
   <li>Try it out. Go to <a href="">http://your_hostname:11900</a> from your favorite browser.</li>
 </ol>
@@ -79,9 +87,10 @@ ga('send', 'pageview');
 
 <p>Run the <code class="highlighter-rouge">apt-get update</code> command to update your Raspberry Pi’s package lists with the latest versions of software, then upgrade temperature-machine:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get update
+<div class="highlighter-rouge"><pre class="highlight"><code>sudo apt-get update
 sudo apt-get install --only-upgrade temperature-machine
-</code></pre></div></div>
+</code></pre>
+</div>
 
 <h2 id="miscellaneous">Miscellaneous</h2>
 
@@ -103,13 +112,15 @@ If there is a problem, the service will attempt to restart after 60 seconds. Tha
 
 <p>Assuming it isn’t running already (stop it with <code class="highlighter-rouge">sudo systemctl stop temperature-machine</code>), you can start it manually with the following (stopping with <kbd>ctrl + c</kbd>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>temperature-machine
-</code></pre></div></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>temperature-machine
+</code></pre>
+</div>
 
 <p>If you want to check the version you’re running (a good way to check it’s installed), try the following.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>temperature-machine -- -v
-</code></pre></div></div>
+<div class="highlighter-rouge"><pre class="highlight"><code>temperature-machine -- -v
+</code></pre>
+</div>
 
 <p>You can also run <code class="highlighter-rouge">man temperature-machine</code> to read about more options.</p>
 
