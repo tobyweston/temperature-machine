@@ -6,7 +6,7 @@ packageSummary := "temperature data logger based on the DS18B20 sensor"
 
 packageDescription := """Homebrew temperature data logger based on the DS18B20 sensor."""
 
-debianPackageDependencies in Debian ++= Seq("oracle-java8-jdk")
+debianPackageDependencies in Debian ++= Seq("openjdk-8-jdk")
 
 
 // don't package JavaDoc or source
