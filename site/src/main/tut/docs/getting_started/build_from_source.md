@@ -7,7 +7,7 @@ title: Build From Source
 
 ## Prerequisites
 
-You'll need Java installed on your Pi (`sudo apt-get install oracle-java8-jdk`), Git (`sudo apt-get install git`) and SBT. 
+You'll need Java installed on your Pi (`sudo apt-get install openjdk-8-jdk`), Git (`sudo apt-get install git`) and SBT. 
 
 ### Install SBT
 
