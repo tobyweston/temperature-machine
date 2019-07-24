@@ -41,6 +41,8 @@ cp ${ROOT_FOLDER}/target/temperature-machine_*.changes ${TARGET_FOLDER}/${TARGET
 # create debian package file (perquisite required `brew install dpkg`)
 echo "Create dpkg package..."
 cd ${TARGET_FOLDER}
+dpkg-scanpackages --version
+dpkg-scanpackages -m . > Packages
 dpkg-scanpackages -m . | gzip -c > Packages.gz
 
 # git add the new files
