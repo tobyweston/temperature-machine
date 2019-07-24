@@ -13,7 +13,7 @@ ROOT_FOLDER=$(pwd)
 TARGET_FOLDER=debian
 TARGET_DISTRIBUTION=stable
 
-# build man pages (prerequisite `gem install ronn`)
+# build man pages (prerequisite `gem install ronn` and `gem install rdiscount`)
 echo "Building man pages..."
 cd src/linux/usr/share/man/man1/
 ronn --roff temperature-machine*.md
