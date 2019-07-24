@@ -77,4 +77,4 @@ on Gitter ([https://gitter.im/temperature-machine/Lobby](https://gitter.im/tempe
 
 ## COPYRIGHT
 
-temperature-machine is Copyright (C) 2016-2018 Toby Weston
+temperature-machine is Copyright (C) 2016-2019 Toby Weston
