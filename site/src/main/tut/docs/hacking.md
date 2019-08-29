@@ -32,6 +32,21 @@ It will download the latest version of the web-app, build it and overwrite the c
 The `resources` folder is statically served by `Server.scala`.
 
 
+## Resource Monitoring via JMX
+
+You can check the resources used on the machines using JMX tools like `jconsole` or `jvisualvm`.
+
+The JMX port used on startup is dynamic to avoid port clashes (see [#66](https://github.com/tobyweston/temperature-machine/issues/66)). This means to connect `jvisualvm` or similar, you have to grep the logs to find the assigned port. For example, if the log file shows the following;
+
+```bash
+2019-08-29 20:52:09:719+0000 [sun.management.jmxremote] CONFIG JMX Connector ready at: service:jmx:rmi:///jndi/rmi://study:34327/jmxrmi 
+```
+
+...connect `jvisualvm` to `study.local:34327`.
+
+Note that if you startup the application via the `start.sh` (deprecated method), it will assign a specific port `1616` which you use instead. This is only required if you are stopping and starting the application manually and not using `systemctl`.
+
+
 
 ## Scalaz vs. Cats Notes
 
