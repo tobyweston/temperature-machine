@@ -4,8 +4,9 @@
 Releases are done as binary via debian packages.
 
 1. `sbt-native-packager` creates the debian package
-1. `release_debian_package.sh` will call the above and then publish to web (via the [robotooling](http://robotooling.com/maven/bad/robot/temperature-machine/debian/) repository)
-1. User's add the repository to their `/etc/apt/sources.list` then update and install via `apt-get`
+1. `release_debian_package.sh` will call the above and then publish to my debian repository, dubbed [robotooling](http://robotooling.com/maven/bad/robot/temperature-machine/debian/)
+1. User's manually add the repository to their `/etc/apt/sources.list` then update and install via `apt-get`
+
 
 ## Package (Developers only)
 
