@@ -94,6 +94,8 @@ Check the current status at any time with `systemctl status temperature-machine`
 
 If you want to disable it running as a service, run `sudo systemctl disable temperature-machine` and take a look at the [section below](#running-manually) to start manually.
 
+If you want to stop the service temporally, use `sudo systemctl stop temperature-machine`.
+
 <p class="bg-warning">
 If there is a problem, the service will attempt to restart after 60 seconds. That means, if it can't start up (for example, becuase there are no sensors attached), it will keep trying until the problem is resolved.
 </p>
