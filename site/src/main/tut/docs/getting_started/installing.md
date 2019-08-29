@@ -13,9 +13,13 @@ title: Installing
     
     Reboot to take effect.
 
-1. Setup `apt-get` to recognise the temperature-machine repository.
+1. Setup `apt-get` to recognise the temperature-machine repository (the `trusted=yes` is optional).
     ```
-    sudo bash -c 'echo "deb http://robotooling.com/debian ./" >> /etc/apt/sources.list'
+    sudo bash -c 'echo "deb [ trusted=yes ] http://robotooling.com/debian ./" >> /etc/apt/sources.list'
+    ```
+1. Ensure `apt-get` ignores language translations (which reduced some noise when running `apt-get update` later) with the following. This step is option, read more about it [here](https://github.com/tobyweston/temperature-machine/issues/92#issuecomment-526227293).
+    ```
+    sudo bash -c 'echo "Acquire::Languages \"none\";" >> /etc/apt/apt.conf.d/99translations'
     ```
 1. Stop any running versions already built from source (not required for a fresh install)
 
