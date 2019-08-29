@@ -38,7 +38,7 @@ mkdir -p ${TARGET_FOLDER}/${TARGET_DISTRIBUTION}
 cp ${ROOT_FOLDER}/target/temperature-machine_*.deb ${TARGET_FOLDER}/${TARGET_DISTRIBUTION}
 cp ${ROOT_FOLDER}/target/temperature-machine_*.changes ${TARGET_FOLDER}/${TARGET_DISTRIBUTION}
 
-# create debian package file (perquisite required `brew install dpkg`)
+# create debian package file (prerequisite required `brew install dpkg`)
 echo "Create dpkg package..."
 cd ${TARGET_FOLDER}
 dpkg-scanpackages --version
