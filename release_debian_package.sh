@@ -43,7 +43,8 @@ echo "Create dpkg package..."
 cd ${TARGET_FOLDER}
 dpkg-scanpackages --version
 dpkg-scanpackages -m . > Packages
-dpkg-scanpackages -m . | gzip -c > Packages.gz
+gzip -c Packages > Packages.gz
+[ -s Packages ] && echo "Packages file Ok." || { echo "Packages file was empty. Not Ok."; exit 1; }
 
 # git add the new files
 git add .
@@ -54,4 +55,4 @@ echo "Pushing robotooling to Github gh-pages..."
 cd ${ROOT_FOLDER}/${RELEASE_FOLDER}/robotooling
 ./update.sh
 
-echo "Ok."
+echo "All done. Everything is Ok."
