@@ -42,6 +42,6 @@ mappings in Universal ++= (proguard in Proguard).value.map(jar => jar -> ("lib/"
 // point the classpath to the output from the proguard task
 scriptClasspath := (proguard in Proguard).value.map(jar => jar.getName)
 
-// add some custom stuff to the startup scripts
+// add some custom stuff to the startup scripts (explains why getIpAddress isn't required in application.ini)
 bashScriptExtraDefines ++= IO.readLines(sourceDirectory.value / "universal" / "conf" / "find_ip.sh")
 bashScriptExtraDefines += """addJava "-Djava.rmi.server.hostname=$(getIpAddress)""""
