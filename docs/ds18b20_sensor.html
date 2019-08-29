@@ -10,10 +10,9 @@ ga('send', 'pageview');
 
 <p>The <code class="highlighter-rouge">w1-therm</code> module will output the sensor readings to a file. For example,</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>4b 01 4b 46 7f ff 05 10 d8 : crc=d8 YES
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>4b 01 4b 46 7f ff 05 10 d8 : crc=d8 YES
 4b 01 4b 46 7f ff 05 10 d8 t=20687
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>This file is derived from an area of the sensor’s memory called the “scratchpad”. The scratchpad is addressed using the following byte table.</p>
 
@@ -66,16 +65,14 @@ ga('send', 'pageview');
 
 <p>The file format has some additional information as it pulls out the result of the CRC check (<code class="highlighter-rouge">YES</code>/<code class="highlighter-rouge">NO</code>) and does the temperature calculation for you. If you’re interested, you can calculate the temperature from the bytes yourself by rearranging the first two bytes with least significant at the front;</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>01 4b
-</code></pre>
-</div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>01 4b
+</code></pre></div></div>
 
 <p>then treating it as a single hex value, divide by <code class="highlighter-rouge">16</code>.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>scala&gt; 0x014b / 16.0
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>scala&gt; 0x014b / 16.0
 res: Double = 20.6875
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>This is how the tempreature-machine software goes about it.</p>
 
@@ -117,39 +114,35 @@ res: Double = 20.6875
 
 <p>So if you see something like this in your scratchpad.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>59 01 4b 01 1f ff 0c 10 39 : crc=39 YES
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>59 01 4b 01 1f ff 0c 10 39 : crc=39 YES
 59 01 4b 01 1f ff 0c 10 39 t=23500
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>the <code class="highlighter-rouge">1f</code> shows the sensor is set to 9 bit resolution.</p>
 
 <p>If your sensor shipped with low resolution you can change it straight from the Pi using <code class="highlighter-rouge">configDS18B20.c</code> from <a href="https://github.com/danjperron/BitBangingDS18B20">Dan Perron</a>.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ curl https://raw.githubusercontent.com/danjperron/BitBangingDS18B20/master/configDS18B20.c -O
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl https://raw.githubusercontent.com/danjperron/BitBangingDS18B20/master/configDS18B20.c -O
 $ gcc -lrt -o configDS18B20 configDS18B20.c
 $ sudo ./configDS18B20
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>It’ll output something like the following and prompt you to enter a new resolution.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>GPIO 4
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GPIO 4
 BCM GPIO BASE= 20000000
 ....78 01 4B 46 1F FF 0C 10 FA
 09 bits  Temperature:  23.50 +/- 0.500000 Celsius
 DS18B20 Resolution (9,10,11 or 12) ?12
 Try to set 12 bits  config=7F
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Now the scratchpad shows the updated value (<code class="highlighter-rouge">7f</code> below)</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$ cat /sys/bus/w1/devices/28-0115910f5eff/w1_slave
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat /sys/bus/w1/devices/28-0115910f5eff/w1_slave
 75 01 4b 46 7f ff 7f 10 f5 : crc=f5 YES
 75 01 4b 46 7f ff 7f 10 f5 t=23312
-</code></pre>
-</div>
+</code></pre></div></div>
 
 </section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({
 languages:['scala','java','bash']

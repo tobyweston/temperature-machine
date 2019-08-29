@@ -181,6 +181,13 @@ Need to figure out how to remove the `.md` files from the package though as thes
 
 ## Fix Debian Repository
 
+The following may appear when running `sudo apt-get update`.
+
     W: The repository 'http://robotooling.com/debian ./ Release' does not have a Release file.
     N: Data from such a repository can't be authenticated and is therefore potentially dangerous to use.
     N: See apt-secure(8) manpage for repository creation and user configuration details.
+    
+Until the [issues around signing packages](https://github.com/tobyweston/temperature-machine/issues?utf8=%E2%9C%93&q=+label%3Apackage+) are resolved, you can pre-trust the repository, and fix the issue by using the follow command instead of the above.
+    
+    sudo bash -c 'echo "deb [ trusted=yes ] http://robotooling.com/debian ./" >> /etc/apt/sources.list'
+     
