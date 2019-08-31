@@ -29,3 +29,38 @@
 17:01:07.290574 db@open done T·18.407438ms
 17:01:07.539983 db@close closing
 17:01:07.540160 db@close done T·175.086µs
+=============== Aug 31, 2019 (BST) ===============
+17:05:12.613691 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:05:12.614034 version@stat F·[1] S·332B[332B] Sc·[0.25]
+17:05:12.614066 db@open opening
+17:05:12.614154 journal@recovery F·1
+17:05:12.614695 journal@recovery recovering @5
+17:05:12.620451 memdb@flush created L0@7 N·11 S·1KiB "C1d..deb,v3":"xFP..309,v10"
+17:05:12.622831 version@stat F·[2] S·1KiB[1KiB] Sc·[0.50]
+17:05:12.635187 db@janitor F·4 G·0
+17:05:12.635410 db@open done T·21.179487ms
+17:05:12.636362 db@close closing
+17:05:12.636660 db@close done T·293.241µs
+=============== Aug 31, 2019 (BST) ===============
+17:05:57.023030 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:05:57.023504 version@stat F·[2] S·1KiB[1KiB] Sc·[0.50]
+17:05:57.023550 db@open opening
+17:05:57.023725 journal@recovery F·1
+17:05:57.024194 journal@recovery recovering @8
+17:05:57.025336 version@stat F·[2] S·1KiB[1KiB] Sc·[0.50]
+17:05:57.038562 db@janitor F·4 G·0
+17:05:57.038681 db@open done T·15.061431ms
+17:05:57.151053 db@close closing
+17:05:57.151247 db@close done T·190.832µs
+=============== Aug 31, 2019 (BST) ===============
+17:06:21.156994 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:06:21.157415 version@stat F·[2] S·1KiB[1KiB] Sc·[0.50]
+17:06:21.157459 db@open opening
+17:06:21.157576 journal@recovery F·1
+17:06:21.158326 journal@recovery recovering @10
+17:06:21.217176 memdb@flush created L0@12 N·2 S·474B "xCP..a76,v16":"xCP..309,v15"
+17:06:21.219972 version@stat F·[3] S·2KiB[2KiB] Sc·[0.75]
+17:06:21.235391 db@janitor F·5 G·0
+17:06:21.235665 db@open done T·78.001777ms
+17:06:24.798410 db@close closing
+17:06:24.798623 db@close done T·211.513µs
