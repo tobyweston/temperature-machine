@@ -9,14 +9,14 @@ if ! git diff-index --quiet HEAD --; then
 fi
 if [ -z "$1" ] 
 then
+    echo "Release the robotooling debian repository"
+    echo ""
     echo "Usage: ./release_debian_package <pgp passphrase>"
     exit -1
 fi
 
 RELEASE_FOLDER=target/release-debian-package
 ROOT_FOLDER=$(pwd)
-TARGET_FOLDER=debian
-TARGET_DISTRIBUTION=stable
 APTLY_PUBLISH=debian/aptly/public
 
 # build man pages (prerequisite `gem install ronn` and `gem install rdiscount`)
@@ -32,7 +32,7 @@ sbt clean debian:packageBin
 # update debian repository (prerequisite required `brew install aptly`)
 # this assumes the repository has previously been created (`aptly create`)
 echo "Adding package to repository..."
-aptly -config=debian/.aptly.conf repo add badrobot-releases ${TARGET_FOLDER}
+aptly -config=debian/.aptly.conf repo add badrobot-releases ${ROOT_FOLDER}/target/temperature-machine_*.deb 
 
 # update aptly database in git
 git add debian/aptly/db
@@ -58,7 +58,7 @@ git checkout gh-pages
 echo "Copy repository into robotooling gh-pages..."
 git rm -r debian
 mkdir -p debian
-cp -R ../debian/aptly/public/* debian
+cp -R ${ROOT_FOLDER}/debian/aptly/public/* debian
 git add debian
 git commit -m "updating debian repository (created by aptly)"
 
