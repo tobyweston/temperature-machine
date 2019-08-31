@@ -39,8 +39,7 @@ git add debian/aptly/db
 git commit -m "updating aptly db after adding new package to the repository" -- debian/aptly/db
 
 echo "Publishing repository..."
-aptly -config=debian/.aptly.conf -distribution=stable -architectures=armhf -gpg-key=00258F48226612AE -passphrase=${1} publish repo badrobot-releases
-# THINK YOU NEED `publish update` here (it doesn't work second time around)
+aptly -config=debian/.aptly.conf -architectures=armhf -gpg-key=00258F48226612AE -passphrase=${1} publish update stable
 
 # update aptly database in git
 git add debian/aptly/db
