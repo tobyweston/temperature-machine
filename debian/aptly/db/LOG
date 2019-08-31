@@ -6,3 +6,26 @@
 16:58:02.530135 db@open done T·7.155714ms
 16:58:02.530616 db@close closing
 16:58:02.531147 db@close done T·521.481µs
+=============== Aug 31, 2019 (BST) ===============
+17:00:27.106949 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:00:27.107357 version@stat F·[] S·0B[] Sc·[]
+17:00:27.107388 db@open opening
+17:00:27.107470 journal@recovery F·1
+17:00:27.107997 journal@recovery recovering @1
+17:00:27.134048 memdb@flush created L0@2 N·1 S·332B "L43..60b,v1":"L43..60b,v1"
+17:00:27.136349 version@stat F·[1] S·332B[332B] Sc·[0.25]
+17:00:27.152394 db@janitor F·3 G·0
+17:00:27.152660 db@open done T·45.068905ms
+17:00:27.153165 db@close closing
+17:00:27.153511 db@close done T·342.565µs
+=============== Aug 31, 2019 (BST) ===============
+17:01:07.271528 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:01:07.272068 version@stat F·[1] S·332B[332B] Sc·[0.25]
+17:01:07.272098 db@open opening
+17:01:07.272186 journal@recovery F·1
+17:01:07.272831 journal@recovery recovering @3
+17:01:07.273966 version@stat F·[1] S·332B[332B] Sc·[0.25]
+17:01:07.290420 db@janitor F·3 G·0
+17:01:07.290574 db@open done T·18.407438ms
+17:01:07.539983 db@close closing
+17:01:07.540160 db@close done T·175.086µs
