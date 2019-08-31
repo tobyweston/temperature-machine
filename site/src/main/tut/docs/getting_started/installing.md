@@ -13,22 +13,25 @@ title: Installing
     
     Reboot to take effect.
 
-1. Setup `apt-get` to recognise the temperature-machine repository (the `trusted=yes` is optional).
+1. Setup `apt-get` to recognise the temperature-machine repository. To ensure the releases come from official, trusted sources, also add the repository key using `apt-key`.
     ```
-    sudo bash -c 'echo "deb [ trusted=yes ] http://robotooling.com/debian ./" >> /etc/apt/sources.list'
+    sudo bash -c 'echo "deb http://robotooling.com/debian stable temperature-machine" >> /etc/apt/sources.list'
+    sudo apt-key adv --keyserver pool.sks-keyservers.net --recv-keys 00258F48226612AE
     ```
-1. Ensure `apt-get` ignores language translations (which reduced some noise when running `apt-get update` later) with the following. This step is option, read more about it [here](https://github.com/tobyweston/temperature-machine/issues/92#issuecomment-526227293).
+
+1. If your `/etc/apt/sources.list` file contains the following line, remove it. It was used by a previous version.
     ```
-    sudo bash -c 'echo "Acquire::Languages \"none\";" >> /etc/apt/apt.conf.d/99translations'
+    deb http://robotooling.com/debian ./"
     ```
-1. Stop any running versions already built from source (not required for a fresh install)
+
+1. If you've previously built from source, stop any running versions (not required for a fresh install).
 
     ```
     cd ~/code/temperature-machine   
     ./stop.sh
     ```
 
-    You might also want to disable any previous automatic startup (for example, if you built from source). Check the contents of `/etc/rc.local` and remove the following line if it exists (you might see `start-server.sh` instead of `start-client.sh`).
+    You might also want to disable any previous automatic startup (if you built from source). Check the contents of `/etc/rc.local` and remove the following line if it exists (you might see `start-server.sh` instead of `start-client.sh`).
     
     ```
     su pi -c 'cd /home/pi/code/temperature-machine && ./start-client.sh &'
@@ -36,7 +39,7 @@ title: Installing
 
 1. Install. 
     ```
-    sudo apt-get update --allow-insecure-repositories
+    sudo apt-get update
     sudo apt-get install temperature-machine
     ```
 
