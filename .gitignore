@@ -1,5 +1,6 @@
 *.class
 *.log
+!debian/aptly/db/*.log
 
 # sbt specific
 .cache
