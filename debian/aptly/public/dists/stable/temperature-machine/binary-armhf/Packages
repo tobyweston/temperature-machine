@@ -1,0 +1,36 @@
+Package: temperature-machine
+Priority: optional
+Section: java
+Installed-Size: 15968
+Maintainer: Toby Weston <toby@temperature-machine.com>
+Architecture: all
+Source: temperature-machine
+Version: 2.2
+Depends: openjdk-8-jdk
+Filename: pool/temperature-machine/t/temperature-machine/temperature-machine_2.2_all.deb
+Size: 16370852
+MD5sum: f903a4980ab70910466633cd35b586f2
+SHA1: b71136d4f7ccbae89fc27c9a6da225ffdeaebd68
+SHA256: e3a20d91e2acd043d7021f52784425ac3454efbf48905f7c71b204c6d6c5d38b
+SHA512: b07abbd5add517451f7b01ab3db8c84204e59bb5ffde6ce0a6c63e5d1422410cab8fe151804cbfc3360f92cdce800604f30e3d52a232fe9685977c5b4db0865d
+Description: temperature data logger based on the DS18B20 sensor
+ Homebrew temperature data logger based on the DS18B20 sensor.
+
+Package: temperature-machine
+Priority: optional
+Section: java
+Installed-Size: 15968
+Maintainer: Toby Weston <toby@temperature-machine.com>
+Architecture: all
+Source: temperature-machine
+Version: 2.1
+Depends: oracle-java8-jdk
+Filename: pool/temperature-machine/t/temperature-machine/temperature-machine_2.1_all.deb
+Size: 16370850
+MD5sum: 7945b02b40b3e2b9f9cf25185505cd85
+SHA1: 5e0e988e8b190e02075206d6ffee34c6cb71a1ff
+SHA256: 1d3ac252b2e32a0ff95d7ab491bec285e390e8843f3a5fe4b5b8c0c27d0f7c52
+SHA512: b345af3c26dd25057b17eff3ff5e981da55353c87d352c027c1c0eb921f15351306537a8938b3c56cf2c635f9a3176337b0b91d8ef7bd98760e671a3583a3ca8
+Description: temperature data logger based on the DS18B20 sensor
+ Homebrew temperature data logger based on the DS18B20 sensor.
+
