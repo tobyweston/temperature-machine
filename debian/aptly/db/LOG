@@ -64,3 +64,94 @@
 17:06:21.235665 db@open done T·78.001777ms
 17:06:24.798410 db@close closing
 17:06:24.798623 db@close done T·211.513µs
+=============== Aug 31, 2019 (BST) ===============
+17:09:41.094107 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:09:41.094947 version@stat F·[3] S·2KiB[2KiB] Sc·[0.75]
+17:09:41.095028 db@open opening
+17:09:41.095212 journal@recovery F·1
+17:09:41.096202 journal@recovery recovering @13
+17:09:41.120434 memdb@flush created L0@15 N·2 S·558B "E04..ine,v19":"U.>..ble,v18"
+17:09:41.123566 version@stat F·[4] S·2KiB[2KiB] Sc·[1.00]
+17:09:41.141230 db@janitor F·6 G·0
+17:09:41.141543 db@open done T·46.28628ms
+17:09:41.141571 table@compaction L0·4 -> L1·0 S·2KiB Q·20
+17:09:41.143767 db@close closing
+17:09:41.148687 table@build created L1@18 N·16 S·2KiB "C1d..deb,v3":"xFP..309,v10"
+17:09:41.148824 table@build exiting
+17:09:41.148858 table@build revert @18
+17:09:41.149517 db@close done T·5.74488ms
+=============== Aug 31, 2019 (BST) ===============
+17:10:21.830730 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:10:21.831217 version@stat F·[4] S·2KiB[2KiB] Sc·[1.00]
+17:10:21.831264 db@open opening
+17:10:21.831385 journal@recovery F·1
+17:10:21.832029 journal@recovery recovering @16
+17:10:21.832903 version@stat F·[4] S·2KiB[2KiB] Sc·[1.00]
+17:10:21.847871 db@janitor F·6 G·0
+17:10:21.847961 db@open done T·16.665113ms
+17:10:21.848094 table@compaction L0·4 -> L1·0 S·2KiB Q·20
+17:10:21.849510 db@close closing
+17:10:21.855721 table@build created L1@20 N·16 S·2KiB "C1d..deb,v3":"xFP..309,v10"
+17:10:21.855809 table@build exiting
+17:10:21.855848 table@build revert @20
+17:10:21.856486 db@close done T·6.968328ms
+=============== Aug 31, 2019 (BST) ===============
+17:12:18.335800 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:12:18.336146 version@stat F·[4] S·2KiB[2KiB] Sc·[1.00]
+17:12:18.336182 db@open opening
+17:12:18.336291 journal@recovery F·1
+17:12:18.336941 journal@recovery recovering @18
+17:12:18.337862 version@stat F·[4] S·2KiB[2KiB] Sc·[1.00]
+17:12:18.352443 db@janitor F·6 G·0
+17:12:18.352569 db@open done T·16.351414ms
+17:12:18.352814 table@compaction L0·4 -> L1·0 S·2KiB Q·20
+17:12:18.355395 db@close closing
+17:12:18.359534 table@build created L1@22 N·16 S·2KiB "C1d..deb,v3":"xFP..309,v10"
+17:12:18.359621 table@build exiting
+17:12:18.359665 table@build revert @22
+17:12:18.360475 db@close done T·5.071791ms
+=============== Aug 31, 2019 (BST) ===============
+17:13:00.287712 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:13:00.288335 version@stat F·[4] S·2KiB[2KiB] Sc·[1.00]
+17:13:00.288385 db@open opening
+17:13:00.288663 journal@recovery F·1
+17:13:00.289301 journal@recovery recovering @20
+17:13:00.290246 version@stat F·[4] S·2KiB[2KiB] Sc·[1.00]
+17:13:00.305831 db@janitor F·6 G·0
+17:13:00.305947 db@open done T·17.481142ms
+17:13:00.306173 table@compaction L0·4 -> L1·0 S·2KiB Q·20
+17:13:00.307418 db@close closing
+17:13:00.312082 table@build created L1@24 N·16 S·2KiB "C1d..deb,v3":"xFP..309,v10"
+17:13:00.314530 table@build exiting
+17:13:00.314617 table@build revert @24
+17:13:00.315422 db@close done T·8.023056ms
+=============== Aug 31, 2019 (BST) ===============
+17:13:21.877827 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:13:21.878159 version@stat F·[4] S·2KiB[2KiB] Sc·[1.00]
+17:13:21.878186 db@open opening
+17:13:21.878276 journal@recovery F·1
+17:13:21.878934 journal@recovery recovering @22
+17:13:21.879864 version@stat F·[4] S·2KiB[2KiB] Sc·[1.00]
+17:13:21.895385 db@janitor F·6 G·0
+17:13:21.895462 db@open done T·17.249965ms
+17:13:21.895575 table@compaction L0·4 -> L1·0 S·2KiB Q·20
+17:13:21.896463 db@close closing
+17:13:21.901354 table@build created L1@26 N·16 S·2KiB "C1d..deb,v3":"xFP..309,v10"
+17:13:21.902187 table@build exiting
+17:13:21.902231 table@build revert @26
+17:13:21.902640 db@close done T·6.174664ms
+=============== Aug 31, 2019 (BST) ===============
+17:13:25.205127 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+17:13:25.205535 version@stat F·[4] S·2KiB[2KiB] Sc·[1.00]
+17:13:25.205570 db@open opening
+17:13:25.205673 journal@recovery F·1
+17:13:25.206259 journal@recovery recovering @24
+17:13:25.207098 version@stat F·[4] S·2KiB[2KiB] Sc·[1.00]
+17:13:25.220347 db@janitor F·6 G·0
+17:13:25.220436 db@open done T·14.834211ms
+17:13:25.220648 table@compaction L0·4 -> L1·0 S·2KiB Q·20
+17:13:25.221361 db@close closing
+17:13:25.226495 table@build created L1@28 N·16 S·2KiB "C1d..deb,v3":"xFP..309,v10"
+17:13:25.227462 table@build exiting
+17:13:25.227589 table@build revert @28
+17:13:25.228101 db@close done T·6.734674ms
