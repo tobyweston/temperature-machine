@@ -4,13 +4,13 @@ set -u
 
 # pre-conditions
 if ! git diff-index --quiet HEAD --; then
-    echo "Outstanding changes, commit or revert before releasing"
+    echo 1>&2 "Outstanding changes, commit or revert before releasing"
     exit -1
 fi
 if [ $# -ne 2 ]; then
-    echo "Release temperature-machine and publish a new version of the debian repository"
-    echo ""
-    echo "Usage: ${0} <pgp passphrase> <tag, i.e. v2.3>"
+    echo 1>&2 "Release temperature-machine and publish a new version of the debian repository"
+    echo 1>&2 ""
+    echo 1>&2 "Usage: ${0} <pgp passphrase> <tag, i.e. v2.3>"
     exit -1
 fi
 
