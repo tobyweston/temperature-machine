@@ -7,11 +7,10 @@ if ! git diff-index --quiet HEAD --; then
     echo "Outstanding changes, commit or revert before releasing"
     exit -1
 fi
-if [ -z "$1" ] 
-then
+if [ $# -ne 2 ]; then
     echo "Release temperature-machine and publish a new version of the debian repository"
     echo ""
-    echo "Usage: ./release_debian_package <pgp passphrase> <tag, i.e. v2.3>"
+    echo "Usage: ${0} <pgp passphrase> <tag, i.e. v2.3>"
     exit -1
 fi
 
