@@ -15,9 +15,10 @@ Each is managed separately but should be consistent in terms of the release arti
 
 To do this, we:
 
-1. Tag and release from the backend project using [Github releases](https://github.com/tobyweston/temperature-machine/releases)
+1. Prepare a draft release using [Github releases](https://github.com/tobyweston/temperature-machine/releases)
 1. As the UI project is copied into the backend project as JavaScript assets (using `build-webapp.sh`), the UI project is not tagged or released via Github
-1. After tagging, immediately run `release-debian-package.sh` to publish the tagged version to the debian repository
+1. When ready, run `release-debian-package.sh` to tag and publish the tagged version to the debian repository
+1. Update the release in the [Github releases](https://github.com/tobyweston/temperature-machine/releases) page to include the tag and publish
 
 ## Versioning
 
@@ -37,7 +38,11 @@ To do release:
  
 1. draft a new release via the Github [release page](https://github.com/tobyweston/temperature-machine/releases)
 1. Tag the release consistently with the `version` field in `build.sbt`
-1. Ceate and deploy the Debian package (see below)
+1. Create and deploy the Debian package (see below). This will also tag git
+1. Update the Github [release page](https://github.com/tobyweston/temperature-machine/releases) with the tag
+
+Post release:
+
 1. Update the `version` field in `build.sbt` (don't bother with a `SNAPSHOT` postfix, we use the SHA to discriminate)
 
 NB. We could look into automating this with the `sbt-release` plugin at some point. This would usually prepare a JAR, tag and copy the JAR to a local maven repo. We're not interested in publishing the JAR via a Maven repository, instead we want to create a Debian package and publish that (so could delegate to our bash script from within a custom release "step").

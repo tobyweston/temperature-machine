@@ -9,9 +9,9 @@ if ! git diff-index --quiet HEAD --; then
 fi
 if [ -z "$1" ] 
 then
-    echo "Release the robotooling debian repository"
+    echo "Release temperature-machine and publish a new version of the debian repository"
     echo ""
-    echo "Usage: ./release_debian_package <pgp passphrase>"
+    echo "Usage: ./release_debian_package <pgp passphrase> <tag, i.e. v2.3>"
     exit -1
 fi
 
@@ -46,6 +46,8 @@ git add debian/aptly/db
 git commit -m "updating aptly db after (re)publishing" -- debian/aptly/db
 
 git push origin
+git tag -a ${2} -m "releasing ${2}"
+git push origin ${2}
 
 # download robotooling
 echo "Downloading robotooling..."
