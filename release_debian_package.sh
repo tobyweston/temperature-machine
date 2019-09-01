@@ -44,6 +44,8 @@ aptly -config=debian/.aptly.conf -architectures=armhf -gpg-key=00258F48226612AE 
 git add debian/aptly/db
 git commit -m "updating aptly db after (re)publishing" -- debian/aptly/db
 
+git add .
+git commit -m "update misc for release"
 git push origin
 git tag -a ${2} -m "releasing ${2}"
 git push origin ${2}
