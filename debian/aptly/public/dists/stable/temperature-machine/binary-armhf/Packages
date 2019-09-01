@@ -5,6 +5,24 @@ Installed-Size: 15968
 Maintainer: Toby Weston <toby@temperature-machine.com>
 Architecture: all
 Source: temperature-machine
+Version: 2.2.1
+Depends: openjdk-8-jdk
+Filename: pool/temperature-machine/t/temperature-machine/temperature-machine_2.2.1_all.deb
+Size: 16370848
+MD5sum: e6fbc034e47a118abb05e4173597ec55
+SHA1: 1f4b4389578cb48b6541f2ae9537e496a46a8664
+SHA256: 6ce90a14a5ecb17c0b02542adab38fc78071c2bbf00064510c3f792cce77d297
+SHA512: 5322c34e2b7c5ffa697db60df801c3647c52bfbaa8755f60553f725d9b6a5bc8a504316877910f7b9348eaaf117c837dc10ff870a71298740c81898bab88cbe1
+Description: temperature data logger based on the DS18B20 sensor
+ Homebrew temperature data logger based on the DS18B20 sensor.
+
+Package: temperature-machine
+Priority: optional
+Section: java
+Installed-Size: 15968
+Maintainer: Toby Weston <toby@temperature-machine.com>
+Architecture: all
+Source: temperature-machine
 Version: 2.2
 Depends: openjdk-8-jdk
 Filename: pool/temperature-machine/t/temperature-machine/temperature-machine_2.2_all.deb
