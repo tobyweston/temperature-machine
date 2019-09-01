@@ -45,6 +45,8 @@ aptly -config=debian/.aptly.conf -architectures=armhf -gpg-key=00258F48226612AE 
 git add debian/aptly/db
 git commit -m "updating aptly db after (re)publishing" -- debian/aptly/db
 
+git push origin
+
 # download robotooling
 echo "Downloading robotooling..."
 rm -rf ${RELEASE_FOLDER}
