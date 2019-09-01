@@ -2,7 +2,7 @@ import Versions._
 
 name := "temperature-machine"
 
-version := "2.3"
+version := "2.2.1"
 
 organization := "bad.robot"
 
