@@ -21,9 +21,10 @@ ga('send', 'pageview');
 <p>To do this, we:</p>
 
 <ol>
-  <li>Tag and release from the backend project using <a href="https://github.com/tobyweston/temperature-machine/releases">Github releases</a></li>
+  <li>Prepare a draft release using <a href="https://github.com/tobyweston/temperature-machine/releases">Github releases</a></li>
   <li>As the UI project is copied into the backend project as JavaScript assets (using <code class="highlighter-rouge">build-webapp.sh</code>), the UI project is not tagged or released via Github</li>
-  <li>After tagging, immediately run <code class="highlighter-rouge">release-debian-package.sh</code> to publish the tagged version to the debian repository</li>
+  <li>When ready, run <code class="highlighter-rouge">release-debian-package.sh</code> to tag and publish the tagged version to the debian repository</li>
+  <li>Update the release in the <a href="https://github.com/tobyweston/temperature-machine/releases">Github releases</a> page to include the tag and publish</li>
 </ol>
 
 <h2 id="versioning">Versioning</h2>
@@ -45,7 +46,13 @@ temperature-machine 2.1 (56add8)
 <ol>
   <li>draft a new release via the Github <a href="https://github.com/tobyweston/temperature-machine/releases">release page</a></li>
   <li>Tag the release consistently with the <code class="highlighter-rouge">version</code> field in <code class="highlighter-rouge">build.sbt</code></li>
-  <li>Ceate and deploy the Debian package (see below)</li>
+  <li>Create and deploy the Debian package (see below). This will also tag git</li>
+  <li>Update the Github <a href="https://github.com/tobyweston/temperature-machine/releases">release page</a> with the tag</li>
+</ol>
+
+<p>Post release:</p>
+
+<ol>
   <li>Update the <code class="highlighter-rouge">version</code> field in <code class="highlighter-rouge">build.sbt</code> (don’t bother with a <code class="highlighter-rouge">SNAPSHOT</code> postfix, we use the SHA to discriminate)</li>
 </ol>
 

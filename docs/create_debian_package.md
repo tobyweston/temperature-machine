@@ -3,43 +3,10 @@
 
 Releases are done as binary via debian packages.
 
-1. `sbt-native-packager` creates the debian package
-1. `release_debian_package.sh` will call the above and then publish to web (via the [robotooling](http://robotooling.com/maven/bad/robot/temperature-machine/debian/) repository)
-1. User's add the repository to their `/etc/apt/sources.list` then update and install via `apt-get`
+1. `sbt-native-packager` creates the debian package (`sbt clean debian:packageBin`)
+1. `release_debian_package.sh` will call the above and then publish to my debian repository, dubbed [robotooling](http://robotooling.com/maven/bad/robot/temperature-machine/debian/)
+1. User's manually add the repository to their `/etc/apt/sources.list` then update and install via `apt-get`
 
-## Package (Developers only)
-
-To create the Debian package, run the following:
-       
-    sbt clean debian:packageBin
-    
-
-## Release (Developers only)
-
-    ./release_debian_package.sh
-
-
-## Setup `apt-get`
-
-Do this only once to get `apt-get` to recognise the temperature-machine repository.
-
-    sudo bash -c 'echo "deb http://robotooling.com/debian ./" >> /etc/apt/sources.list'
-
-
-## Install via `apt-get`
-
-You have to run the `update` command to pick up any changes.
-
-    sudo apt-get update
-    sudo apt-get install temperature-machine
-
-Run with the following.
-
-    temperature-machine
-    
-You can add arguments, for example:
-
-    temperature-machine -Dsensor.location=/home/pi/
 
 
 # Developer Notes
@@ -64,6 +31,7 @@ Archetypes like Java Application Archetype or Java Server Application Archetype 
 1. [Packaging format plugins](https://www.scala-sbt.org/sbt-native-packager/introduction.html#format-plugins) - the _how_ an application is packaged; universal, linux, debian, rpm, docker, windows etc 
 1. [Archetype plugins](https://www.scala-sbt.org/sbt-native-packager/introduction.html#archetype-plugins) - the _what_ gets packaged (incs.  predefined configurations); java application, java server application, system loaders etc
 1. [Mappings](https://www.scala-sbt.org/sbt-native-packager/introduction.html#mappings) - map source files to target system locations
+
 
 ## Folder Structures
 
@@ -137,6 +105,19 @@ Including 'systemd' will create a default service wrapper under `temperature-mac
 
 See [Debian Binary Package Building How-To](http://tldp.org/HOWTO/html_single/Debian-Binary-Package-Building-HOWTO/#AEN60) for the full package contents.
 
+
+### Creating Debian Package/InRelease/Release
+
+Creating an appropriate set of files for a debian repository is a bit involved. As a minimum, we need to create the following:
+
+* Packages / Packages.gz
+* Release / InRelease
+
+`dpkg-scanpackages -m` handles the `Packages` file but not the `Release` (see [SO](https://unix.stackexchange.com/questions/403485/how-to-generate-the-release-file-on-a-local-package-repository)).
+
+`aptly` may be an alternative (as `apt-ftparchive` isn't cross-platform).
+
+
 ## Generating `man` pages
 
 Using http://github.com/rtomayko/ronn, having installed via `gem install ronn`.
@@ -150,44 +131,4 @@ Need to figure out how to remove the `.md` files from the package though as thes
 
     man: warning: /usr/share/man/man1/temperature-machine.1.md: ignoring bogus filename
 
-
-## Success
-
-    $ sudo apt-get install temperature-machine
-    Reading package lists... Done
-    Building dependency tree       
-    Reading state information... Done
-    The following NEW packages will be installed:
-      temperature-machine
-    0 upgraded, 1 newly installed, 0 to remove and 1 not upgraded.
-    Need to get 41.0 MB of archives.
-    After this operation, 41.0 MB of additional disk space will be used.
-    WARNING: The following packages cannot be authenticated!
-      temperature-machine
-    Install these packages without verification? [y/N] y
-    Get:1 http://robotooling.com/debian ./ temperature-machine 2.1 [41.0 MB]
-    Fetched 41.0 MB in 33s (1,223 kB/s)                                                                                                                                      
-    Selecting previously unselected package temperature-machine.
-    (Reading database ... 36516 files and directories currently installed.)
-    Preparing to unpack .../temperature-machine_2.1_all.deb ...
-    Unpacking temperature-machine (2.1) ...
-    Setting up temperature-machine (2.1) ...
-    Creating system group: temperature-machine
-    Creating system user: temperature-machine in temperature-machine with temperature-machine daemon-user and shell /bin/false
-    Created symlink /etc/systemd/system/multi-user.target.wants/temperature-machine.service → /lib/systemd/system/temperature-machine.service.
-    Processing triggers for man-db (2.7.6.1-2) ...
-
-
-
-## Fix Debian Repository
-
-The following may appear when running `sudo apt-get update`.
-
-    W: The repository 'http://robotooling.com/debian ./ Release' does not have a Release file.
-    N: Data from such a repository can't be authenticated and is therefore potentially dangerous to use.
-    N: See apt-secure(8) manpage for repository creation and user configuration details.
-    
-Until the [issues around signing packages](https://github.com/tobyweston/temperature-machine/issues?utf8=%E2%9C%93&q=+label%3Apackage+) are resolved, you can pre-trust the repository, and fix the issue by using the follow command instead of the above.
-    
-    sudo bash -c 'echo "deb [ trusted=yes ] http://robotooling.com/debian ./" >> /etc/apt/sources.list'
      

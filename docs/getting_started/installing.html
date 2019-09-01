@@ -17,28 +17,29 @@ ga('send', 'pageview');
 
     <p>Reboot to take effect.</p>
   </li>
-  <li>Setup <code class="highlighter-rouge">apt-get</code> to recognise the temperature-machine repository (the <code class="highlighter-rouge">trusted=yes</code> is optional).
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo bash -c 'echo "deb [ trusted=yes ] http://robotooling.com/debian ./" &gt;&gt; /etc/apt/sources.list'
+  <li>Setup <code class="highlighter-rouge">apt-get</code> to recognise the temperature-machine repository. To ensure the releases come from official, trusted sources, also add the repository key using <code class="highlighter-rouge">apt-key</code>.
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo bash -c 'echo "deb http://robotooling.com/debian stable temperature-machine" &gt;&gt; /etc/apt/sources.list'
+ sudo apt-key adv --keyserver pool.sks-keyservers.net --recv-keys 00258F48226612AE
 </code></pre></div>    </div>
   </li>
-  <li>Ensure <code class="highlighter-rouge">apt-get</code> ignores language translations (which reduced some noise when running <code class="highlighter-rouge">apt-get update</code> later) with the following. This step is option, read more about it <a href="https://github.com/tobyweston/temperature-machine/issues/92#issuecomment-526227293">here</a>.
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo bash -c 'echo "Acquire::Languages \"none\";" &gt;&gt; /etc/apt/apt.conf.d/99translations'
+  <li>If your <code class="highlighter-rouge">/etc/apt/sources.list</code> file contains the following line, remove it. It was used by a previous version.
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> deb http://robotooling.com/debian ./"
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>Stop any running versions already built from source (not required for a fresh install)</p>
+    <p>If you’ve previously built from source, stop any running versions (not required for a fresh install).</p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd ~/code/temperature-machine   
  ./stop.sh
 </code></pre></div>    </div>
 
-    <p>You might also want to disable any previous automatic startup (for example, if you built from source). Check the contents of <code class="highlighter-rouge">/etc/rc.local</code> and remove the following line if it exists (you might see <code class="highlighter-rouge">start-server.sh</code> instead of <code class="highlighter-rouge">start-client.sh</code>).</p>
+    <p>You might also want to disable any previous automatic startup (if you built from source). Check the contents of <code class="highlighter-rouge">/etc/rc.local</code> and remove the following line if it exists (you might see <code class="highlighter-rouge">start-server.sh</code> instead of <code class="highlighter-rouge">start-client.sh</code>).</p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start-client.sh &amp;'
 </code></pre></div>    </div>
   </li>
   <li>Install.
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo apt-get update --allow-insecure-repositories
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo apt-get update
  sudo apt-get install temperature-machine
 </code></pre></div>    </div>
   </li>

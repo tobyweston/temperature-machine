@@ -36,6 +36,19 @@ ga('send', 'pageview');
 
 <p>The <code class="highlighter-rouge">resources</code> folder is statically served by <code class="highlighter-rouge">Server.scala</code>.</p>
 
+<h2 id="resource-monitoring-via-jmx">Resource Monitoring via JMX</h2>
+
+<p>You can check the resources used on the machines using JMX tools like <code class="highlighter-rouge">jconsole</code> or <code class="highlighter-rouge">jvisualvm</code>.</p>
+
+<p>The JMX port used on startup is dynamic to avoid port clashes (see <a href="https://github.com/tobyweston/temperature-machine/issues/66">#66</a>). This means to connect <code class="highlighter-rouge">jvisualvm</code> or similar, you have to grep the logs to find the assigned port. For example, if the log file shows the following;</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2019-08-29 20:52:09:719+0000 <span class="o">[</span>sun.management.jmxremote] CONFIG JMX Connector ready at: service:jmx:rmi:///jndi/rmi://study:34327/jmxrmi 
+</code></pre></div></div>
+
+<p>…connect <code class="highlighter-rouge">jvisualvm</code> to <code class="highlighter-rouge">study.local:34327</code>.</p>
+
+<p>Note that if you startup the application via the <code class="highlighter-rouge">start.sh</code> (deprecated method), it will assign a specific port <code class="highlighter-rouge">1616</code> which you use instead. This is only required if you are stopping and starting the application manually and not using <code class="highlighter-rouge">systemctl</code>.</p>
+
 <h2 id="scalaz-vs-cats-notes">Scalaz vs. Cats Notes</h2>
 
 <p>We started with Scalaz but the latest version of Http4s prefers Cats. The break apart of Scalaz to FS2 etc all seems a bit complicated, so I’ve captured some notes below.</p>
