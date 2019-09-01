@@ -14,10 +14,6 @@ then
     echo "Usage: ./release_debian_package <pgp passphrase>"
     exit -1
 fi
-if [ ! -f "target/temperature-machine_*.deb" ]; then
-    echo ".deb package not exist, run sbt 'debian:packageBin' and try again"
-    exit 1
-fi
 
 RELEASE_FOLDER=target/release-debian-package
 ROOT_FOLDER=$(pwd)
