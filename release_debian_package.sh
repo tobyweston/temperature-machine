@@ -38,7 +38,7 @@ git add debian/aptly/db
 git commit -m "updating aptly db after adding new package to the repository" -- debian/aptly/db
 
 echo "Publishing repository..."
-aptly -config=debian/.aptly.conf -architectures=armhf -gpg-key=00258F48226612AE -passphrase=${1} publish update stable
+aptly -config=debian/.aptly.conf -architectures=armhf -gpg-key=00258F48226612AE -force-overwrite -passphrase=${1} publish update stable
 
 # update aptly database in git
 git add debian/aptly/db
