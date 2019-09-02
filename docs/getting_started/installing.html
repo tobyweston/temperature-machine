@@ -17,12 +17,16 @@ ga('send', 'pageview');
 
     <p>Reboot to take effect.</p>
   </li>
-  <li>Setup <code class="highlighter-rouge">apt-get</code> to recognise the temperature-machine repository. To ensure the releases come from official, trusted sources, also add the repository key using <code class="highlighter-rouge">apt-key</code>.
+  <li>
+    <p>Setup <code class="highlighter-rouge">apt-get</code> to recognise the temperature-machine repository. To ensure the releases come from official, trusted sources, also add the repository key using <code class="highlighter-rouge">apt-key</code>.</p>
+
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo bash -c 'echo "deb http://robotooling.com/debian stable temperature-machine" &gt;&gt; /etc/apt/sources.list'
  sudo apt-key adv --keyserver pool.sks-keyservers.net --recv-keys 00258F48226612AE
 </code></pre></div>    </div>
   </li>
-  <li>If your <code class="highlighter-rouge">/etc/apt/sources.list</code> file contains the following line, remove it. It was used by a previous version.
+  <li>
+    <p>If your <code class="highlighter-rouge">/etc/apt/sources.list</code> file contains the following line, remove it. It was used by a previous version.</p>
+
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> deb http://robotooling.com/debian ./"
 </code></pre></div>    </div>
   </li>
@@ -38,7 +42,9 @@ ga('send', 'pageview');
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start-client.sh &amp;'
 </code></pre></div>    </div>
   </li>
-  <li>Install.
+  <li>
+    <p>Install.</p>
+
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo apt-get update
  sudo apt-get install temperature-machine
 </code></pre></div>    </div>
@@ -77,7 +83,9 @@ ga('send', 'pageview');
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cat ~/.temperature/temperature-machine.log
 </code></pre></div>    </div>
   </li>
-  <li>Try it out. Go to <a href="">http://your_hostname:11900</a> from your favorite browser.</li>
+  <li>
+    <p>Try it out. Go to <a href="">http://your_hostname:11900</a> from your favorite browser.</p>
+  </li>
 </ol>
 
 <h2 id="updating">Updating</h2>
