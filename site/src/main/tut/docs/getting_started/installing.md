@@ -14,12 +14,14 @@ title: Installing
     Reboot to take effect.
 
 1. Setup `apt-get` to recognise the temperature-machine repository. To ensure the releases come from official, trusted sources, also add the repository key using `apt-key`.
+
     ```
     sudo bash -c 'echo "deb http://robotooling.com/debian stable temperature-machine" >> /etc/apt/sources.list'
     sudo apt-key adv --keyserver pool.sks-keyservers.net --recv-keys 00258F48226612AE
     ```
 
 1. If your `/etc/apt/sources.list` file contains the following line, remove it. It was used by a previous version.
+
     ```
     deb http://robotooling.com/debian ./"
     ```
@@ -38,6 +40,7 @@ title: Installing
     ```
 
 1. Install. 
+
     ```
     sudo apt-get update
     sudo apt-get install temperature-machine
