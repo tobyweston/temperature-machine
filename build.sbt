@@ -6,11 +6,12 @@ version := "2.2.1"
 
 organization := "bad.robot"
 
-scalaVersion := "2.12.4"
+scalaVersion := "2.12.7"
 
 mainClass in Compile := Some("bad.robot.temperature.Main")
 
 libraryDependencies ++= Seq(
+//  "org.scala-lang.modules"   %% "scala-xml"                % "1.2.0",
   "org.rrd4j"                % "rrd4j"                     % "2.2.1",
   "org.scalaz"               %% "scalaz-core"              % "7.2.17",
   "org.http4s"               %% "http4s-dsl"               % http4s,
