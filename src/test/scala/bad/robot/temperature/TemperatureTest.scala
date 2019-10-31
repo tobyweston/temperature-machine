@@ -12,6 +12,14 @@ class TemperatureTest extends Specification {
   "Fahrenheit" >> {
     Temperature(23.125).fahrenheit must_== 73.625
   }
+  
+  "Display as celsius" >> {
+    Temperature(24.5).asCelsius must_== "24.5 °C"
+  }
+
+  "Display as fahrenheit" >> {
+    Temperature(72.24).asFahrenheit must_== "162.0 °F"
+  }
 
   "Encode json" >> {
     val expected =
