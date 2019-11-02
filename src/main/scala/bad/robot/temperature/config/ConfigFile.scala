@@ -8,19 +8,18 @@ import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.{ConfigurationError, _}
 import cats.effect.IO
 import cats.implicits._
-import fs2.Stream
-import knobs._
+import pureconfig.ConfigObjectSource
+import pureconfig.backend.ConfigFactoryWrapper
+import pureconfig.generic.auto._
 
 object ConfigFile {
-
-  import scala.concurrent.ExecutionContext.Implicits.global     // todo replace with explicit one
 
   private val file = Files.path / "temperature-machine.cfg"
 
   private def exists = file.exists() && file.length() != 0
 
   
-  def initWithUserInput: Stream[IO, Boolean] = {
+  def initWithUserInput: IO[Boolean] = {
     def ask(question: String, options: List[String]): IO[String] = {
       for {
         _     <- IO(print(s"$question ${options.mkString("[", "/", "]: ")}"))
@@ -38,30 +37,24 @@ object ConfigFile {
       } yield !exists
     }
     
-    Stream.eval(for {
+    for {
       mode    <- ask("Do you want to run the temperature-machine as a server or client?", List("server", "client"))
       created <- init(BootstrapConfig.configFor(mode))
-    } yield created)
+    } yield created
   }
 
-  def loadOrWarn(resource: KnobsResource = Required(FileResource.unwatched(file))): IO[Either[ConfigurationError, ConfigFile]] = {
+  def loadOrWarn(source: ConfigObjectSource = ConfigObjectSource(ConfigFactoryWrapper.parseFile(file))): IO[Either[ConfigurationError, ConfigFile]] = {
     for {
       exists  <- IO(ConfigFile.exists)
       _       <- info(s"""The config file ${file.getAbsoluteFile} doesn't exist, run "temperature-machine --init" to create it.""").unlessA(exists)
-      config  <- load(resource)
+      config  <- load(source)
     } yield config
   }
   
-  private def load(resource: KnobsResource): IO[Either[ConfigurationError, ConfigFile]] = {
-    knobs.loadImmutable[IO](List(resource)).attempt.map(_.leftMap(error => {
-      ConfigurationError(s"There was an error loading config; ${error.getMessage}")
-    }).map(readConfigFile))
-  }
-
-  // todo maybe use 'lookup' rather than 'require' to avoid an exception being thrown?
-  private val readConfigFile = (config: Config) => new ConfigFile {
-    def mode: String = config.require[String]("mode")
-    def hosts: List[String] = config.require[List[String]]("hosts")
+  private def load(source: ConfigObjectSource): IO[Either[ConfigurationError, ConfigFile]] = {
+    IO(source.load[ConfigFile].leftMap(errors => {
+      ConfigurationError(s"There was an error loading config; ${errors.toList.map(_.description).mkString}")
+    }))
   }
 
   private def store(config: ConfigFile): IO[Either[ConfigurationError, Boolean]] = {
@@ -89,10 +82,7 @@ object ConfigFile {
 
 }
 
-trait ConfigFile {
-  def mode: String
-  def hosts: List[String]
-}
+case class ConfigFile(mode: String, hosts: List[String])
 
 object Template {
   def apply(config: ConfigFile): String =
@@ -111,16 +101,16 @@ private object BootstrapConfig {
   }
 
   case object ServerBootstrapConfig {
-    def apply(): ConfigFile = new ConfigFile {
-      def mode: String = "server"
-      def hosts: List[String] = Set(Host.local.name, "study", "bedroom1", "bedroom2", "bedroom3", "outside", "kitchen", "lounge").toList
-    }
+    def apply(): ConfigFile = new ConfigFile(
+      mode = "server",
+      hosts = Set(Host.local.name, "study", "bedroom1", "bedroom2", "bedroom3", "outside", "kitchen", "lounge").toList
+    )
   }
 
   case object ClientBootstrapConfig {
-    def apply(): ConfigFile = new ConfigFile {
-      def mode: String = "client"
-      def hosts: List[String] = Nil
-    }
+    def apply(): ConfigFile = new ConfigFile(
+      mode = "client",
+      hosts = Nil
+    )
   }
 }
