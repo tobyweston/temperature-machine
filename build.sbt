@@ -11,7 +11,7 @@ scalaVersion := "2.12.7"
 mainClass in Compile := Some("bad.robot.temperature.Main")
 
 libraryDependencies ++= Seq(
-//  "org.scala-lang.modules"   %% "scala-xml"                % "1.2.0",
+  "org.scala-lang.modules"   %% "scala-xml"                % "1.2.0",
   "org.rrd4j"                % "rrd4j"                     % "2.2.1",
   "org.scalaz"               %% "scalaz-core"              % "7.2.17",
   "org.http4s"               %% "http4s-dsl"               % http4s,
@@ -27,13 +27,12 @@ libraryDependencies ++= Seq(
   "org.apache.logging.log4j" % "log4j-slf4j-impl"          % log4j,
   "org.scala-lang.modules"   %% "scala-parser-combinators" % "1.1.0",
   "com.github.pureconfig"    %% "pureconfig"               % "0.12.1",
-//  "io.verizon.knobs"         %% "core"                     % "6.0.33",
   "org.specs2"               %% "specs2-core"              % "3.9.5" % "test"
 )
 
 scalacOptions := Seq(
   "-Xlint",
-  "-Xfatal-warnings",
+//  "-Xfatal-warnings",
   "-deprecation",
   "-feature",
   "-language:implicitConversions,reflectiveCalls,higherKinds",

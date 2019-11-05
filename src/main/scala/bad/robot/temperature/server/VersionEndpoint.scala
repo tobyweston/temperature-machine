@@ -3,7 +3,7 @@ package bad.robot.temperature.server
 import bad.robot.temperature._
 import cats.effect.IO
 import io.circe.Json
-import org.http4s.HttpService
+import org.http4s.HttpRoutes
 import org.http4s.dsl.io._
 
 
@@ -17,7 +17,7 @@ object VersionEndpoint {
     ("sbtVersion", Json.fromString(BuildInfo.sbtVersion))
   )
   
-  def apply() = HttpService[IO] {
+  def apply() = HttpRoutes.of[IO] {
     case GET -> Root / "version" => Ok(version)(implicitly, jsonEncoder)
   }
   

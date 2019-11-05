@@ -15,7 +15,7 @@ object ConnectionsEndpoint {
 
   private implicit val encoder = jsonEncoder[List[Connection]]
 
-  def apply(connections: Connections, ipAddresses: => NonEmptyList[Option[InetAddress]] = currentIpAddress)(implicit clock: Clock) = HttpService[IO] {
+  def apply(connections: Connections, ipAddresses: => NonEmptyList[Option[InetAddress]] = currentIpAddress)(implicit clock: Clock) = HttpRoutes.of[IO] {
     case GET -> Root / "connections" => {
       Ok(connections.all).map(_.putHeaders(xForwardedHost(ipAddresses)))
     }

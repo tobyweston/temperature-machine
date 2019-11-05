@@ -5,26 +5,26 @@ import java.io._
 import bad.robot.logging.info
 import bad.robot.temperature.Files
 import bad.robot.temperature.rrd.Host
-import cats.effect.IO
-import fs2.Scheduler
+import cats.effect.{ContextShift, ExitCode, IO, Timer}
 import org.http4s.Method.GET
-import org.http4s.client.blaze.BlazeClientConfig._
-import org.http4s.client.blaze._
+import org.http4s.client.blaze.BlazeClientBuilder
+import org.specs2.matcher.MatchResult
 //import org.http4s.server.{Server => Http4sServer}
 import org.http4s.{EntityDecoder, Request, Status, Uri}
 import org.specs2.mutable.Specification
 import org.specs2.specification.AfterAll
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
 class HttpServerTest extends Specification with AfterAll {
 
-  val server = new HttpServer(8080, List(Host("example"))).build(AllTemperatures(), Connections(), new Scheduler() {
-    def scheduleOnce(delay: FiniteDuration)(thunk: => Unit): () => Unit = ???
+  private implicit val contextShift: ContextShift[IO] = IO.contextShift(global)
+  private implicit val timer: Timer[IO] = IO.timer(global)
+  
+  private val server = new HttpServer(8080, List(Host("example"))).build(AllTemperatures(), Connections()).start.unsafeRunSync()
 
-    def scheduleAtFixedRate(period: FiniteDuration)(thunk: => Unit): () => Unit = ???
-  }).start.unsafeRunSync()
-  val client = Http1Client[IO](config = defaultConfig.copy(idleTimeout = 30 minutes, responseHeaderTimeout = 30 minutes)).unsafeRunSync()
+  val client = BlazeClientBuilder[IO](global).withIdleTimeout(30 minutes).withResponseHeaderTimeout(30 minutes).resource
 
   // todo wait for server to startup, not sure how.
 
@@ -82,13 +82,15 @@ class HttpServerTest extends Specification with AfterAll {
     assertOk(Request(GET, path("/version")))
   }
 
-  def assertOk(request: Request[IO]) = {
-    val response = client.fetch(request)(IO.pure(_)).unsafeRunSync
-    if (response.status != Status.Ok) {
-      val body = response.as[String](implicitly, EntityDecoder.text).attempt.unsafeRunSync()
-      println(s"Non-200 body was:\n$body")
-    }
-    response.status must be_==(Status.Ok).eventually(30, 1 minutes)
+  def assertOk(request: Request[IO]): MatchResult[Status] = {
+    client.use { http =>
+      val response = http.fetch(request)(IO.pure).unsafeRunSync
+      if (response.status != Status.Ok) {
+        val body = response.as[String](implicitly, EntityDecoder.text).attempt.unsafeRunSync()
+        println(s"Non-200 body was:\n$body")
+      }
+      IO(response.status must be_==(Status.Ok).eventually(30, 1 minutes))
+    }.unsafeRunSync()
   }
 
   def path(url: String): Uri = Uri.fromString(s"http://localhost:8080$url").getOrElse(throw new Exception(s"bad url $url"))
@@ -137,11 +139,11 @@ class HttpServerTest extends Specification with AfterAll {
     files.map(_.map(_.getName).toList).getOrElse(List())
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll() = {
     val shutdown = for {
-      _ <- server.shutdown
+//      _ <- server.cancel
       _ <- info(s"HTTP Server shutting down")
-    } yield ()
+    } yield ExitCode.Success
     shutdown.unsafeRunSync
   }
 

@@ -8,31 +8,28 @@ import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.rrd.RrdFile._
 import bad.robot.temperature.task.IOs._
-import cats.implicits._
-import cats.effect.IO
-import fs2.StreamApp._
-import fs2.Stream
+import cats.effect.{ConcurrentEffect, ExitCode, IO, Timer}
 import scalaz.{-\/, \/-}
 
 object Client {
 
   private val clientHttpPort = 11900
 
-  private val client: List[SensorFile] => Stream[IO, ExitCode] = sensors => {
+  private def client(sensors: List[SensorFile])(implicit F: ConcurrentEffect[IO], timer: Timer[IO]): IO[ExitCode] = {
     for {
-      _        <- Stream.eval(info(s"Initialising client '${Host.local.name}' (with ${sensors.size} of a maximum of $MaxSensors sensors)..."))
-      server   <- Stream.eval(IO(DiscoveryClient.discover))
-      _        <- Stream.eval(info(s"Server discovered on ${server.getHostAddress}, monitoring temperatures..."))
-      _        <- Stream.eval(record(Host.local, sensors, HttpUpload(server, BlazeHttpClient())))
+      _        <- info(s"Initialising client '${Host.local.name}' (with ${sensors.size} of a maximum of $MaxSensors sensors)...")
+      server   <- IO(DiscoveryClient.discover)
+      _        <- info(s"Server discovered on ${server.getHostAddress}, monitoring temperatures...")
+      _        <- record(Host.local, sensors, HttpUpload(server, BlazeHttpClient()))
       exitCode <- ClientsLogHttpServer(clientHttpPort)
-      _        <- Stream.eval(info(s"HTTP Server started to serve logs on http://${InetAddress.getLocalHost.getHostAddress}:$clientHttpPort"))
+      _        <- info(s"HTTP Server started to serve logs on http://${InetAddress.getLocalHost.getHostAddress}:$clientHttpPort")
     } yield exitCode
   }
 
-  def stream(args: List[String], requestShutdown: IO[Unit]): Stream[IO, ExitCode] = {
+  def apply(args: List[String])(implicit F: ConcurrentEffect[IO], timer: Timer[IO]): IO[ExitCode] = {
     findSensors match {
       case \/-(sensors) => client(sensors)
-      case -\/(cause)   => Stream.eval(error(cause.message)).flatMap(_ => Stream.emit(ExitCode(1)))
+      case -\/(cause)   => error(cause.message).map(_ => ExitCode.Error)
     }
   }
 }
