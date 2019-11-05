@@ -14,4 +14,6 @@ addSbtPlugin("com.lightbend.sbt" % "sbt-proguard" % "0.3.0")
 
 addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.9.1")
 
+addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.10.0-RC1")
+
 libraryDependencies += "org.vafer" % "jdeb" % "1.6" artifacts Artifact("jdeb", "jar", "jar") 
