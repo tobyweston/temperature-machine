@@ -141,7 +141,7 @@ class HttpServerTest extends Specification with AfterAll {
 
   override def afterAll() = {
     val shutdown = for {
-//      _ <- server.cancel
+      _ <- server.cancel
       _ <- info(s"HTTP Server shutting down")
     } yield ExitCode.Success
     shutdown.unsafeRunSync
