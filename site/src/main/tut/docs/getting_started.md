@@ -5,6 +5,8 @@ title: Getting Started
 
 # Getting Started
 
+For help, see the [Getting Help](getting_help.html) section.
+
 ## Setup the Hardware
 
 Connecting the temperature sensor to the Pi is straight forward. There a bunch of [tutorials on the web](https://www.google.co.uk/search?btnG=1&pws=0&q=pi+ds18b20+tutorial) but you're looking to connect the following physical pins on the Pi to the following sensor connectors.
