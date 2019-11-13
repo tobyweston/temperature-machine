@@ -25,7 +25,7 @@ For a quick start guide in setting up a new Raspberry Pi, see the [Raspbian Setu
 
 Once setup, make sure you have the following line in your `/boot/config.txt`. It will load the GPIO [1-wire](https://pinout.xyz/pinout/1_wire) driver and any attached temperature sensor should be automatically detected.
 
-    dtoverlay=w1-gpio§
+    dtoverlay=w1-gpio
 
 
 Older tutorials on the web will also say you have to load the `w1-therm` module but that seems to load automatically these days.
