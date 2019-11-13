@@ -11,31 +11,10 @@ Releases are done as binary via debian packages.
 
 # Developer Notes
 
-## sbt-native-packager
-
-[https://www.scala-sbt.org/sbt-native-packager](https://www.scala-sbt.org/sbt-native-packager)
-
-Native packager only takes care of packaging, the act of putting a list of mappings (source file to install target path) into a distinct package format (zip, rpm, etc.).
-
-Archetypes like Java Application Archetype or Java Server Application Archetype only add additional files to the mappings enriching the created package, but they don’t provide any new features for native-packager core functionality.
-
-### Not in Scope
-
 * Providing application lifecyle management.
     * The Java Server Application Archetype provides configurations for common systeloaders like SystemV, Upstart or SystemD. However create a custome solution, which includes stop scripts, PID management, etc. are not part of native packager.
 * Providing deployment configurations
     * Native packager produces artefacts with the packageBin task. What you do with these is part of another step in your process.
-
-### Core Concepts
-
-1. [Packaging format plugins](https://www.scala-sbt.org/sbt-native-packager/introduction.html#format-plugins) - the _how_ an application is packaged; universal, linux, debian, rpm, docker, windows etc 
-1. [Archetype plugins](https://www.scala-sbt.org/sbt-native-packager/introduction.html#archetype-plugins) - the _what_ gets packaged (incs.  predefined configurations); java application, java server application, system loaders etc
-1. [Mappings](https://www.scala-sbt.org/sbt-native-packager/introduction.html#mappings) - map source files to target system locations
-
-
-## Folder Structures
-
-Each packaging format will expect files to include in your package to be in a specific folder. For example, the Universal plugin will look in `src\universal` by default.
 
 
 ## Packaging

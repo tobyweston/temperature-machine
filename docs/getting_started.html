@@ -49,7 +49,7 @@ ga('send', 'pageview');
 
 <p>Once setup, make sure you have the following line in your <code class="highlighter-rouge">/boot/config.txt</code>. It will load the GPIO <a href="https://pinout.xyz/pinout/1_wire">1-wire</a> driver and any attached temperature sensor should be automatically detected.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dtoverlay=w1-gpio§
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dtoverlay=w1-gpio
 </code></pre></div></div>
 
 <p>Older tutorials on the web will also say you have to load the <code class="highlighter-rouge">w1-therm</code> module but that seems to load automatically these days.</p>
