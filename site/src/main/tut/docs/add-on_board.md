@@ -9,7 +9,10 @@ Soldering the resistor to between the power and data lines of the sensor cable c
 
 To make things easier, I designed a (very) simple board. It lets you connect up to five sensors, all you need to do is crimp the sensor cables with the appropriate connector.
 
-<mark>I have a limited number of boards available for FREE, get in touch via <a href="http://gitter.im/temperature-machine/">Gitter</a> or Twitter (DM @jamanifin) if you're interested.</mark>
+The board is available as a [Fritzing file](https://github.com/tobyweston/temperature-machine/blob/master/pizero.fzz) on the Github site. You can get PCBs manufactured pretty cheaply online, I recommend [JCL PCB](https://jlcpcb.com/). 
+
+<mark>Failing that, [HenrysCat](https://github.com/HenrysCat) has kindly made the boards available on his [storefront](https://coolstuff.fws.store/Temperature_Machine_add-on_board/p7655610_20870085.aspx) for purchase. This storefront isn't associated with temperature-machine but head over to [Gitter](https://gitter.im/temperature-machine/Lobby#) to talk to [HenrysCat](https://github.com/HenrysCat) direct.
+</mark>
 
 <div class="row">
   <div class="col-sm-6 col-md-4">
