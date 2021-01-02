@@ -13,7 +13,7 @@ ga('send', 'pageview');
 <ol>
   <li>The <a href="http://github.com/tobyweston/temperature-machine">backend</a> / server code (Scala)</li>
   <li>The <a href="http://github.com/tobyweston/temperature-machine-ui">front-end</a> / UI (JavaScript)</li>
-  <li>The <a href="http://robotooling.com/debian/">debian package</a> available via <code class="highlighter-rouge">apt-get</code></li>
+  <li>The <a href="http://robotooling.com/debian/">debian package</a> available via <code class="language-plaintext highlighter-rouge">apt-get</code></li>
 </ol>
 
 <p>Each is managed separately but should be consistent in terms of the release artifacts.</p>
@@ -22,8 +22,8 @@ ga('send', 'pageview');
 
 <ol>
   <li>Prepare a draft release using <a href="https://github.com/tobyweston/temperature-machine/releases">Github releases</a></li>
-  <li>As the UI project is copied into the backend project as JavaScript assets (using <code class="highlighter-rouge">build-webapp.sh</code>), the UI project is not tagged or released via Github</li>
-  <li>When ready, run <code class="highlighter-rouge">release-debian-package.sh</code> to tag and publish the tagged version to the debian repository</li>
+  <li>As the UI project is copied into the backend project as JavaScript assets (using <code class="language-plaintext highlighter-rouge">build-webapp.sh</code>), the UI project is not tagged or released via Github</li>
+  <li>When ready, run <code class="language-plaintext highlighter-rouge">release-debian-package.sh</code> to tag and publish the tagged version to the debian repository</li>
   <li>Update the release in the <a href="https://github.com/tobyweston/temperature-machine/releases">Github releases</a> page to include the tag and publish</li>
 </ol>
 
@@ -31,7 +31,7 @@ ga('send', 'pageview');
 
 <p>The software is released using a major/minor number scheme with a Git SHA postfix. For example:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ temperature-machine -- -v
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ temperature-machine -- -v
 temperature-machine 2.1 (56add8)
 </code></pre></div></div>
 
@@ -45,7 +45,7 @@ temperature-machine 2.1 (56add8)
 
 <ol>
   <li>draft a new release via the Github <a href="https://github.com/tobyweston/temperature-machine/releases">release page</a></li>
-  <li>Tag the release consistently with the <code class="highlighter-rouge">version</code> field in <code class="highlighter-rouge">build.sbt</code></li>
+  <li>Tag the release consistently with the <code class="language-plaintext highlighter-rouge">version</code> field in <code class="language-plaintext highlighter-rouge">build.sbt</code></li>
   <li>Create and deploy the Debian package (see below). This will also tag git</li>
   <li>Update the Github <a href="https://github.com/tobyweston/temperature-machine/releases">release page</a> with the tag</li>
 </ol>
@@ -53,16 +53,16 @@ temperature-machine 2.1 (56add8)
 <p>Post release:</p>
 
 <ol>
-  <li>Update the <code class="highlighter-rouge">version</code> field in <code class="highlighter-rouge">build.sbt</code> (don’t bother with a <code class="highlighter-rouge">SNAPSHOT</code> postfix, we use the SHA to discriminate)</li>
+  <li>Update the <code class="language-plaintext highlighter-rouge">version</code> field in <code class="language-plaintext highlighter-rouge">build.sbt</code> (don’t bother with a <code class="language-plaintext highlighter-rouge">SNAPSHOT</code> postfix, we use the SHA to discriminate)</li>
 </ol>
 
-<p>NB. We could look into automating this with the <code class="highlighter-rouge">sbt-release</code> plugin at some point. This would usually prepare a JAR, tag and copy the JAR to a local maven repo. We’re not interested in publishing the JAR via a Maven repository, instead we want to create a Debian package and publish that (so could delegate to our bash script from within a custom release “step”).</p>
+<p>NB. We could look into automating this with the <code class="language-plaintext highlighter-rouge">sbt-release</code> plugin at some point. This would usually prepare a JAR, tag and copy the JAR to a local maven repo. We’re not interested in publishing the JAR via a Maven repository, instead we want to create a Debian package and publish that (so could delegate to our bash script from within a custom release “step”).</p>
 
 <h2 id="debian-package">Debian Package</h2>
 
 <p>To create the Debian package and push it to the <a href="http://robotooling.com/debian">Robotooling</a> repository, run the following:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./release_debian_package.sh
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./release_debian_package.sh
 </code></pre></div></div>
 
 </section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({

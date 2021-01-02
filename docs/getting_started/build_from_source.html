@@ -10,33 +10,33 @@ ga('send', 'pageview');
 
 <h2 id="prerequisites">Prerequisites</h2>
 
-<p>You’ll need Java installed on your Pi (<code class="highlighter-rouge">sudo apt-get install openjdk-8-jdk</code>), Git (<code class="highlighter-rouge">sudo apt-get install git</code>) and SBT.</p>
+<p>You’ll need Java installed on your Pi (<code class="language-plaintext highlighter-rouge">sudo apt-get install openjdk-8-jdk</code>), Git (<code class="language-plaintext highlighter-rouge">sudo apt-get install git</code>) and SBT.</p>
 
 <h3 id="install-sbt">Install SBT</h3>
 
-<p>To setup <code class="highlighter-rouge">sbt</code> manually, follow these steps from the terminal.</p>
+<p>To setup <code class="language-plaintext highlighter-rouge">sbt</code> manually, follow these steps from the terminal.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd /usr/local/bin
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd /usr/local/bin
 sudo wget https://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/0.13.16/sbt-launch.jar
 sudo chown pi sbt-launch.jar
 sudo chgrp pi sbt-launch.jar
 </code></pre></div></div>
 
-<p>Create a file <code class="highlighter-rouge">/usr/local/bin/sbt</code> (change the owner and group as above) and paste the following in (take note that the max memory is set to 512 MB for the Pi Zero). Change the owner and group as above.</p>
+<p>Create a file <code class="language-plaintext highlighter-rouge">/usr/local/bin/sbt</code> (change the owner and group as above) and paste the following in (take note that the max memory is set to 512 MB for the Pi Zero). Change the owner and group as above.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
-<span class="nv">SBT_OPTS</span><span class="o">=</span><span class="s2">"-Xms512M -Xmx512M"</span>
-java <span class="nv">$SBT_OPTS</span> <span class="nt">-jar</span> <span class="sb">`</span><span class="nb">dirname</span> <span class="nv">$0</span><span class="sb">`</span>/sbt-launch.jar <span class="s2">"</span><span class="nv">$@</span><span class="s2">"</span>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#!/bin/bash
+SBT_OPTS="-Xms512M -Xmx512M"
+java $SBT_OPTS -jar `dirname $0`/sbt-launch.jar "$@"
 </code></pre></div></div>
 
 <p>Then make it executable.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chmod u+x /usr/local/bin/sbt
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chmod u+x /usr/local/bin/sbt
 </code></pre></div></div>
 
 <p>Or if you prefer the official install, these steps (from <a href="http://www.scala-sbt.org/0.13/docs/Installing-sbt-on-Linux.html">scala-sbt.org</a>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
 sudo apt-get install dirmngr --install-recommends
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
 sudo apt-get update
@@ -50,63 +50,63 @@ sudo apt-get install sbt
 <ol>
   <li>Clone the Git repository on the Pi</li>
   <li>(Recommended) increase your swap file size (see <a href="build_from_source.html#increase-swap-file-size">below</a>)</li>
-  <li>Run <code class="highlighter-rouge">sbt -J-Xmx512m -J-Xms512m assembly</code> from a terminal (memory set low for the Pi Zero). This might take around 30m on the Pi Zero.</li>
-  <li>Run <code class="highlighter-rouge">./start.sh &amp;</code> from the checked out folder</li>
+  <li>Run <code class="language-plaintext highlighter-rouge">sbt -J-Xmx512m -J-Xms512m assembly</code> from a terminal (memory set low for the Pi Zero). This might take around 30m on the Pi Zero.</li>
+  <li>Run <code class="language-plaintext highlighter-rouge">./start.sh &amp;</code> from the checked out folder</li>
 </ol>
 
 <blockquote>
-  <p>Don’t forget to enable 1-wire support by adding <code class="highlighter-rouge">dtoverlay=w1-gpio</code> to <code class="highlighter-rouge">/boot/config.txt</code></p>
+  <p>Don’t forget to enable 1-wire support by adding <code class="language-plaintext highlighter-rouge">dtoverlay=w1-gpio</code> to <code class="language-plaintext highlighter-rouge">/boot/config.txt</code></p>
 </blockquote>
 
 <p>You can also read my <a href="http://baddotrobot.com/blog/2016/03/23/homebrew-temperature-logger/">blog post</a> for more detailed instructions and the <a href="../configuration.html">configuration section</a> to find out how to start automatically on boot.</p>
 
 <h2 id="keep-up-to-date">Keep up to Date</h2>
 
-<p>Keep your source up to date by getting the latest from Git (<code class="highlighter-rouge">git pull</code>) and compiling with <code class="highlighter-rouge">sbt assembly</code>.</p>
+<p>Keep your source up to date by getting the latest from Git (<code class="language-plaintext highlighter-rouge">git pull</code>) and compiling with <code class="language-plaintext highlighter-rouge">sbt assembly</code>.</p>
 
 <ol>
-  <li><code class="highlighter-rouge">cd ~/code/temperature-machine</code></li>
-  <li><code class="highlighter-rouge">git pull</code></li>
-  <li><code class="highlighter-rouge">sbt -J-Xmx512m -J-Xms512m assembly</code></li>
+  <li><code class="language-plaintext highlighter-rouge">cd ~/code/temperature-machine</code></li>
+  <li><code class="language-plaintext highlighter-rouge">git pull</code></li>
+  <li><code class="language-plaintext highlighter-rouge">sbt -J-Xmx512m -J-Xms512m assembly</code></li>
 </ol>
 
 <p>This is the “in-development” version of the software. It may have partially implemented features or be broken completely. Check that the build is at least passing (below) before you update and if you prefer, stick to <a href="download.html">downloading</a> the <a href="https://github.com/tobyweston/temperature-machine/releases">official releases</a> as an alternative.</p>
 
 <h2 id="tips-and-troubleshooting">Tips and Troubleshooting</h2>
 
-<h3 id="always-run-as-pi">Always run as <code class="highlighter-rouge">pi</code></h3>
+<h3 id="always-run-as-pi">Always run as <code class="language-plaintext highlighter-rouge">pi</code></h3>
 
-<p>All the steps assume you’re running as the <code class="highlighter-rouge">pi</code> user. <strong><mark>Never run anything to do with temperature-machine as root</mark></strong>.</p>
+<p>All the steps assume you’re running as the <code class="language-plaintext highlighter-rouge">pi</code> user. <strong><mark>Never run anything to do with temperature-machine as root</mark></strong>.</p>
 
 <h3 id="increase-swap-file-size">Increase Swap File Size</h3>
 
-<p>SBT seems to struggle on the Pi and <code class="highlighter-rouge">assembly</code> will frequently fail. It uses incremental compilation so running a second time after a failure picks up from where it left off and will generally succeed.</p>
+<p>SBT seems to struggle on the Pi and <code class="language-plaintext highlighter-rouge">assembly</code> will frequently fail. It uses incremental compilation so running a second time after a failure picks up from where it left off and will generally succeed.</p>
 
 <p>However, if you increase the swap size on the Pi (especially effective on the Pi Zero), you should have fewer problems.</p>
 
-<p>Edit <code class="highlighter-rouge">/etc/dphys-swapfile</code> to increase the swap file size:</p>
+<p>Edit <code class="language-plaintext highlighter-rouge">/etc/dphys-swapfile</code> to increase the swap file size:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo nano /etc/dphys-swapfile
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo nano /etc/dphys-swapfile
 </code></pre></div></div>
 
 <p>Replace:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CONF_SWAPSIZE=100
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CONF_SWAPSIZE=100
 </code></pre></div></div>
 
 <p>with…</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CONF_SWAPSIZE=512
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CONF_SWAPSIZE=512
 </code></pre></div></div>
 
 <p>Recreate the swap file with the following.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo /etc/init.d/dphys-swapfile restart
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo /etc/init.d/dphys-swapfile restart
 </code></pre></div></div>
 
-<p>Check by running <code class="highlighter-rouge">free -m</code>. The total value for swap should be <code class="highlighter-rouge">512</code> (ish) (and not <code class="highlighter-rouge">99</code>).</p>
+<p>Check by running <code class="language-plaintext highlighter-rouge">free -m</code>. The total value for swap should be <code class="language-plaintext highlighter-rouge">512</code> (ish) (and not <code class="language-plaintext highlighter-rouge">99</code>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ free -m
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ free -m
               total        used        free      shared  buff/cache   available
 Mem:            434          98         174           3         161         285
 Swap:           511           0          511
@@ -118,7 +118,7 @@ Swap:           511           0          511
 
 <p>An SBT build should end with a success message. Something like this.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>...
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>...
 [warn] Strategy 'discard' was applied to 11 files
 [info] SHA-1: 5f0a3316b670b1249256892d76322b0ddec9e47a
 [info] Packaging /home/pi/code/temperature-machine/target/scala-2.12/temperature-machine-2.1.jar ...
@@ -130,7 +130,7 @@ Swap:           511           0          511
 
 <p>Failures will be either environmental (problems with the Pi like memory or general flakeyness) or problems with the code (doesn’t compile or tests fail). If it’s environmental, follow the steps above: rerun and/or increase the swap file size. Here’s an example of a environmental failure during compilation.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>...
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>...
 Compiling 29 Scala sources to /home/pi/code/temperature-machine/target/scala-2.12/test-classes...
 /usr/local/bin/sbt: line 3:  6014 Killed                  java $SBT_OPTS -jar `dirname $0`/sbt-launch.jar "$@"
 </code></pre></div></div>
@@ -141,7 +141,7 @@ Compiling 29 Scala sources to /home/pi/code/temperature-machine/target/scala-2.1
 
 <p>If you want to skip running the tests as part of the assembly process, use the following command:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sbt 'set test in assembly := {}' assembly 
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sbt 'set test in assembly := {}' assembly 
 </code></pre></div></div>
 
 <h3 id="starting-and-stopping">Starting and Stopping</h3>
@@ -150,22 +150,22 @@ Compiling 29 Scala sources to /home/pi/code/temperature-machine/target/scala-2.1
 
 <p>Use the following commands respectively.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./start.sh
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./start.sh
 ./stop.sh
 </code></pre></div></div>
 
 <h3 id="starting-automatically">Starting Automatically</h3>
 
-<p>There are lots of different ways to start software automatically after a reboot. You might choose to add following to <code class="highlighter-rouge">/etc/rc.local</code> (for a longer term solution, follow the <a href="installing.html">installation</a> instructions and run as a service).</p>
+<p>There are lots of different ways to start software automatically after a reboot. You might choose to add following to <code class="language-plaintext highlighter-rouge">/etc/rc.local</code> (for a longer term solution, follow the <a href="installing.html">installation</a> instructions and run as a service).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start.sh &amp;'
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start.sh &amp;'
 </code></pre></div></div>
 
-<p>It uses the configuration file (see <a href="getting_started/installing.html">Installing</a> section) to select between server and clients so ensure the configuration file exists in the <code class="highlighter-rouge">~/.temperature</code> folder.</p>
+<p>It uses the configuration file (see <a href="getting_started/installing.html">Installing</a> section) to select between server and clients so ensure the configuration file exists in the <code class="language-plaintext highlighter-rouge">~/.temperature</code> folder.</p>
 
-<p>The command runs the start script as the user <code class="highlighter-rouge">pi</code> and assumes you’ve cloned the code as to <code class="highlighter-rouge">/home/pi/code/temperature-machine</code>. After a reboot, it will execute and you should see a log file in <code class="highlighter-rouge">~/.temperature</code> and pid file in the startup folder.</p>
+<p>The command runs the start script as the user <code class="language-plaintext highlighter-rouge">pi</code> and assumes you’ve cloned the code as to <code class="language-plaintext highlighter-rouge">/home/pi/code/temperature-machine</code>. After a reboot, it will execute and you should see a log file in <code class="language-plaintext highlighter-rouge">~/.temperature</code> and pid file in the startup folder.</p>
 
-<p>To stop, just run the <code class="highlighter-rouge">stop.sh</code> script.</p>
+<p>To stop, just run the <code class="language-plaintext highlighter-rouge">stop.sh</code> script.</p>
 
 </section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({
 languages:['scala','java','bash']

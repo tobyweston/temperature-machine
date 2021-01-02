@@ -12,7 +12,7 @@ ga('send', 'pageview');
 
 <p>On Mac, it’s probably easiest to install via Homebrew.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ brew install ansible
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ brew install ansible
 </code></pre></div></div>
 
 <p>You only need to do this on the <strong>control node</strong>, most likely your laptop.</p>
@@ -21,13 +21,13 @@ ga('send', 'pageview');
 
 <p>Create a file to list all of your Raspberry Pis.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir ansible
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir ansible
 $ touch ansible/inventory
 </code></pre></div></div>
 
 <p>Mine looks like this:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[temperatures]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[temperatures]
 study.local
 kitchen.local
 garage.local
@@ -38,12 +38,12 @@ bedroom1.local
 
 <p>On the control node, create a key if you don’t already have one.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ssh-keygen -t rsa -C "my key"
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ssh-keygen -t rsa -C "my key"
 </code></pre></div></div>
 
-<p>Copy the key onto the target inventory. Ensure you include the user before the host name (<code class="highlighter-rouge">pi</code> in my case). The <code class="highlighter-rouge">ssh-copy-id</code> command copies your public key to <code class="highlighter-rouge">~/.ssh/authorized_keys</code> file on the target machine.</p>
+<p>Copy the key onto the target inventory. Ensure you include the user before the host name (<code class="language-plaintext highlighter-rouge">pi</code> in my case). The <code class="language-plaintext highlighter-rouge">ssh-copy-id</code> command copies your public key to <code class="language-plaintext highlighter-rouge">~/.ssh/authorized_keys</code> file on the target machine.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ssh-copy-id -i id_rsa.pub pi@study.local
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ssh-copy-id -i id_rsa.pub pi@study.local
 
 /usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "id_rsa.pub"
 /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
@@ -56,20 +56,20 @@ Now try logging into the machine, with:   "ssh 'pi@study.local'"
 and check to make sure that only the key(s) you wanted were added.     
 </code></pre></div></div>
 
-<p>As it says, try <code class="highlighter-rouge">ssh</code>ing into the box. You shouldn’t need to type a passphrase. If you do, you <a href="https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/#adding-your-ssh-key-to-the-ssh-agent">may need to update your config</a>.</p>
+<p>As it says, try <code class="language-plaintext highlighter-rouge">ssh</code>ing into the box. You shouldn’t need to type a passphrase. If you do, you <a href="https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/#adding-your-ssh-key-to-the-ssh-agent">may need to update your config</a>.</p>
 
 <h2 id="test">Test</h2>
 
-<p>Try pinging all the machines with the following (<code class="highlighter-rouge">-i</code> specifies the inventory file):</p>
+<p>Try pinging all the machines with the following (<code class="language-plaintext highlighter-rouge">-i</code> specifies the inventory file):</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ansible -i ansible/inventory all -m ping -u pi
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ansible -i ansible/inventory all -m ping -u pi
 </code></pre></div></div>
 
-<p>Don’t forget to set the user with <code class="highlighter-rouge">-u pi</code>.</p>
+<p>Don’t forget to set the user with <code class="language-plaintext highlighter-rouge">-u pi</code>.</p>
 
 <p>You’ll see something like this.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bedroom1.local | SUCCESS =&gt; {
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bedroom1.local | SUCCESS =&gt; {
     "changed": false, 
     "failed": false, 
     "ping": "pong"

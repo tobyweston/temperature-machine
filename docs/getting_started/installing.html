@@ -10,42 +10,42 @@ ga('send', 'pageview');
 
 <ol>
   <li>
-    <p>Setup 1-wire Support by adding <code class="highlighter-rouge">dtoverlay=w1-gpio</code> to <a href="https://www.raspberrypi.org/documentation/configuration/config-txt/README.md"><code class="highlighter-rouge">/boot/config.txt</code></a>. <span class="bg-danger">You can skip this step if it’s already present.</span></p>
+    <p>Setup 1-wire Support by adding <code class="language-plaintext highlighter-rouge">dtoverlay=w1-gpio</code> to <a href="https://www.raspberrypi.org/documentation/configuration/config-txt/README.md"><code class="language-plaintext highlighter-rouge">/boot/config.txt</code></a>. <span class="bg-danger">You can skip this step if it’s already present.</span></p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo bash -c 'echo "dtoverlay=w1-gpio" &gt;&gt; /boot/config.txt'
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo bash -c 'echo "dtoverlay=w1-gpio" &gt;&gt; /boot/config.txt'
 </code></pre></div>    </div>
 
     <p>Reboot to take effect.</p>
   </li>
   <li>
-    <p>Setup <code class="highlighter-rouge">apt-get</code> to recognise the temperature-machine repository. To ensure the releases come from official, trusted sources, also add the repository key using <code class="highlighter-rouge">apt-key</code>.</p>
+    <p>Setup <code class="language-plaintext highlighter-rouge">apt-get</code> to recognise the temperature-machine repository. To ensure the releases come from official, trusted sources, also add the repository key using <code class="language-plaintext highlighter-rouge">apt-key</code>.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo bash -c 'echo "deb http://robotooling.com/debian stable temperature-machine" &gt;&gt; /etc/apt/sources.list'
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo bash -c 'echo "deb http://robotooling.com/debian stable temperature-machine" &gt;&gt; /etc/apt/sources.list'
  sudo apt-key adv --keyserver pool.sks-keyservers.net --recv-keys 00258F48226612AE
 </code></pre></div>    </div>
   </li>
   <li>
-    <p>If your <code class="highlighter-rouge">/etc/apt/sources.list</code> file contains the following line, remove it. It was used by a previous version.</p>
+    <p>If your <code class="language-plaintext highlighter-rouge">/etc/apt/sources.list</code> file contains the following line, remove it. It was used by a previous version.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> deb http://robotooling.com/debian ./"
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> deb http://robotooling.com/debian ./"
 </code></pre></div>    </div>
   </li>
   <li>
     <p>If you’ve previously built from source, stop any running versions (not required for a fresh install).</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd ~/code/temperature-machine   
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cd ~/code/temperature-machine   
  ./stop.sh
 </code></pre></div>    </div>
 
-    <p>You might also want to disable any previous automatic startup (if you built from source). Check the contents of <code class="highlighter-rouge">/etc/rc.local</code> and remove the following line if it exists (you might see <code class="highlighter-rouge">start-server.sh</code> instead of <code class="highlighter-rouge">start-client.sh</code>).</p>
+    <p>You might also want to disable any previous automatic startup (if you built from source). Check the contents of <code class="language-plaintext highlighter-rouge">/etc/rc.local</code> and remove the following line if it exists (you might see <code class="language-plaintext highlighter-rouge">start-server.sh</code> instead of <code class="language-plaintext highlighter-rouge">start-client.sh</code>).</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start-client.sh &amp;'
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> su pi -c 'cd /home/pi/code/temperature-machine &amp;&amp; ./start-client.sh &amp;'
 </code></pre></div>    </div>
   </li>
   <li>
     <p>Install.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo apt-get update
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo apt-get update
  sudo apt-get install temperature-machine
 </code></pre></div>    </div>
   </li>
@@ -56,31 +56,31 @@ ga('send', 'pageview');
 
     <p>Run the following before you startup the temperature-machine for the first time.</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> temperature-machine --init
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> temperature-machine --init
 </code></pre></div>    </div>
 
-    <p>It will ask you to choose and create the configuration file as <code class="highlighter-rouge">~/.temperature/temperature-machine.cfg</code>.</p>
+    <p>It will ask you to choose and create the configuration file as <code class="language-plaintext highlighter-rouge">~/.temperature/temperature-machine.cfg</code>.</p>
   </li>
   <li>
     <p>If you created a server configuration file above, update the default hosts.</p>
 
-    <p>The default configuration will list some default values for <code class="highlighter-rouge">hosts</code>, such as:</p>
+    <p>The default configuration will list some default values for <code class="language-plaintext highlighter-rouge">hosts</code>, such as:</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> hosts = ["garage", "lounge", "study"]
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> hosts = ["garage", "lounge", "study"]
 </code></pre></div>    </div>
 
-    <p>These are the machines you will be using in your final setup. <span class="bg-warning">Ensure these match the host names of each machine you plan to add</span>. The values are used to initialise the RRD database on the server. If you need to change this later, you will have to delete the <code class="highlighter-rouge">~/.temperature/temperature.rrd</code> file, losing historic data. It’s worth adding in some spares.</p>
+    <p>These are the machines you will be using in your final setup. <span class="bg-warning">Ensure these match the host names of each machine you plan to add</span>. The values are used to initialise the RRD database on the server. If you need to change this later, you will have to delete the <code class="language-plaintext highlighter-rouge">~/.temperature/temperature.rrd</code> file, losing historic data. It’s worth adding in some spares.</p>
 
     <p class="bg-warning">
  After setting up the configuration, you can either restart the service manually (run <code>sudo systemctl restart temperature-machine</code>) or wait about a minute and it will restart automatically.
  </p>
 
-    <p>If you had previously built from source and modified your <code class="highlighter-rouge">/etc/rc.local</code> referencing the <code class="highlighter-rouge">start-server.sh</code> script. You can use the values here to populate your configuration. It would have includes the list of hosts after the <code class="highlighter-rouge">start-server.sh</code> command.</p>
+    <p>If you had previously built from source and modified your <code class="language-plaintext highlighter-rouge">/etc/rc.local</code> referencing the <code class="language-plaintext highlighter-rouge">start-server.sh</code> script. You can use the values here to populate your configuration. It would have includes the list of hosts after the <code class="language-plaintext highlighter-rouge">start-server.sh</code> command.</p>
   </li>
   <li>
     <p>Check the logs for activity (to check it’s all running ok)</p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cat ~/.temperature/temperature-machine.log
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> cat ~/.temperature/temperature-machine.log
 </code></pre></div>    </div>
   </li>
   <li>
@@ -90,9 +90,9 @@ ga('send', 'pageview');
 
 <h2 id="updating">Updating</h2>
 
-<p>Run the <code class="highlighter-rouge">apt-get update</code> command to update your Raspberry Pi’s package lists with the latest versions of software, then upgrade temperature-machine:</p>
+<p>Run the <code class="language-plaintext highlighter-rouge">apt-get update</code> command to update your Raspberry Pi’s package lists with the latest versions of software, then upgrade temperature-machine:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get update
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get update
 sudo apt-get install --only-upgrade temperature-machine
 </code></pre></div></div>
 
@@ -100,15 +100,15 @@ sudo apt-get install --only-upgrade temperature-machine
 
 <h3 id="running-as-a-service">Running as a Service</h3>
 
-<p>By default, the temperature-machine runs as a service in the background - it should be running as soon as you’ve installed it with <code class="highlighter-rouge">apt-get</code>. It will start on boot and restart if it develops a problem. We use <a href="https://en.wikipedia.org/wiki/Systemd"><code class="highlighter-rouge">systemd</code></a> to achieve this.</p>
+<p>By default, the temperature-machine runs as a service in the background - it should be running as soon as you’ve installed it with <code class="language-plaintext highlighter-rouge">apt-get</code>. It will start on boot and restart if it develops a problem. We use <a href="https://en.wikipedia.org/wiki/Systemd"><code class="language-plaintext highlighter-rouge">systemd</code></a> to achieve this.</p>
 
-<p>You can list all the services with <code class="highlighter-rouge">systemctl list-unit-files</code> and verify temperature-machine is <code class="highlighter-rouge">enabled</code>. If it’s disabled, run <code class="highlighter-rouge">sudo systemctl enable temperature-machine</code> to enable (and start) it.</p>
+<p>You can list all the services with <code class="language-plaintext highlighter-rouge">systemctl list-unit-files</code> and verify temperature-machine is <code class="language-plaintext highlighter-rouge">enabled</code>. If it’s disabled, run <code class="language-plaintext highlighter-rouge">sudo systemctl enable temperature-machine</code> to enable (and start) it.</p>
 
-<p>Check the current status at any time with <code class="highlighter-rouge">systemctl status temperature-machine</code>.</p>
+<p>Check the current status at any time with <code class="language-plaintext highlighter-rouge">systemctl status temperature-machine</code>.</p>
 
-<p>If you want to disable it running as a service, run <code class="highlighter-rouge">sudo systemctl disable temperature-machine</code> and take a look at the <a href="#running-manually">section below</a> to start manually.</p>
+<p>If you want to disable it running as a service, run <code class="language-plaintext highlighter-rouge">sudo systemctl disable temperature-machine</code> and take a look at the <a href="#running-manually">section below</a> to start manually.</p>
 
-<p>If you want to stop the service temporally, use <code class="highlighter-rouge">sudo systemctl stop temperature-machine</code>.</p>
+<p>If you want to stop the service temporally, use <code class="language-plaintext highlighter-rouge">sudo systemctl stop temperature-machine</code>.</p>
 
 <p class="bg-warning">
 If there is a problem, the service will attempt to restart after 60 seconds. That means, if it can't start up (for example, becuase there are no sensors attached), it will keep trying until the problem is resolved.
@@ -116,17 +116,17 @@ If there is a problem, the service will attempt to restart after 60 seconds. Tha
 
 <h3 id="running-manually">Running Manually</h3>
 
-<p>Assuming it isn’t running already (stop it with <code class="highlighter-rouge">sudo systemctl stop temperature-machine</code>), you can start it manually with the following (stopping with <kbd>ctrl + c</kbd>).</p>
+<p>Assuming it isn’t running already (stop it with <code class="language-plaintext highlighter-rouge">sudo systemctl stop temperature-machine</code>), you can start it manually with the following (stopping with <kbd>ctrl + c</kbd>).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>temperature-machine
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>temperature-machine
 </code></pre></div></div>
 
 <p>If you want to check the version you’re running (a good way to check it’s installed), try the following.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>temperature-machine -- -v
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>temperature-machine -- -v
 </code></pre></div></div>
 
-<p>You can also run <code class="highlighter-rouge">man temperature-machine</code> to read about more options.</p>
+<p>You can also run <code class="language-plaintext highlighter-rouge">man temperature-machine</code> to read about more options.</p>
 
 <p class="bg-warning">
 The log file can be found in <code>~/.temperature/temperature-machine.log</code>. The conventional <code>/var/log/temperature-machine</code> is currently unused.

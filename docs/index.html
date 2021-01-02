@@ -16,18 +16,18 @@ ga('send', 'pageview');
 
 <p>Each Pi can have up to five physical sensors attached. This is so that you can get an average temperature for the room (say, placing one sensor high in the room and another at floor level) or up to five individual temperatures. All temperatures will be graphed.</p>
 
-<p>By convention, each machine will identify itself by it’s hostname. So, if you have a machine in the office, change the hostname (via <code class="highlighter-rouge">raspi-config</code>) to <code class="highlighter-rouge">office</code>.</p>
+<p>By convention, each machine will identify itself by it’s hostname. So, if you have a machine in the office, change the hostname (via <code class="language-plaintext highlighter-rouge">raspi-config</code>) to <code class="language-plaintext highlighter-rouge">office</code>.</p>
 
 <p>The server broadcasts it’s address over the network. When clients start up, they wait to hear the broadcast and perform a basic handshake. The server’s broadcast message includes the servers address. So when a client hears it, it knows where to send it’s temperature data.</p>
 
 <h3 id="example-setup">Example Setup</h3>
 
-<p>The following uses three physical Pi Zeros setup in the following configuration. Each has the room name set as the machine’s <code class="highlighter-rouge">hostname</code>.</p>
+<p>The following uses three physical Pi Zeros setup in the following configuration. Each has the room name set as the machine’s <code class="language-plaintext highlighter-rouge">hostname</code>.</p>
 
 <ul>
-  <li><code class="highlighter-rouge">study</code> has the <em>server</em> with one sensor</li>
-  <li><code class="highlighter-rouge">bedroom 1</code> has a <em>client</em> with two sensors</li>
-  <li><code class="highlighter-rouge">kitchen</code> has a <em>client</em> with one sensor</li>
+  <li><code class="language-plaintext highlighter-rouge">study</code> has the <em>server</em> with one sensor</li>
+  <li><code class="language-plaintext highlighter-rouge">bedroom 1</code> has a <em>client</em> with two sensors</li>
+  <li><code class="language-plaintext highlighter-rouge">kitchen</code> has a <em>client</em> with one sensor</li>
 </ul>
 
 <p><img src="../img/temperature-machine-alt.png" alt="" width="667" height="517" style="max-width:100%;" /></p>

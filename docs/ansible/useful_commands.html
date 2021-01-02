@@ -19,15 +19,15 @@ ga('send', 'pageview');
   </thead>
   <tbody>
     <tr>
-      <td><code class="highlighter-rouge">-m</code></td>
+      <td><code class="language-plaintext highlighter-rouge">-m</code></td>
       <td>module</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">-a</code></td>
+      <td><code class="language-plaintext highlighter-rouge">-a</code></td>
       <td>command</td>
     </tr>
     <tr>
-      <td><code class="highlighter-rouge">-u</code></td>
+      <td><code class="language-plaintext highlighter-rouge">-u</code></td>
       <td>user</td>
     </tr>
   </tbody>
@@ -37,31 +37,31 @@ ga('send', 'pageview');
 
 <p>Build the JAR on your development machine (the control node where Ansible is installed):</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sbt clean assembly
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sbt clean assembly
 </code></pre></div></div>
 
-<p>Then copy the artifact into each machines <code class="highlighter-rouge">target</code> folder (and avoid having to compile on each Pi). In this example <code class="highlighter-rouge">temperatures</code> is the group of machines in my inventory file and you’d run it form the source folder of <code class="highlighter-rouge">temperature-machine</code>.</p>
+<p>Then copy the artifact into each machines <code class="language-plaintext highlighter-rouge">target</code> folder (and avoid having to compile on each Pi). In this example <code class="language-plaintext highlighter-rouge">temperatures</code> is the group of machines in my inventory file and you’d run it form the source folder of <code class="language-plaintext highlighter-rouge">temperature-machine</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ansible -i ansible/inventory temperatures -m copy -a "src=target/scala-2.12/temperature-machine-2.1.jar dest=/home/pi/code/temperature-machine/target/scala-2.12" -u pi
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ansible -i ansible/inventory temperatures -m copy -a "src=target/scala-2.12/temperature-machine-2.1.jar dest=/home/pi/code/temperature-machine/target/scala-2.12" -u pi
 </code></pre></div></div>
 
 <h3 id="bounce-all-machines">Bounce all Machines</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ansible -i ansible/inventory temperatures -a reboot --become -u pi
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ansible -i ansible/inventory temperatures -a reboot --become -u pi
 </code></pre></div></div>
 
 <h3 id="update-sources">Update Sources</h3>
 
 <p>Well, this doesn’t work but it’d be nice if it did!</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ansible -i ansible/inventory temperatures -m git -a "repo=https://github.com/tobyweston/temperature-machine.git dest=/home/pi/code update=yes clone=no" -u pi
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ansible -i ansible/inventory temperatures -m git -a "repo=https://github.com/tobyweston/temperature-machine.git dest=/home/pi/code update=yes clone=no" -u pi
 </code></pre></div></div>
 
 <h3 id="config-git">Config Git</h3>
 
-<p>I have a standard set of configs I like to apply on all boxes (notice the single quotes around the <code class="highlighter-rouge">value</code> arguments):</p>
+<p>I have a standard set of configs I like to apply on all boxes (notice the single quotes around the <code class="language-plaintext highlighter-rouge">value</code> arguments):</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ansible -i ansible/inventory temperatures -m git_config -a "name=alias.st scope=global value='status -sb'" -u pi
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ansible -i ansible/inventory temperatures -m git_config -a "name=alias.st scope=global value='status -sb'" -u pi
 $ ansible -i ansible/inventory temperatures -m git_config -a "name=alias.last scope=global value='log -1 HEAD'" -u pi
 </code></pre></div></div>
 </section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/highlight/highlight.pack.js"></script><script>hljs.configure({
