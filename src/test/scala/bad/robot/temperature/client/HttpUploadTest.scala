@@ -4,16 +4,21 @@ import java.net.InetAddress
 
 import bad.robot.temperature.rrd.{Host, Seconds}
 import bad.robot.temperature.{IpAddress, Measurement, SensorReading, Temperature, UnexpectedError, jsonEncoder}
-import cats.data.Kleisli
-import cats.effect.IO
+import cats.effect.{ContextShift, IO, Resource, Timer}
 import org.http4s.Method.PUT
-import org.http4s.client.{DisposableResponse, Client => Http4sClient}
+import org.http4s.client.{Client => Http4sClient}
 import org.http4s.dsl.io._
-import org.http4s.{EntityDecoder, Request}
+import org.http4s.implicits._
+import org.http4s.{EntityDecoder, HttpRoutes, Request}
 import org.specs2.matcher.DisjunctionMatchers._
 import org.specs2.mutable.Specification
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class HttpUploadTest extends Specification {
+  
+  private implicit val contextShift: ContextShift[IO] = IO.contextShift(global)
+  private implicit val timer: Timer[IO] = IO.timer(global)
 
   "Ip address pre-check" >> {
     IpAddress.currentIpAddress.size must be_>(0)
@@ -48,12 +53,14 @@ class HttpUploadTest extends Specification {
   "Error response from server" >> {
     val measurement = Measurement(Host("example"), Seconds(1509221361), List(SensorReading("28-0115910f5eff", Temperature(19.75))))
     
-    val error = InternalServerError("I'm an error").map(DisposableResponse(_, IO.pure(())))
-    val willError: Kleisli[IO, Request[IO], DisposableResponse[IO]] = new Kleisli[IO, Request[IO], DisposableResponse[IO]](_ => error)
-    
-    val client = Http4sClient[IO](willError, IO.pure(()))
+    val client = Http4sClient.fromHttpApp(HttpRoutes.of[IO] {
+      case _ => {
+        InternalServerError("I'm an error")
+      }
+    }.orNotFound)
 
-    val upload = HttpUpload(InetAddress.getLoopbackAddress, client)
+    
+    val upload = HttpUpload(InetAddress.getLoopbackAddress, Resource.liftF(IO(client)))
     val value = upload.write(measurement)
     value must be_-\/.like {
       case UnexpectedError("""Failed to PUT temperature data to http://127.0.0.1:11900/temperature, response was 500 Internal Server Error: Right(I'm an error)""") => ok
@@ -65,18 +72,21 @@ class HttpUploadTest extends Specification {
     
     var headers = List[String]()
     
-    val client = Http4sClient[IO](new Kleisli[IO, Request[IO], DisposableResponse[IO]](request => {
-      headers = request.headers.map(_.name.toString()).toList
-      Ok().map(DisposableResponse(_, IO.pure(())))
-    }), IO.pure(()))
-
-    val upload = HttpUpload(InetAddress.getLoopbackAddress, client)
+    val client = Http4sClient.fromHttpApp(HttpRoutes.of[IO] {
+      case request => {
+        headers = request.headers.toList.map(_.name.toString())
+        Ok()
+      }
+    }.orNotFound)
+    
+    val upload = HttpUpload(InetAddress.getLoopbackAddress, Resource.liftF(IO(client)))
     upload.write(measurement)
     
     headers must_== List(
       "Content-Type",
       "X-Forwarded-For",
-      "Content-Length"
+      "Content-Length",
+      "Host"
     )
   }
 }

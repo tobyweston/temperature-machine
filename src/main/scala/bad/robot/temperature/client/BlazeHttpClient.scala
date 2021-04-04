@@ -4,10 +4,9 @@ import java.lang.Runtime.getRuntime
 import java.util.concurrent._
 
 import bad.robot.temperature.task.TemperatureMachineThreadFactory
-import cats.effect.IO
+import cats.effect.{ConcurrentEffect, IO, Resource}
+import org.http4s.client.blaze.BlazeClientBuilder
 import org.http4s.client.{Client => Http4sClient}
-import org.http4s.client.blaze.BlazeClientConfig._
-import org.http4s.client.blaze.Http1Client
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
@@ -22,7 +21,8 @@ object BlazeHttpClient {
   }
 
   // convert to Http1Client.stream[F[_]: Effect]: Stream[F, Http1Client] ?
-  def apply(): Http4sClient[IO] = Http1Client[IO](
-    config = defaultConfig.copy(idleTimeout = DefaultTimeout, executionContext = DefaultExecutor
-  )).unsafeRunSync()
+  def apply()(implicit F: ConcurrentEffect[IO]): Resource[IO, Http4sClient[IO]] = BlazeClientBuilder[IO](DefaultExecutor)
+    .withIdleTimeout(DefaultTimeout)
+    .resource
+
 }

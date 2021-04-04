@@ -4,16 +4,15 @@ import bad.robot.temperature._
 import bad.robot.temperature.rrd.{Host, Seconds}
 import bad.robot.temperature.server.Requests._
 import bad.robot.temperature.test._
-import cats.effect.IO
-import fs2.Scheduler
+import cats.effect.{ContextShift, IO, Timer}
 import org.http4s.Method._
 import org.http4s.Status.{NoContent, Ok}
 import org.http4s.implicits._
 import org.http4s.{Request, Uri}
 import org.specs2.mutable.Specification
-
-import scala.concurrent.duration.FiniteDuration
 import scalaz.{\/, \/-}
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object Requests {
   val Put: String => Request[IO] = (body) => Request[IO](PUT, Uri(path = s"temperature")).withBody(body).unsafeRunSync
@@ -21,15 +20,14 @@ object Requests {
 
 class TemperatureEndpointTest extends Specification {
 
+  private implicit val contextShift: ContextShift[IO] = IO.contextShift(global)
+  private implicit val timer: Timer[IO] = IO.timer(global)
+
+
   sequential
 
-  val scheduler = new Scheduler {
-    protected def scheduleOnce(delay: FiniteDuration)(thunk: => Unit) = ???
-    protected def scheduleAtFixedRate(period: FiniteDuration)(thunk: => Unit) = ???
-  }
-
   "Put some temperature data" >> {
-    val service = TemperatureEndpoint(scheduler, stubReader(\/-(List())), AllTemperatures(), Connections())
+    val service = TemperatureEndpoint(stubReader(\/-(List())), AllTemperatures(), Connections())
     val measurement = """{
                          |  "host" : {
                          |    "name" : "localhost",
@@ -51,7 +49,7 @@ class TemperatureEndpointTest extends Specification {
   }
 
   "Bad json when writing sensor data" >> {
-    val service = TemperatureEndpoint(scheduler, stubReader(\/-(List())), AllTemperatures(), Connections())
+    val service = TemperatureEndpoint(stubReader(\/-(List())), AllTemperatures(), Connections())
     val request: Request[IO] = Put("bad json")
     val response = service.orNotFound.run(request).unsafeRunSync
     response must haveStatus(org.http4s.Status.BadRequest)
@@ -107,7 +105,7 @@ class TemperatureEndpointTest extends Specification {
                          |}""".stripMargin
 
 
-    val service = TemperatureEndpoint(scheduler, stubReader(\/-(List())), AllTemperatures(), Connections())
+    val service = TemperatureEndpoint(stubReader(\/-(List())), AllTemperatures(), Connections())
     service.orNotFound.run(Request[IO](DELETE, Uri.uri("/temperatures"))).unsafeRunSync
     service.orNotFound.run(Put(measurement1)).unsafeRunSync
     service.orNotFound.run(Put(measurement2)).unsafeRunSync
@@ -218,7 +216,7 @@ class TemperatureEndpointTest extends Specification {
                          |}""".stripMargin
 
 
-    val service = TemperatureEndpoint(scheduler, stubReader(\/-(List())), AllTemperatures(), Connections())
+    val service = TemperatureEndpoint(stubReader(\/-(List())), AllTemperatures(), Connections())
     service.orNotFound.run(Request[IO](DELETE, Uri.uri("/temperatures"))).unsafeRunSync
     service.orNotFound.run(Put(measurement1)).unsafeRunSync
     service.orNotFound.run(Put(measurement2)).unsafeRunSync

@@ -11,9 +11,7 @@ import bad.robot.temperature.ds18b20.SensorFile._
 import bad.robot.temperature.rrd.{Host, Rrd}
 import bad.robot.temperature.task.IOs._
 import bad.robot.temperature.task.TemperatureMachineThreadFactory
-import cats.effect.IO
-import fs2.Stream
-import fs2.StreamApp.ExitCode
+import cats.effect.{ConcurrentEffect, ContextShift, ExitCode, IO, Timer}
 import scalaz.{-\/, \/, \/-}
 import scalaz.syntax.either.ToEitherOps
 
@@ -26,23 +24,23 @@ object Server {
     } yield ()
   }
 
-  private def http(temperatures: AllTemperatures, connections: Connections)(implicit hosts: List[Host]): Stream[IO, ExitCode] = {
+  private def http(temperatures: AllTemperatures, connections: Connections)(implicit hosts: List[Host], F: ConcurrentEffect[IO], timer: Timer[IO], cs: ContextShift[IO]): IO[ExitCode] = {
     val port = 11900
     for {
-      server <- HttpServer(port, hosts).asStream(temperatures, connections)
-      _      <- Stream.eval(info(s"HTTP Server started on http://${InetAddress.getLocalHost.getHostAddress}:$port"))
+      server <- HttpServer(port, hosts).build(temperatures, connections)
+      _      <- info(s"HTTP Server started on http://${InetAddress.getLocalHost.getHostAddress}:$port")
     } yield server
   }
 
-  private def server(temperatures: AllTemperatures, connections: Connections, sensors: List[SensorFile])(implicit hosts: List[Host]): Stream[IO, ExitCode] = {
+  private def server(temperatures: AllTemperatures, connections: Connections, sensors: List[SensorFile])(implicit hosts: List[Host], F: ConcurrentEffect[IO], timer: Timer[IO], cs: ContextShift[IO]): IO[ExitCode] = {
     for {
-      _        <- Stream.eval(info("Starting temperature-machine (server mode)..."))
-      _        <- Stream.eval(init(hosts))
-      _        <- Stream.eval(discovery)
-      _        <- Stream.eval(gather(temperatures, Rrd(hosts)))
-      _        <- Stream.eval(record(Host.local, sensors, HttpUpload(InetAddress.getLocalHost, BlazeHttpClient())))
-      _        <- Stream.eval(graphing)
-      _        <- Stream.eval(exportJson)
+      _        <- info("Starting temperature-machine (server mode)...")
+      _        <- init(hosts)
+      _        <- discovery
+      _        <- gather(temperatures, Rrd(hosts))
+      _        <- record(Host.local, sensors, HttpUpload(InetAddress.getLocalHost, BlazeHttpClient()))
+      _        <- graphing
+      _        <- exportJson
       exitCode <- http(temperatures, connections)
     } yield exitCode
   }
@@ -52,17 +50,15 @@ object Server {
     case hosts => hosts.map(host => Host(host)).right
   }
 
-  def stream(args: List[String], requestShutdown: IO[Unit]): Stream[IO, ExitCode] = {
+  def apply(args: List[String])(implicit F: ConcurrentEffect[IO], timer: Timer[IO], cs: ContextShift[IO]): IO[ExitCode] = {
     val application = for {
       hosts        <- extractHosts(args)
       sensors      <- findSensors
-      temperatures  = AllTemperatures()
-      connections   = Connections()
-    } yield server(temperatures, connections, sensors)(hosts)
+    } yield server(AllTemperatures(), Connections(), sensors)(hosts, F, timer, cs)
 
     application match {
-      case \/-(ok)    => ok
-      case -\/(cause) => Stream.eval(error(cause.message)).flatMap(_ => Stream.emit(ExitCode(1)))
+      case \/-(server) => server
+      case -\/(cause)  => error(cause.message).flatMap(_ => IO(ExitCode.Error))
     }
   }
 }

@@ -5,14 +5,15 @@ import java.time.Clock
 import bad.robot.logging.Log
 import bad.robot.temperature.rrd.Host
 import bad.robot.temperature.{jsonEncoder, _}
-import cats.effect.IO
+import cats.effect.{ConcurrentEffect, IO, Timer}
 import io.circe._
 import fs2.{Sink, _}
-import org.http4s.HttpService
+import org.http4s.HttpRoutes
 import org.http4s.dsl.io._
 import org.http4s.headers.`X-Forwarded-For`
 import org.http4s.server.websocket._
-import org.http4s.websocket.WebsocketBits._
+import org.http4s.websocket.WebSocketFrame
+import org.http4s.websocket.WebSocketFrame.Text
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -36,16 +37,14 @@ object TemperatureEndpoint {
   }}
   
   
-  import scala.concurrent.ExecutionContext.Implicits.global // todo replace with explicit one
-
-  def apply(scheduler: Scheduler, sensors: TemperatureReader, allTemperatures: AllTemperatures, connections: Connections) = HttpService[IO] {
+  def apply(sensors: TemperatureReader, allTemperatures: AllTemperatures, connections: Connections)(implicit F: ConcurrentEffect[IO], timer: Timer[IO]) = HttpRoutes.of[IO] {
 
     case GET -> Root / "temperatures" / "average" => {
       Ok(encode(latestTemperatures.average))
     }
 
     case GET -> Root / "temperatures" / "live" / "average" => {
-      val source: Stream[IO, WebSocketFrame] = scheduler.awakeEvery[IO](1 second).map { _ =>
+      val source: Stream[IO, WebSocketFrame] = Stream.awakeEvery[IO](1 second).map { _ =>
         Text(encode(latestTemperatures.average).spaces2ps)
       }
       
@@ -57,7 +56,7 @@ object TemperatureEndpoint {
     }
 
     case GET -> Root / "temperatures" / "live" => {
-      val source: Stream[IO, WebSocketFrame] = scheduler.awakeEvery[IO](1 second).map { _ =>
+      val source: Stream[IO, WebSocketFrame] = Stream.awakeEvery[IO](1 second).map { _ =>
         Text(encode(latestTemperatures.all).spaces2ps)
       }
 

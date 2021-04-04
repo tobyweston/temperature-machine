@@ -20,7 +20,7 @@ object LogEndpoint {
 
   private implicit val encoder = jsonEncoder[List[LogMessage]]
 
-  def apply() = HttpService[IO] {
+  def apply() = HttpRoutes.of[IO] {
 
     case GET -> Root / "log" => {
       val messages = for {

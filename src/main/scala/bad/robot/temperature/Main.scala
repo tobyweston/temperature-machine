@@ -5,46 +5,48 @@ import bad.robot.temperature.CommandLineHelp._
 import bad.robot.temperature.client.Client
 import bad.robot.temperature.config.ConfigFile
 import bad.robot.temperature.server.Server
-import cats.effect.IO
-import fs2.StreamApp.ExitCode
-import fs2.{Stream, StreamApp}
+import cats.effect.{ExitCode, IO, IOApp, _}
+import cats.implicits._
 
-object Main extends StreamApp[IO] {
+class Main[F[_]](implicit F: ConcurrentEffect[IO], timer: Timer[IO], cs: ContextShift[IO])  {
 
-  override def stream(args: List[String], requestShutdown: IO[Unit]): fs2.Stream[IO, ExitCode] = {
+  def run(args: List[String]): IO[ExitCode] = {
     args match {
       case option :: Nil if List("-v", "--version").contains(option) => printVersion
       case option :: Nil if List("-h", "--help").contains(option)    => printUsage
-      case option :: Nil if List("-i", "--init").contains(option)    => exitAfter(ConfigFile.initWithUserInput)
-      case Nil                                                       => startupBasedOnConfigFile(requestShutdown)
-      case options                                                   => Stream
-                                                                          .eval(IO(print(s"Invalid option: ${options.mkString(" ")}")))
+      case option :: Nil if List("-i", "--init").contains(option)    => exitWithErrorAfter(ConfigFile.initWithUserInput)
+      case Nil                                                       => startupBasedOnConfigFile
+      case options                                                   => IO(print(s"Invalid option: ${options.mkString(" ")}"))
                                                                           .flatMap(_ => printUsage)
     }
   }
 
-  private def startupBasedOnConfigFile(requestShutdown: IO[Unit]) = {
-    def start(config: ConfigFile): IO[Unit] => Stream[IO, ExitCode] = {
+  private def startupBasedOnConfigFile: IO[ExitCode] = {
+    def start(config: ConfigFile): IO[ExitCode] = {
       config.mode match {
-        case "client" => Client.stream(Nil, _)
-        case "server" => Server.stream(config.hosts, _)
-        case mode     => _ => printConfigError(mode)
+        case "client" => Client(Nil)
+        case "server" => Server(config.hosts)
+        case mode     => printConfigError(mode)
       }
     }
 
-    Stream
-      .eval(ConfigFile.loadOrWarn())
-      .flatMap(_.fold(printErrorAndExit, start(_)(requestShutdown)))
+    ConfigFile.loadOrWarn().flatMap(_.fold(printErrorAndExit, start))
+  }
+}
+
+object Main extends IOApp {
+  def run(args: List[String]): IO[ExitCode] = {
+    new Main[IO].run(args).as(ExitCode.Success)
   }
 }
 
 object CommandLineHelp {
 
-  val printErrorAndExit = (cause: ConfigurationError) => exitAfter(Stream.eval(error(cause.message)))
+  val printErrorAndExit = (cause: ConfigurationError) => exitWithErrorAfter(error(cause.message))
 
-  def printVersion = exitAfter(Stream.eval(IO(println(s"${BuildInfo.name} ${BuildInfo.version} (${BuildInfo.latestSha})"))))
+  def printVersion = exitWithErrorAfter(IO(println(s"${BuildInfo.name} ${BuildInfo.version} (${BuildInfo.latestSha})")))
 
-  def printUsage = exitAfter(Stream.eval(IO(println(
+  def printUsage = exitWithErrorAfter(IO(println(
     """
       |Usage: temperature-machine [options]
       |
@@ -55,11 +57,11 @@ object CommandLineHelp {
       |
       |Run with no options to start the temperature-machine
       |
-    """.stripMargin))))
+    """.stripMargin)))
 
-  def printConfigError(mode: String) = exitAfter(Stream.eval(error(
+  def printConfigError(mode: String) = exitWithErrorAfter(error(
     s"""Error in configuration file, 'mode' was set to "$mode" but only "client" or "server" are allowed"""
-  )))
+  ))
 
-  def exitAfter(io: Stream[IO, _]) = io.flatMap(_ => Stream.emit(ExitCode(1)))
+  def exitWithErrorAfter(io: IO[_]): IO[ExitCode] = io.flatMap(_ => IO(ExitCode.Error))
 }
