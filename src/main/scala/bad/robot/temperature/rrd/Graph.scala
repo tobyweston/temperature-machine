@@ -24,15 +24,15 @@ object Graph {
   }
 
   private val colours = new CircularArray(Array(
-    new Color(69,  114, 167),   // #4572A7 san marino (blue)
-    new Color(170, 70,  67),    // #AA4643 roof terracotta (red)
-    new Color(137, 165, 78),    // #89A54E chelsea cucumber (green)
-    new Color(128, 105, 155),   // #80699B deluge (purple)
-    new Color(61,  150, 174),   // #3D96AE boston blue
-    new Color(219, 132, 61),    // #DB843D tree poppy (orange)
-    new Color(146, 168, 205),   // #92A8CD polo blue
-    new Color(164, 125, 124),   // #A47D7C opium
-    new Color(181, 202, 146)    // #B5CA92 sprout
+    new Color(69,  114, 167),   // #4572A7 san marino (blue)(Same)
+    new Color(170, 70,  67),    // #AA4643 roof terracotta (red)(Same)
+    new Color(177, 23, 147),    // #b11793 (Purple)
+    new Color(219, 123, 61),   // #DB843D Strangely Brown(Orange)
+    new Color(61,  150, 174),   // #3D96AE boston blue (Same)
+    new Color(137, 165, 78),    // #89A54E Darkish Green (Green)
+    new Color(183, 201, 35),   // #B7C923 Lime Green
+    new Color(164, 125, 124),   // #A47D7C opium (same)
+    new Color(0, 0, 0)    // was (181, 202, 146) #B5CA92 sprout
   ))
 
   def create(from: Seconds, to: Seconds, hosts: List[Host], title: String) = {
